@@ -241,7 +241,7 @@ public class CoveragePass implements IPass {
         prevLine = curLine;
       }
       //Is this a conditional jump?
-      prevInsnWasConditionalJump = (IFEQ <= opcode && opcode <= IF_ACMPNE)
+      prevInsnWasConditionalJump = ((IFEQ <= opcode && opcode <= IF_ACMPNE)
               || opcode == IFNULL || opcode == IFNONNULL);
     }
 
