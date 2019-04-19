@@ -16,13 +16,14 @@
  */
 package com.gzoltar.core.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.gzoltar.core.model.Node;
 import javassist.CtBehavior;
 import javassist.CtClass;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class ProbeGroup {
 
@@ -82,11 +83,8 @@ public final class ProbeGroup {
    * Registers a new {@link com.gzoltar.core.runtime.Probe} object.
    */
   public Probe registerProbe(final Node node, final CtBehavior ctBehavior) {
-    Probe probe = this.findProbeByNode(node);
-    if (probe == null) {
-      probe = new Probe(this.probes.size(), node, ctBehavior);
-      this.probes.add(probe);
-    }
+    Probe probe = new Probe(this.probes.size(), node, ctBehavior);
+    this.probes.add(probe);
     return probe;
   }
 

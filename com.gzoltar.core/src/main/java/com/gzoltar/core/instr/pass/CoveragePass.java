@@ -16,20 +16,12 @@
  */
 package com.gzoltar.core.instr.pass;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
 import com.gzoltar.core.AgentConfigs;
 import com.gzoltar.core.instr.InstrumentationConstants;
 import com.gzoltar.core.instr.InstrumentationLevel;
 import com.gzoltar.core.instr.Outcome;
 import com.gzoltar.core.instr.actions.AnonymousClassConstructorFilter;
-import com.gzoltar.core.instr.filter.DuplicateCollectorReferenceFilter;
-import com.gzoltar.core.instr.filter.EmptyMethodFilter;
-import com.gzoltar.core.instr.filter.EnumFilter;
-import com.gzoltar.core.instr.filter.IFilter;
-import com.gzoltar.core.instr.filter.SyntheticFilter;
+import com.gzoltar.core.instr.filter.*;
 import com.gzoltar.core.model.Node;
 import com.gzoltar.core.model.NodeFactory;
 import com.gzoltar.core.runtime.Collector;
@@ -39,14 +31,16 @@ import com.gzoltar.core.util.MD5;
 import javassist.CtBehavior;
 import javassist.CtClass;
 import javassist.CtConstructor;
-import javassist.bytecode.Bytecode;
-import javassist.bytecode.CodeAttribute;
-import javassist.bytecode.CodeIterator;
-import javassist.bytecode.ConstPool;
-import javassist.bytecode.MethodInfo;
-import javassist.bytecode.Opcode;
+import javassist.bytecode.*;
 import javassist.bytecode.analysis.ControlFlow;
 import javassist.bytecode.analysis.ControlFlow.Block;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+import static javassist.bytecode.Opcode.*;
 
 public class CoveragePass implements IPass {
 
@@ -192,6 +186,7 @@ public class CoveragePass implements IPass {
     }
 
     int index = 0, prevLine = -1, curLine = -1, instrSize = 0;
+    boolean prevInsnWasConditionalJump = false;
     while (ci.hasNext()) {
       index = ci.next();
       curLine = methodInfo.getLineNumber(index);
@@ -205,11 +200,31 @@ public class CoveragePass implements IPass {
         blocks.poll();
       }
 
+      // If the previous instruction was a conditional jump, then insert a probe immediately after it to ensure that we can
+      // differentiate between cases where the branch was or was not taken.
+      if(prevInsnWasConditionalJump)
+      {
+        Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine, index);
+        assert node != null;
+        Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
+        assert probe != null;
+
+        if (injectBytecode) {
+          Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
+          ci.insert(index, bc.get());
+          instrSize += bc.length();
+          instrumented = Outcome.ACCEPT;
+        } else {
+          instrumented = Outcome.REJECT;
+        }
+      }
+
+      int opcode = ci.byteAt(index) & 0xff;
       if (prevLine != curLine || isNewBlock) {
         // a line is always considered for instrumentation if and only if: 1) it's line number has
         // not been instrumented; 2) or, if it's in a different block
 
-        Node node = NodeFactory.createNode(ctClass, ctBehavior, curLine);
+        Node node = NodeFactory.createNode(ctClass, ctBehavior, curLine, index);
         assert node != null;
         Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
         assert probe != null;
@@ -225,6 +240,9 @@ public class CoveragePass implements IPass {
 
         prevLine = curLine;
       }
+      //Is this a conditional jump?
+      prevInsnWasConditionalJump = (IFEQ <= opcode && opcode <= IF_ACMPNE)
+              || opcode == IFNULL || opcode == IFNONNULL);
     }
 
     return instrumented;

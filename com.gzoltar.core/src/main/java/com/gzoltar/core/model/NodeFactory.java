@@ -31,7 +31,7 @@ public final class NodeFactory {
    * @return An {@link com.gzoltar.core.model.Node} object
    */
   public static Node createNode(final CtClass ctClass, final CtBehavior ctBehavior,
-      final int lineNumber) {
+      final int lineNumber, final int insnIndex) {
 
     String packageName = ctClass.getPackageName() == null ? "" : ctClass.getPackageName();
 
@@ -48,7 +48,7 @@ public final class NodeFactory {
     lineName.append(NodeType.LINE.getSymbol());
     lineName.append(String.valueOf(lineNumber));
 
-    return new Node(lineName.toString(), lineNumber, NodeType.LINE);
+    return new Node(lineName.toString(), lineNumber, NodeType.LINE, insnIndex);
   }
 
   /**

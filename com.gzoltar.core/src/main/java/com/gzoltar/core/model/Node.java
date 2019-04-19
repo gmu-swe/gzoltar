@@ -38,6 +38,8 @@ public class Node {
 
   private final Map<String, Node> children = new LinkedHashMap<String, Node>();
 
+  private int insnIndex;
+
   private Map<String, Double> suspiciousnessValues = null;
 
   /**
@@ -46,8 +48,9 @@ public class Node {
    * @param lineNumber
    * @param type
    */
-  public Node(final String name, final int lineNumber, final NodeType type) {
+  public Node(final String name, final int lineNumber, final NodeType type, final int insnIndex) {
     this(name, lineNumber, type, null);
+    this.insnIndex = insnIndex;
   }
 
   /**
@@ -313,6 +316,7 @@ public class Node {
     builder.append(this.lineNumber);
     builder.append(this.depth);
     builder.append(this.parent);
+    builder.append(this.insnIndex);
     return builder.toHashCode();
   }
 
@@ -337,6 +341,7 @@ public class Node {
     builder.append(this.lineNumber, node.lineNumber);
     builder.append(this.depth, node.depth);
     builder.append(this.parent, node.parent);
+    builder.append(this.insnIndex, node.insnIndex);
 
     return builder.isEquals();
   }
