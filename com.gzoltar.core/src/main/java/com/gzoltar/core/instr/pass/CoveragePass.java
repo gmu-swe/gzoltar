@@ -206,6 +206,7 @@ public class CoveragePass implements IPass {
       {
         Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine, index);
         assert node != null;
+        node.setFakeProbeForJump(true);
         Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
         assert probe != null;
 

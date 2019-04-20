@@ -83,8 +83,11 @@ public final class ProbeGroup {
    * Registers a new {@link com.gzoltar.core.runtime.Probe} object.
    */
   public Probe registerProbe(final Node node, final CtBehavior ctBehavior) {
-    Probe probe = new Probe(this.probes.size(), node, ctBehavior);
-    this.probes.add(probe);
+    Probe probe = this.findProbeByNode(node);
+    if (probe == null) {
+      probe = new Probe(this.probes.size(), node, ctBehavior);
+      this.probes.add(probe);
+    }
     return probe;
   }
 
@@ -136,18 +139,18 @@ public final class ProbeGroup {
     return nodes;
   }
 
-  /**
-   * Returns a {@link com.gzoltar.core.model.Node} object with a specific name, or null there is not
-   * any.
-   */
-  public Node getNode(String nodeName) {
-    for (Probe probe : this.probes) {
-      if (probe.getNode().getName().equals(nodeName)) {
-        return probe.getNode();
-      }
-    }
-    return null;
-  }
+//  /**
+//   * Returns a {@link com.gzoltar.core.model.Node} object with a specific name, or null there is not
+//   * any.
+//   */
+//  public Node getNode(String nodeName) {
+//    for (Probe probe : this.probes) {
+//      if (probe.getNode().getName().equals(nodeName)) {
+//        return probe.getNode();
+//      }
+//    }
+//    return null;
+//  }
 
   // === Overrides ===
 

@@ -42,6 +42,8 @@ public class Node {
 
   private Map<String, Double> suspiciousnessValues = null;
 
+  private boolean isFakeProbeForJump;
+
   /**
    * 
    * @param name
@@ -80,6 +82,14 @@ public class Node {
    */
   public void setName(final String name) {
     this.name = name;
+  }
+
+  public int getInsnIndex() {
+    return insnIndex;
+  }
+
+  public boolean isFakeProbeForJump() {
+    return isFakeProbeForJump;
   }
 
   /**
@@ -134,6 +144,10 @@ public class Node {
    */
   public int getDepth() {
     return this.depth;
+  }
+
+  public void setFakeProbeForJump(boolean fakeProbeForJump) {
+    isFakeProbeForJump = fakeProbeForJump;
   }
 
   /**
@@ -317,6 +331,7 @@ public class Node {
     builder.append(this.depth);
     builder.append(this.parent);
     builder.append(this.insnIndex);
+    builder.append(this.isFakeProbeForJump);
     return builder.toHashCode();
   }
 
@@ -342,6 +357,7 @@ public class Node {
     builder.append(this.depth, node.depth);
     builder.append(this.parent, node.parent);
     builder.append(this.insnIndex, node.insnIndex);
+    builder.append(this.isFakeProbeForJump, node.isFakeProbeForJump);
 
     return builder.isEquals();
   }
