@@ -16,12 +16,57 @@
  */
 package com.gzoltar.core.instr.pass;
 
+import static javassist.bytecode.Opcode.AALOAD;
+import static javassist.bytecode.Opcode.AASTORE;
+import static javassist.bytecode.Opcode.BALOAD;
+import static javassist.bytecode.Opcode.BASTORE;
+import static javassist.bytecode.Opcode.CALOAD;
+import static javassist.bytecode.Opcode.CASTORE;
+import static javassist.bytecode.Opcode.CHECKCAST;
+import static javassist.bytecode.Opcode.DALOAD;
+import static javassist.bytecode.Opcode.DASTORE;
+import static javassist.bytecode.Opcode.DDIV;
+import static javassist.bytecode.Opcode.FALOAD;
+import static javassist.bytecode.Opcode.FASTORE;
+import static javassist.bytecode.Opcode.FDIV;
+import static javassist.bytecode.Opcode.GETFIELD;
+import static javassist.bytecode.Opcode.GETSTATIC;
+import static javassist.bytecode.Opcode.IALOAD;
+import static javassist.bytecode.Opcode.IASTORE;
+import static javassist.bytecode.Opcode.IDIV;
+import static javassist.bytecode.Opcode.IFEQ;
+import static javassist.bytecode.Opcode.IFNONNULL;
+import static javassist.bytecode.Opcode.IFNULL;
+import static javassist.bytecode.Opcode.IF_ACMPNE;
+import static javassist.bytecode.Opcode.INVOKEDYNAMIC;
+import static javassist.bytecode.Opcode.INVOKEINTERFACE;
+import static javassist.bytecode.Opcode.INVOKESPECIAL;
+import static javassist.bytecode.Opcode.INVOKESTATIC;
+import static javassist.bytecode.Opcode.INVOKEVIRTUAL;
+import static javassist.bytecode.Opcode.LALOAD;
+import static javassist.bytecode.Opcode.LASTORE;
+import static javassist.bytecode.Opcode.LDIV;
+import static javassist.bytecode.Opcode.MONITORENTER;
+import static javassist.bytecode.Opcode.MONITOREXIT;
+import static javassist.bytecode.Opcode.NEWARRAY;
+import static javassist.bytecode.Opcode.PUTFIELD;
+import static javassist.bytecode.Opcode.PUTSTATIC;
+import static javassist.bytecode.Opcode.SALOAD;
+import static javassist.bytecode.Opcode.SASTORE;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import com.gzoltar.core.AgentConfigs;
 import com.gzoltar.core.instr.InstrumentationConstants;
 import com.gzoltar.core.instr.InstrumentationLevel;
 import com.gzoltar.core.instr.Outcome;
 import com.gzoltar.core.instr.actions.AnonymousClassConstructorFilter;
-import com.gzoltar.core.instr.filter.*;
+import com.gzoltar.core.instr.filter.DuplicateCollectorReferenceFilter;
+import com.gzoltar.core.instr.filter.EmptyMethodFilter;
+import com.gzoltar.core.instr.filter.EnumFilter;
+import com.gzoltar.core.instr.filter.IFilter;
+import com.gzoltar.core.instr.filter.SyntheticFilter;
 import com.gzoltar.core.model.Node;
 import com.gzoltar.core.model.NodeFactory;
 import com.gzoltar.core.runtime.Collector;
@@ -31,16 +76,14 @@ import com.gzoltar.core.util.MD5;
 import javassist.CtBehavior;
 import javassist.CtClass;
 import javassist.CtConstructor;
-import javassist.bytecode.*;
+import javassist.bytecode.Bytecode;
+import javassist.bytecode.CodeAttribute;
+import javassist.bytecode.CodeIterator;
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.MethodInfo;
+import javassist.bytecode.Opcode;
 import javassist.bytecode.analysis.ControlFlow;
 import javassist.bytecode.analysis.ControlFlow.Block;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-
-import static javassist.bytecode.Opcode.*;
 
 public class CoveragePass implements IPass {
 
@@ -203,21 +246,18 @@ public class CoveragePass implements IPass {
         blocks.poll();
       }
 
-
-      // If the previous instruction was a conditional jump, then insert a probe immediately after it to ensure that we can
-      // differentiate between cases where the branch was or was not taken.
-      if(prevInsnWasConditionalJump)
-      {
+      // If the previous instruction was a conditional jump, then insert a probe immediately after
+      // it to ensure that we can differentiate between cases where the branch was or was not taken.
+      if (prevInsnWasConditionalJump) {
         Probe probe;
-        if(curLine != prevLine || fauxJumpProbe == null) {
-          Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine, index);
+        if (curLine != prevLine || fauxJumpProbe == null) {
+          Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine);
           assert node != null;
           node.setFakeProbeForJump(true);
           probe = this.probeGroup.registerProbe(node, ctBehavior);
           assert probe != null;
           fauxJumpProbe = probe;
-        }
-        else{
+        } else {
           probe = fauxJumpProbe;
         }
         if (injectBytecode) {
@@ -231,21 +271,22 @@ public class CoveragePass implements IPass {
         addedExtraProbeThisLine = true;
       }
 
-//      if (prevInsnMightHaveThrownException && !prevInsnWasConditionalJump && !isNewBlock && prevLine==curLine) { //do NOT insert two probes immediately adjacent, ever!
-//        Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine, index);
-//        assert node != null;
-//        node.setFakeProbeForJump(true);
-//        Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
-////        assert probe != null;
-////        if (injectBytecode) {
-////          Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
-////          ci.insert(index, bc.get());
-////          instrSize += bc.length();
-////          instrumented = Outcome.ACCEPT;
-////        } else {
-////          instrumented = Outcome.REJECT;
-////        }
-//      }
+      /*if (prevInsnMightHaveThrownException && !prevInsnWasConditionalJump && !isNewBlock
+          && prevLine == curLine) { // do NOT insert two probes immediately adjacent, ever!
+        Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine);
+        assert node != null;
+        node.setFakeProbeForJump(true);
+        Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
+        assert probe != null;
+        if (injectBytecode) {
+          Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
+          ci.insert(index, bc.get());
+          instrSize += bc.length();
+          instrumented = Outcome.ACCEPT;
+        } else {
+          instrumented = Outcome.REJECT;
+        }
+      }*/
 
       int opcode = ci.byteAt(index) & 0xff;
       if (prevLine != curLine || isNewBlock) {
@@ -253,7 +294,7 @@ public class CoveragePass implements IPass {
         // not been instrumented; 2) or, if it's in a different block
 
         addedExtraProbeThisLine = false;
-        Node node = NodeFactory.createNode(ctClass, ctBehavior, curLine, index);
+        Node node = NodeFactory.createNode(ctClass, ctBehavior, curLine);
         assert node != null;
         Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
         assert probe != null;
@@ -269,9 +310,10 @@ public class CoveragePass implements IPass {
 
         prevLine = curLine;
       }
-      //Is this a conditional jump?
-      prevInsnWasConditionalJump = ((IFEQ <= opcode && opcode <= IF_ACMPNE)
-              || opcode == IFNULL || opcode == IFNONNULL);
+
+      // Is this a conditional jump?
+      prevInsnWasConditionalJump =
+          ((IFEQ <= opcode && opcode <= IF_ACMPNE) || opcode == IFNULL || opcode == IFNONNULL);
       prevInsnMightHaveThrownException = isMightThrowException(opcode, false);
     }
 
@@ -280,16 +322,16 @@ public class CoveragePass implements IPass {
 
   private static boolean isMightThrowException(int opcode, final boolean ignoreArrayStores) {
     switch (opcode) {
-      //division by 0
+      // division by 0
       case IDIV:
       case FDIV:
       case LDIV:
       case DDIV:
-        //NPE
+        // NPE
       case MONITORENTER:
-      case MONITOREXIT: //or illegalmonitor
+      case MONITOREXIT: // or illegalmonitor
         return true;
-      //ArrayIndexOutOfBounds or null pointer
+      // ArrayIndexOutOfBounds or null pointer
       case IALOAD:
       case LALOAD:
       case SALOAD:
@@ -307,9 +349,9 @@ public class CoveragePass implements IPass {
       case CASTORE:
       case AASTORE:
         return !ignoreArrayStores;
-      case CHECKCAST: //incompatible cast
-        //trigger class initialization
-        //    case NEW: //will break powermock :(
+      case CHECKCAST: // incompatible cast
+        // trigger class initialization
+        // case NEW: //will break powermock :(
       case NEWARRAY:
       case GETSTATIC:
       case PUTSTATIC:

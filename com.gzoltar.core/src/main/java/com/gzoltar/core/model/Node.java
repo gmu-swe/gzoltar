@@ -38,8 +38,6 @@ public class Node {
 
   private final Map<String, Node> children = new LinkedHashMap<String, Node>();
 
-  private int insnIndex;
-
   private Map<String, Double> suspiciousnessValues = null;
 
   private boolean isFakeProbeForJump;
@@ -50,9 +48,8 @@ public class Node {
    * @param lineNumber
    * @param type
    */
-  public Node(final String name, final int lineNumber, final NodeType type, final int insnIndex) {
+  public Node(final String name, final int lineNumber, final NodeType type) {
     this(name, lineNumber, type, null);
-    this.insnIndex = insnIndex;
   }
 
   /**
@@ -82,10 +79,6 @@ public class Node {
    */
   public void setName(final String name) {
     this.name = name;
-  }
-
-  public int getInsnIndex() {
-    return insnIndex;
   }
 
   public boolean isFakeProbeForJump() {
@@ -306,7 +299,7 @@ public class Node {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder(this.isLeaf() ? "[probe] " : "");
-    sb.append(this.getNameWithLineNumber());
+    sb.append(this.getNameWithLineNumber() + " isFakeProbeForJump? " + this.isFakeProbeForJump);
 
     if (this.hasSuspiciousnessValues()) {
       sb.append("  [ ");
@@ -330,7 +323,6 @@ public class Node {
     builder.append(this.lineNumber);
     builder.append(this.depth);
     builder.append(this.parent);
-    builder.append(this.insnIndex);
     builder.append(this.isFakeProbeForJump);
     return builder.toHashCode();
   }
@@ -356,7 +348,6 @@ public class Node {
     builder.append(this.lineNumber, node.lineNumber);
     builder.append(this.depth, node.depth);
     builder.append(this.parent, node.parent);
-    builder.append(this.insnIndex, node.insnIndex);
     builder.append(this.isFakeProbeForJump, node.isFakeProbeForJump);
 
     return builder.isEquals();
