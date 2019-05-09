@@ -59,7 +59,7 @@ public class Tree implements Iterable<Node> {
   public void addNode(final Node node) {
   	String nameKey = node.getName();
   	if(node.getNodeType() == NodeType.LINE)
-  	  nameKey+=":"+node.getInsnIndex()+":"+node.isFakeProbeForJump();
+  	  nameKey+=":"+node.isFakeProbeForJump();
     if (!this.nodes.containsKey(nameKey)) {
       this.nodes.put(nameKey, node);
     }
