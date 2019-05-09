@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (C) 2018 GZoltar contributors.
+  Copyright (C) 2019 GZoltar contributors.
 
   This file is part of GZoltar.
 
@@ -43,6 +43,16 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.gzoltar</groupId>
+      <artifactId>com.gzoltar.fl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.gzoltar</groupId>
+      <artifactId>com.gzoltar.report</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>args4j</groupId>
       <artifactId>args4j</artifactId>
       <version>${args4j.version}</version>
@@ -56,11 +66,6 @@
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <version>${testng.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>${commons-io.version}</version>
     </dependency>
   </dependencies>
 
@@ -92,6 +97,18 @@
                 <relocation>
                   <pattern>com.gzoltar.core</pattern>
                   <shadedPattern>com.gzoltar.internal.core</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.gzoltar.fl</pattern>
+                  <shadedPattern>com.gzoltar.internal.fl</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.gzoltar.report</pattern>
+                  <shadedPattern>com.gzoltar.internal.report</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.gzoltar.sfl</pattern>
+                  <shadedPattern>com.gzoltar.internal.sfl</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>javassist</pattern>
