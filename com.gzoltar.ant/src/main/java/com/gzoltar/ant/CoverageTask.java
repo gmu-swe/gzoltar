@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2018 GZoltar contributors.
+ * Copyright (C) 2019 GZoltar contributors.
  * 
  * This file is part of GZoltar.
  * 
@@ -47,6 +47,7 @@ public class CoverageTask extends AbstractCoverageTask implements TaskContainer 
    */
   public CoverageTask() {
     super();
+    this.taskEnhancers.add(new JavaLikeTaskEnhancer("java"));
     this.taskEnhancers.add(new JavaLikeTaskEnhancer("junit"));
     this.taskEnhancers.add(new TestNGTaskEnhancer("testng"));
   }

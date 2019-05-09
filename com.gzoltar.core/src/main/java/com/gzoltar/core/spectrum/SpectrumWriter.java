@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2018 GZoltar contributors.
+ * Copyright (C) 2019 GZoltar contributors.
  * 
  * This file is part of GZoltar.
  * 
@@ -64,9 +64,19 @@ public class SpectrumWriter {
    */
   public void writeSpectrum(final ISpectrum spectrum) throws IOException {
     for (final Transaction transaction : spectrum.getTransactions()) {
-      TransactionSerialize.serialize(this.out, transaction);
+      this.writeTransaction(transaction);
     }
     this.out.close();
+  }
+
+  /**
+   * Serializes a transaction instance into binary streams.
+   * 
+   * @param transaction
+   * @throws IOException
+   */
+  public void writeTransaction(final Transaction transaction) throws IOException {
+    TransactionSerialize.serialize(this.out, transaction);
   }
 
   /**

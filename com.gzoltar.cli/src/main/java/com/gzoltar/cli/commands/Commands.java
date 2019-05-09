@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2018 GZoltar contributors.
+ * Copyright (C) 2019 GZoltar contributors.
  * 
  * This file is part of GZoltar.
  * 
@@ -33,7 +33,8 @@ public final class Commands {
    * @return list of new instances of all available commands
    */
   public static List<Command> get() {
-    return Arrays.asList(new Version(), new ListUnitTests(), new Instrument());
+    return Arrays.asList(new Version(), new ListTestMethods(), new Instrument(),
+        new RunTestMethods(), new FaultLocalizationReport());
   }
 
   /**
