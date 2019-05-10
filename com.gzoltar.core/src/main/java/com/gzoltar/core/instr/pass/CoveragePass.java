@@ -81,6 +81,7 @@ import javassist.bytecode.CodeAttribute;
 import javassist.bytecode.CodeIterator;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.MethodInfo;
+import javassist.bytecode.Mnemonic;
 import javassist.bytecode.Opcode;
 import javassist.bytecode.analysis.ControlFlow;
 import javassist.bytecode.analysis.ControlFlow.Block;
@@ -139,6 +140,13 @@ public class CoveragePass implements IPass {
     // in order to be able to modify it, it has to be defrosted
     ctClass.defrost();
 
+    ConstPool constPool = ctClass.getClassFile().getConstPool();
+    for(int i = 1; i < constPool.getSize(); i++){
+      if(constPool.getTag(i) == ConstPool.CONST_Fieldref && constPool.getFieldrefName(i).equals(InstrumentationConstants.FIELD_NAME)) {
+      	//This class was already instrumented!
+        return Outcome.ACCEPT;
+      }
+    }
     String hash = MD5.calculateHash(originalBytes);
     this.probeGroup = new ProbeGroup(hash, ctClass);
 
@@ -230,7 +238,7 @@ public class CoveragePass implements IPass {
 
     int index = 0, prevLine = -1, curLine = -1, instrSize = 0;
     boolean prevInsnWasConditionalJump = false;
-    boolean prevInsnMightHaveThrownException = false;
+    String prevInsnThatMightHaveThrownException = null;
     Probe fauxJumpProbe = null;
     boolean addedExtraProbeThisLine = false;
     while (ci.hasNext()) {
@@ -239,6 +247,15 @@ public class CoveragePass implements IPass {
 
       if (curLine == -1) {
         continue;
+      }
+
+      int opcode = ci.byteAt(index) & 0xff;
+      if(opcode == GETSTATIC)
+      {
+        int fieldRef = (ci.byteAt(index+1) << 8) + ci.byteAt(index+2);
+        String name = methodInfo.getConstPool().getFieldrefName(fieldRef);
+        if(name.equals(InstrumentationConstants.FIELD_NAME))
+          throw new RuntimeException("Existing gzoltar instrumentation found in class " + ctClass.getName());
       }
 
       boolean isNewBlock = !blocks.isEmpty() && index >= instrSize + blocks.peek();
@@ -251,9 +268,8 @@ public class CoveragePass implements IPass {
       if (prevInsnWasConditionalJump) {
         Probe probe;
         if (curLine != prevLine || fauxJumpProbe == null) {
-          Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine);
+          Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine, "branchFallThrough" + (index - instrSize));
           assert node != null;
-          node.setFakeProbeForJump(true);
           probe = this.probeGroup.registerProbe(node, ctBehavior);
           assert probe != null;
           fauxJumpProbe = probe;
@@ -271,11 +287,9 @@ public class CoveragePass implements IPass {
         addedExtraProbeThisLine = true;
       }
 
-      /*if (prevInsnMightHaveThrownException && !prevInsnWasConditionalJump && !isNewBlock
-          && prevLine == curLine) { // do NOT insert two probes immediately adjacent, ever!
-        Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine);
+      if (prevInsnThatMightHaveThrownException != null){
+        Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine, "postExecution" + (index - instrSize) + "for" + prevInsnThatMightHaveThrownException);
         assert node != null;
-        node.setFakeProbeForJump(true);
         Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
         assert probe != null;
         if (injectBytecode) {
@@ -286,9 +300,9 @@ public class CoveragePass implements IPass {
         } else {
           instrumented = Outcome.REJECT;
         }
-      }*/
+      }
 
-      int opcode = ci.byteAt(index) & 0xff;
+
       if (prevLine != curLine || isNewBlock) {
         // a line is always considered for instrumentation if and only if: 1) it's line number has
         // not been instrumented; 2) or, if it's in a different block
@@ -314,7 +328,13 @@ public class CoveragePass implements IPass {
       // Is this a conditional jump?
       prevInsnWasConditionalJump =
           ((IFEQ <= opcode && opcode <= IF_ACMPNE) || opcode == IFNULL || opcode == IFNONNULL);
-      prevInsnMightHaveThrownException = isMightThrowException(opcode, false);
+      if(isMightThrowException(opcode, false))
+      {
+        prevInsnThatMightHaveThrownException = Mnemonic.OPCODE[opcode];
+      }
+      else{
+        prevInsnThatMightHaveThrownException = null;
+      }
     }
 
     return instrumented;

@@ -112,4 +112,27 @@ public final class NodeFactory {
     tree.addNode(node);
   }
 
+  public static Node createNode(CtClass ctClass, CtBehavior ctBehavior, int lineNumber, String instructionIdentifier) {
+    String packageName = ctClass.getPackageName() == null ? "" : ctClass.getPackageName();
+
+    StringBuilder className = new StringBuilder(packageName);
+    className.append(NodeType.CLASS.getSymbol());
+    className.append(ctClass.getSimpleName());
+
+    StringBuilder methodName = className;
+    methodName.append(NodeType.METHOD.getSymbol());
+    methodName.append(ctBehavior.getName());
+    methodName.append(Descriptor.toString(ctBehavior.getSignature()));
+
+    StringBuilder lineName = methodName;
+    lineName.append(NodeType.LINE.getSymbol());
+    lineName.append(String.valueOf(lineNumber));
+
+    StringBuilder instructionProbeName = lineName;
+    instructionProbeName.append(NodeType.INSTRUCTION.getSymbol());
+    instructionProbeName.append(instructionIdentifier);
+
+
+    return new Node(instructionProbeName.toString(), lineNumber, instructionIdentifier, NodeType.INSTRUCTION);
+  }
 }

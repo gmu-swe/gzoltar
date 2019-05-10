@@ -40,7 +40,7 @@ public class Node {
 
   private Map<String, Double> suspiciousnessValues = null;
 
-  private boolean isFakeProbeForJump;
+  private String instructionIdentifier;
 
   /**
    * 
@@ -65,6 +65,11 @@ public class Node {
     this.setParent(parent);
   }
 
+  public Node(String name, int lineNumber, String instructionIdentifier, NodeType type) {
+    this(name, lineNumber, type);
+    this.instructionIdentifier = instructionIdentifier;
+  }
+
   /**
    * 
    * @return
@@ -81,8 +86,12 @@ public class Node {
     this.name = name;
   }
 
-  public boolean isFakeProbeForJump() {
-    return isFakeProbeForJump;
+  public String getInstructionIdentifier() {
+    return instructionIdentifier;
+  }
+
+  public void setInstructionIdentifier(String instructionIdentifier) {
+    this.instructionIdentifier = instructionIdentifier;
   }
 
   /**
@@ -104,7 +113,7 @@ public class Node {
    */
   public String getNameWithLineNumber() {
     return this.getName()
-        + (this.type != NodeType.LINE ? NodeType.LINE.getSymbol() + this.lineNumber : "");
+        + (this.type != NodeType.LINE && this.type != NodeType.INSTRUCTION ? NodeType.LINE.getSymbol() + this.lineNumber : "");
   }
 
   /**
@@ -137,10 +146,6 @@ public class Node {
    */
   public int getDepth() {
     return this.depth;
-  }
-
-  public void setFakeProbeForJump(boolean fakeProbeForJump) {
-    isFakeProbeForJump = fakeProbeForJump;
   }
 
   /**
@@ -299,7 +304,7 @@ public class Node {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder(this.isLeaf() ? "[probe] " : "");
-    sb.append(this.getNameWithLineNumber() + " isFakeProbeForJump? " + this.isFakeProbeForJump);
+    sb.append(this.getNameWithLineNumber());
 
     if (this.hasSuspiciousnessValues()) {
       sb.append("  [ ");
@@ -323,7 +328,7 @@ public class Node {
     builder.append(this.lineNumber);
     builder.append(this.depth);
     builder.append(this.parent);
-    builder.append(this.isFakeProbeForJump);
+    builder.append(this.instructionIdentifier);
     return builder.toHashCode();
   }
 
@@ -348,7 +353,7 @@ public class Node {
     builder.append(this.lineNumber, node.lineNumber);
     builder.append(this.depth, node.depth);
     builder.append(this.parent, node.parent);
-    builder.append(this.isFakeProbeForJump, node.isFakeProbeForJump);
+    builder.append(this.instructionIdentifier, node.instructionIdentifier);
 
     return builder.isEquals();
   }

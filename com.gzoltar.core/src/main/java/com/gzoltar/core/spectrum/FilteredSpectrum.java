@@ -154,6 +154,11 @@ public class FilteredSpectrum {
         ProbeGroup newProbeGroup = filteredSpectrum.getProbeGroupByHash(hash);
         boolean[] newHitArray = new boolean[newProbeGroup.getNumberOfProbes()];
 
+        if(newProbeGroup.getNumberOfProbes() != probeGroup.getNumberOfProbes())
+        {
+          throw new RuntimeException("Wrong # of probes in " + transaction.getName() + " Expected " + probeGroup.getNumberOfProbes() + " but found " + newProbeGroup.getNumberOfProbes());
+        }
+
         for (Probe probe : probeGroup.getProbes()) {
           Probe newProbe = newProbeGroup.findProbeByNode(probe.getNode());
           if (newProbe == null) {

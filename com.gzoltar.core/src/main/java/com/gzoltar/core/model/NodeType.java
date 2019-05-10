@@ -36,7 +36,12 @@ public enum NodeType {
   /**
    * 
    */
-  LINE(":");
+  LINE(":"),
+
+  /**
+   *
+   */
+  INSTRUCTION("!");
 
   private final String symbol;
 

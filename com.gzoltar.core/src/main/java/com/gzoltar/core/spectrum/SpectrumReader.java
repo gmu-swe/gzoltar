@@ -142,10 +142,14 @@ public class SpectrumReader {
             throw new RuntimeException(e);
           }
 
-          // sanity check
+          // sanity checks
           if (spectrum.getProbeGroupByHash(probeGroupHash) == null) {
             throw new RuntimeException("ProbeGroup '" + probeGroupHash + "' | '" + probeGroupName
                 + "' has not been added to the spectrum instance!");
+          }
+          if(spectrum.getProbeGroupByHash(probeGroupHash).getNumberOfProbes() != hitArray.length) {
+            throw new RuntimeException("ProbeGroup '" + probeGroupHash + "' | '" + probeGroupName
+                + "' has a different number of probes (" + spectrum.getProbeGroupByHash(probeGroupHash).getNumberOfProbes() + ") than recorded (" + hitArray.length + ")!");
           }
         }
 
