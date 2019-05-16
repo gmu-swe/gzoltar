@@ -54,6 +54,7 @@ import static javassist.bytecode.Opcode.PUTSTATIC;
 import static javassist.bytecode.Opcode.SALOAD;
 import static javassist.bytecode.Opcode.SASTORE;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -236,11 +237,10 @@ public class CoveragePass implements IPass {
       e.printStackTrace();
     }
 
-    int index = 0, prevLine = -1, curLine = -1, instrSize = 0;
-    boolean prevInsnWasConditionalJump = false;
+    int index = 0, prevLine = -1, curLine = -1, instrSize = 0, floatingPointerToThisIndex;
+    boolean prevInsnWasJump = false;
     String prevInsnThatMightHaveThrownException = null;
-    Probe fauxJumpProbe = null;
-    boolean addedExtraProbeThisLine = false;
+    HashSet<String> uniqueExceptionsHit = new HashSet<>();
     while (ci.hasNext()) {
       index = ci.next();
       curLine = methodInfo.getLineNumber(index);
@@ -265,36 +265,31 @@ public class CoveragePass implements IPass {
 
       // If the previous instruction was a conditional jump, then insert a probe immediately after
       // it to ensure that we can differentiate between cases where the branch was or was not taken.
-      if (prevInsnWasConditionalJump) {
-        Probe probe;
-        if (curLine != prevLine || fauxJumpProbe == null) {
-          Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine, "branchFallThrough" + (index - instrSize));
-          assert node != null;
-          probe = this.probeGroup.registerProbe(node, ctBehavior);
-          assert probe != null;
-          fauxJumpProbe = probe;
-        } else {
-          probe = fauxJumpProbe;
-        }
-        if (injectBytecode) {
-          Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
-          ci.insert(index, bc.get());
-          instrSize += bc.length();
-          instrumented = Outcome.ACCEPT;
-        } else {
-          instrumented = Outcome.REJECT;
-        }
-        addedExtraProbeThisLine = true;
-      }
-
-      if (prevInsnThatMightHaveThrownException != null){
-        Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine, "postExecution" + (index - instrSize) + "for" + prevInsnThatMightHaveThrownException);
+      if (prevInsnWasJump) {
+        Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine, "branchFallThroughToDefault");
         assert node != null;
         Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
         assert probe != null;
         if (injectBytecode) {
           Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
-          ci.insert(index, bc.get());
+          ci.insert(bc.get());
+          index += bc.length(); //update current index pointer to still go to the right instruction
+          instrSize += bc.length();
+          instrumented = Outcome.ACCEPT;
+        } else {
+          instrumented = Outcome.REJECT;
+        }
+      }
+
+      if (prevInsnThatMightHaveThrownException != null){
+        Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine, "PostFlight" + prevInsnThatMightHaveThrownException); //(index - instrSize));//
+        assert node != null;
+        Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
+        assert probe != null;
+        if (injectBytecode) {
+          Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
+          ci.insert(bc.get());
+          index += bc.length(); //update current index pointer to still go to the right instruction
           instrSize += bc.length();
           instrumented = Outcome.ACCEPT;
         } else {
@@ -307,7 +302,6 @@ public class CoveragePass implements IPass {
         // a line is always considered for instrumentation if and only if: 1) it's line number has
         // not been instrumented; 2) or, if it's in a different block
 
-        addedExtraProbeThisLine = false;
         Node node = NodeFactory.createNode(ctClass, ctBehavior, curLine);
         assert node != null;
         Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
@@ -315,7 +309,8 @@ public class CoveragePass implements IPass {
 
         if (injectBytecode) {
           Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
-          ci.insert(index, bc.get());
+          ci.insert(bc.get());
+          index += bc.length(); //update current index pointer to still go to the right instruction
           instrSize += bc.length();
           instrumented = Outcome.ACCEPT;
         } else {
@@ -326,11 +321,28 @@ public class CoveragePass implements IPass {
       }
 
       // Is this a conditional jump?
-      prevInsnWasConditionalJump =
-          ((IFEQ <= opcode && opcode <= IF_ACMPNE) || opcode == IFNULL || opcode == IFNONNULL);
-      if(isMightThrowException(opcode, false))
+      prevInsnWasJump = ((IFEQ <= opcode && opcode <= IF_ACMPNE) || opcode == IFNULL || opcode == IFNONNULL);
+
+      if (isMightThrowException(opcode, false))
       {
-        prevInsnThatMightHaveThrownException = Mnemonic.OPCODE[opcode];
+        prevInsnThatMightHaveThrownException = "insn" + (index - instrSize) + "for" + Mnemonic.OPCODE[opcode];
+        //Add a pre-flight probe. We will require that the pre-flight probe was covered in order to score the postflight probe
+        Node node = NodeFactory.createNode(ctClass, ctBehavior, curLine, "PreFlight" +prevInsnThatMightHaveThrownException);
+        assert node != null;
+        if(this.probeGroup.findProbeByNode(node) != null)
+          throw new RuntimeException("Duplicate probe that should be unique: " + node.toString());
+        Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
+        assert probe != null;
+        if (injectBytecode) {
+          Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
+          ci.insert(bc.get());
+          index += bc.length(); //update current index pointer to still go to the right instruction
+          instrSize += bc.length();
+          instrumented = Outcome.ACCEPT;
+        } else {
+          instrumented = Outcome.REJECT;
+        }
+
       }
       else{
         prevInsnThatMightHaveThrownException = null;
