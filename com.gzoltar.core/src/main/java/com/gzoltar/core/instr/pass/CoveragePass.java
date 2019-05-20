@@ -86,6 +86,7 @@ import javassist.bytecode.Mnemonic;
 import javassist.bytecode.Opcode;
 import javassist.bytecode.analysis.ControlFlow;
 import javassist.bytecode.analysis.ControlFlow.Block;
+import org.objectweb.asm.Opcodes;
 
 public class CoveragePass implements IPass {
 
@@ -404,9 +405,13 @@ public class CoveragePass implements IPass {
     Bytecode b = new Bytecode(constPool);
     b.addGetstatic(ctClass, InstrumentationConstants.FIELD_NAME,
         InstrumentationConstants.FIELD_DESC_BYTECODE);
+    b.addOpcode(Opcode.DUP);
     b.addIconst(probe.getArrayIndex());
+    b.addOpcode(Opcode.DUP_X1);
+    b.addOpcode(Opcode.IALOAD);
     b.addOpcode(Opcode.ICONST_1);
-    b.addOpcode(Opcode.BASTORE);
+    b.addOpcode(Opcode.IADD);
+    b.addOpcode(Opcode.IASTORE);
 
     return b;
   }

@@ -97,13 +97,16 @@ public class SpectrumWriter {
         out.writeByte(SerialisationIdentifiers.BLOCK_TRANSACTION);
         out.writeUTF(transaction.getName());
 
-        Map<String, Pair<String, boolean[]>> activity = transaction.getActivity();
+        Map<String, Pair<String, int[]>> activity = transaction.getActivity();
         out.writeVarInt(activity.size());
 
-        for (Entry<String, Pair<String, boolean[]>> entry : activity.entrySet()) {
+        for (Entry<String, Pair<String, int[]>> entry : activity.entrySet()) {
           out.writeUTF(entry.getKey()); // hash
           out.writeUTF(entry.getValue().getLeft()); // name
-          out.writeBooleanArray(entry.getValue().getRight()); // hitArray
+          int[] ar = entry.getValue().getRight();
+          out.writeVarInt(ar.length);
+          for(int i = 0 ; i< ar.length; i++)
+            out.writeVarInt(ar[i]);
         }
 
         out.writeUTF(transaction.getTransactionOutcome().name());

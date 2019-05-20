@@ -122,14 +122,14 @@ public class Spectrum implements ISpectrum {
   public List<Node> getHitNodes(Transaction transaction) {
     List<Node> nodes = new ArrayList<Node>();
 
-    for (Entry<String, Pair<String, boolean[]>> activity : transaction.getActivity().entrySet()) {
+    for (Entry<String, Pair<String, int[]>> activity : transaction.getActivity().entrySet()) {
       String probeGroupHash = activity.getKey();
       ProbeGroup probeGroup = this.probeGroups.get(probeGroupHash);
-      boolean[] hitArray = activity.getValue().getRight();
+      int[] hitArray = activity.getValue().getRight();
       assert hitArray.length == probeGroup.getNumberOfProbes();
 
       for (Probe probe : probeGroup.getProbes()) {
-        if (hitArray[probe.getArrayIndex()]) {
+        if (hitArray[probe.getArrayIndex()] > 0) {
           nodes.add(probe.getNode());
         }
       }

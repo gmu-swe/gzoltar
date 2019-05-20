@@ -37,7 +37,7 @@ public class Collector {
   private final Spectrum spectrum;
 
   /** <ProbeGroup hash, hitArray> */
-  private final Map<String, Pair<String, boolean[]>> hitArrays;
+  private final Map<String, Pair<String, int[]>> hitArrays;
 
   /**
    * 
@@ -68,7 +68,7 @@ public class Collector {
   private Collector() {
     this.listener = new MultiEventListener();
     this.spectrum = new Spectrum();
-    this.hitArrays = new LinkedHashMap<String, Pair<String, boolean[]>>();
+    this.hitArrays = new LinkedHashMap<String, Pair<String, int[]>>();
   }
 
   /**
@@ -135,27 +135,27 @@ public class Collector {
     }
 
     // collect coverage
-    Map<String, Pair<String, boolean[]>> activity =
-        new LinkedHashMap<String, Pair<String, boolean[]>>();
-    for (Entry<String, Pair<String, boolean[]>> entry : this.hitArrays.entrySet()) {
+    Map<String, Pair<String, int[]>> activity =
+        new LinkedHashMap<String, Pair<String, int[]>>();
+    for (Entry<String, Pair<String, int[]>> entry : this.hitArrays.entrySet()) {
       String hash = entry.getKey();
-      boolean[] hitArray = entry.getValue().getRight();
+      int[] hitArray = entry.getValue().getRight();
 
-      if (!ArrayUtils.containsValue(hitArray, true)) {
+      if (!ArrayUtils.containsNonZeroValue(hitArray)) {
         // although the class has been loaded and instrumented, no line has been covered
         activity.put(hash,
-            new ImmutablePair<String, boolean[]>(entry.getValue().getLeft(), hitArray));
+            new ImmutablePair<String, int[]>(entry.getValue().getLeft(), hitArray));
         continue;
       }
 
-      boolean[] cloneHitArray = new boolean[hitArray.length];
+      int[] cloneHitArray = new int[hitArray.length];
       System.arraycopy(hitArray, 0, cloneHitArray, 0, hitArray.length);
       activity.put(hash,
-          new ImmutablePair<String, boolean[]>(entry.getValue().getLeft(), cloneHitArray));
+          new ImmutablePair<String, int[]>(entry.getValue().getLeft(), cloneHitArray));
 
       // reset probes
       for (int i = 0; i < hitArray.length; i++) {
-        hitArray[i] = false;
+        hitArray[i] = 0;
       }
     }
 
@@ -190,7 +190,7 @@ public class Collector {
 
     if (!this.hitArrays.containsKey(hash)) {
       this.hitArrays.put(hash,
-          new ImmutablePair<String, boolean[]>(probeGroupName, new boolean[numberOfProbes]));
+          new ImmutablePair<String, int[]>(probeGroupName, new int[numberOfProbes]));
     }
 
     args[0] = this.hitArrays.get(hash).getRight();

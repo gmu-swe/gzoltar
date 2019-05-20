@@ -45,7 +45,6 @@ public class FilteredSpectrum {
 
   /**
    * 
-   * @param source
    */
   public FilteredSpectrum(AgentConfigs configs) {
 
@@ -149,10 +148,10 @@ public class FilteredSpectrum {
         // shrink hitArray
 
         ProbeGroup probeGroup = source.getProbeGroupByHash(hash);
-        boolean[] hitArray = transaction.getHitArrayByProbeGroupHash(hash);
+        int[] hitArray = transaction.getHitArrayByProbeGroupHash(hash);
 
         ProbeGroup newProbeGroup = filteredSpectrum.getProbeGroupByHash(hash);
-        boolean[] newHitArray = new boolean[newProbeGroup.getNumberOfProbes()];
+        int[] newHitArray = new int[newProbeGroup.getNumberOfProbes()];
 
         if(newProbeGroup.getNumberOfProbes() != probeGroup.getNumberOfProbes())
         {
@@ -169,9 +168,9 @@ public class FilteredSpectrum {
           newHitArray[newProbe.getArrayIndex()] = hitArray[probe.getArrayIndex()];
         }
 
-        if (ArrayUtils.containsValue(newHitArray, true)) {
+        if (ArrayUtils.containsNonZeroValue(newHitArray)) {
           newTransaction.addActivity(hash,
-              new ImmutablePair<String, boolean[]>(newProbeGroup.getName(), newHitArray));
+              new ImmutablePair<String, int[]>(newProbeGroup.getName(), newHitArray));
         }
       }
 

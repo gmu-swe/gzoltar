@@ -44,9 +44,9 @@ public final class InstrumentationConstants {
 
   public static final String FIELD_INIT_VALUE = "null";
 
-  public static final String FIELD_DESC_BYTECODE = "[Z";
+  public static final String FIELD_DESC_BYTECODE = "[I";
 
-  public static final String FIELD_DESC_HUMAN = "boolean[] ";
+  public static final String FIELD_DESC_HUMAN = "int[] ";
 
   public static final int FIELD_ACC =
       AccessFlag.PRIVATE | AccessFlag.STATIC | AccessFlag.SYNTHETIC | AccessFlag.TRANSIENT;

@@ -23,16 +23,37 @@ public final class ArrayUtils {
    * 
    * @param arr boolean array
    * @param value boolean value
-   * @return <code>true</code> if the boolean array contains the boolean value, <code>false</code>
+   * @return <code>true</code> if the boolean array contains the int value, <code>false</code>
    *         otherwise.
    */
-  public static boolean containsValue(boolean[] arr, boolean value) {
+  public static boolean containsValue(int[] arr, int value) {
     if (arr == null) {
       return false;
     }
 
     for (int i = 0; i < arr.length; i++) {
       if (arr[i] == value) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Checks whether a boolean array contains a non-zero int value.
+   *
+   * @param arr boolean array
+   * @return <code>true</code> if the boolean array contains a non-zero int value, <code>false</code>
+   *         otherwise.
+   */
+  public static boolean containsNonZeroValue(int[] arr) {
+    if (arr == null) {
+      return false;
+    }
+
+    for (int i = 0; i < arr.length; i++) {
+      if (arr[i] > 0) {
         return true;
       }
     }

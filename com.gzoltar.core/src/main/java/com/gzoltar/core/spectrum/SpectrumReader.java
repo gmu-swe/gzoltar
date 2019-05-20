@@ -21,6 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import com.gzoltar.core.model.Node;
+import com.gzoltar.core.model.NodeFactory;
+import com.gzoltar.core.runtime.Probe;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jacoco.core.internal.data.CompactDataInput;
@@ -125,12 +129,15 @@ public class SpectrumReader {
     public Transaction deserialize() throws IOException, CloneNotSupportedException {
       String transactionName = in.readUTF();
 
-      Map<String, Pair<String, boolean[]>> activity = new LinkedHashMap<String, Pair<String, boolean[]>>();
+      Map<String, Pair<String, int[]>> activity = new LinkedHashMap<String, Pair<String, int[]>>();
       int numberActivities = in.readVarInt();
       while (numberActivities > 0) {
         String probeGroupHash = in.readUTF();
         String probeGroupName = in.readUTF();
-        boolean[] hitArray = in.readBooleanArray();
+        int hitArrayLength = in.readVarInt();
+        int[] hitArray = new int[hitArrayLength];
+        for(int i = 0; i < hitArrayLength; i++)
+          hitArray[i] = in.readVarInt();
 
         // instrument probeGroup (in case it has been not been instrumented)
         if (spectrum.getProbeGroupByHash(probeGroupHash) == null) {
@@ -153,7 +160,7 @@ public class SpectrumReader {
           }
         }
 
-        activity.put(probeGroupHash, new ImmutablePair<String, boolean[]>(probeGroupName, hitArray));
+        activity.put(probeGroupHash, new ImmutablePair<String, int[]>(probeGroupName, hitArray));
         numberActivities--;
       }
 
