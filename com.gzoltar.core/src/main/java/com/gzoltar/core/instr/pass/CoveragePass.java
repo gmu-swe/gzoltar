@@ -16,6 +16,40 @@
  */
 package com.gzoltar.core.instr.pass;
 
+import com.gzoltar.core.AgentConfigs;
+import com.gzoltar.core.instr.InstrumentationConstants;
+import com.gzoltar.core.instr.InstrumentationLevel;
+import com.gzoltar.core.instr.Outcome;
+import com.gzoltar.core.instr.actions.AnonymousClassConstructorFilter;
+import com.gzoltar.core.instr.filter.DuplicateCollectorReferenceFilter;
+import com.gzoltar.core.instr.filter.EmptyMethodFilter;
+import com.gzoltar.core.instr.filter.EnumFilter;
+import com.gzoltar.core.instr.filter.IFilter;
+import com.gzoltar.core.instr.filter.SyntheticFilter;
+import com.gzoltar.core.model.Node;
+import com.gzoltar.core.model.NodeFactory;
+import com.gzoltar.core.runtime.Collector;
+import com.gzoltar.core.runtime.Probe;
+import com.gzoltar.core.runtime.ProbeGroup;
+import com.gzoltar.core.util.MD5;
+import javassist.CtBehavior;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.bytecode.Bytecode;
+import javassist.bytecode.CodeAttribute;
+import javassist.bytecode.CodeIterator;
+import javassist.bytecode.ConstPool;
+import javassist.bytecode.MethodInfo;
+import javassist.bytecode.Mnemonic;
+import javassist.bytecode.Opcode;
+import javassist.bytecode.analysis.ControlFlow;
+import javassist.bytecode.analysis.ControlFlow.Block;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
 import static javassist.bytecode.Opcode.AALOAD;
 import static javassist.bytecode.Opcode.AASTORE;
 import static javassist.bytecode.Opcode.BALOAD;
@@ -53,40 +87,6 @@ import static javassist.bytecode.Opcode.PUTFIELD;
 import static javassist.bytecode.Opcode.PUTSTATIC;
 import static javassist.bytecode.Opcode.SALOAD;
 import static javassist.bytecode.Opcode.SASTORE;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import com.gzoltar.core.AgentConfigs;
-import com.gzoltar.core.instr.InstrumentationConstants;
-import com.gzoltar.core.instr.InstrumentationLevel;
-import com.gzoltar.core.instr.Outcome;
-import com.gzoltar.core.instr.actions.AnonymousClassConstructorFilter;
-import com.gzoltar.core.instr.filter.DuplicateCollectorReferenceFilter;
-import com.gzoltar.core.instr.filter.EmptyMethodFilter;
-import com.gzoltar.core.instr.filter.EnumFilter;
-import com.gzoltar.core.instr.filter.IFilter;
-import com.gzoltar.core.instr.filter.SyntheticFilter;
-import com.gzoltar.core.model.Node;
-import com.gzoltar.core.model.NodeFactory;
-import com.gzoltar.core.runtime.Collector;
-import com.gzoltar.core.runtime.Probe;
-import com.gzoltar.core.runtime.ProbeGroup;
-import com.gzoltar.core.util.MD5;
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.CtConstructor;
-import javassist.bytecode.Bytecode;
-import javassist.bytecode.CodeAttribute;
-import javassist.bytecode.CodeIterator;
-import javassist.bytecode.ConstPool;
-import javassist.bytecode.MethodInfo;
-import javassist.bytecode.Mnemonic;
-import javassist.bytecode.Opcode;
-import javassist.bytecode.analysis.ControlFlow;
-import javassist.bytecode.analysis.ControlFlow.Block;
-import org.objectweb.asm.Opcodes;
 
 public class CoveragePass implements IPass {
 
@@ -238,10 +238,11 @@ public class CoveragePass implements IPass {
       e.printStackTrace();
     }
 
+
+    ci = ca.iterator();
     int index = 0, prevLine = -1, curLine = -1, instrSize = 0, floatingPointerToThisIndex;
     boolean prevInsnWasJump = false;
     String prevInsnThatMightHaveThrownException = null;
-    HashSet<String> uniqueExceptionsHit = new HashSet<>();
     while (ci.hasNext()) {
       index = ci.next();
       curLine = methodInfo.getLineNumber(index);
@@ -262,6 +263,34 @@ public class CoveragePass implements IPass {
       boolean isNewBlock = !blocks.isEmpty() && index >= instrSize + blocks.peek();
       if (isNewBlock) {
         blocks.poll();
+      }
+      switch(opcode){
+          case Opcode.IFEQ:
+          case Opcode.IFNE:
+          case Opcode.IFLE:
+          case Opcode.IFGE:
+          case Opcode.IFLT:
+          case Opcode.IFGT:
+          case Opcode.IF_ACMPEQ:
+          case Opcode.IF_ACMPNE:
+          case Opcode.IF_ICMPEQ:
+          case Opcode.IF_ICMPNE:
+          case Opcode.IF_ICMPLE:
+          case Opcode.IF_ICMPLT:
+          case Opcode.IF_ICMPGT:
+          case Opcode.IF_ICMPGE:
+          case IFNONNULL:
+          case IFNULL:
+            //it is a jump...
+            int offset = (ci.byteAt(index + 1) << 8) | (ci.byteAt(index + 2) & 0xff);
+            int target = index + offset;
+            //TODO: change the target of the jump to go to a dummy place and insert probes in both cases.
+            /*TODO: need to find out how to adjust target. Assume that when we add the new instructions
+            it will do nothing? That seems to be the case. But the existing targets are correct?*/
+            break;
+          case Opcode.TABLESWITCH:
+          case Opcode.LOOKUPSWITCH:
+            break;
       }
 
       // If the previous instruction was a conditional jump, then insert a probe immediately after
@@ -309,7 +338,7 @@ public class CoveragePass implements IPass {
         assert probe != null;
 
         if (injectBytecode) {
-          Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
+          Bytecode bc = this.getBinaryInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
           ci.insert(bc.get());
           index += bc.length(); //update current index pointer to still go to the right instruction
           instrSize += bc.length();
@@ -411,6 +440,17 @@ public class CoveragePass implements IPass {
     b.addOpcode(Opcode.IALOAD);
     b.addOpcode(Opcode.ICONST_1);
     b.addOpcode(Opcode.IADD);
+    b.addOpcode(Opcode.IASTORE);
+
+    return b;
+  }
+
+  private Bytecode getBinaryInstrumentationCode(CtClass ctClass, Probe probe, ConstPool constPool) {
+    Bytecode b = new Bytecode(constPool);
+    b.addGetstatic(ctClass, InstrumentationConstants.FIELD_NAME,
+            InstrumentationConstants.FIELD_DESC_BYTECODE);
+    b.addIconst(probe.getArrayIndex());
+    b.addOpcode(Opcode.ICONST_1);
     b.addOpcode(Opcode.IASTORE);
 
     return b;
