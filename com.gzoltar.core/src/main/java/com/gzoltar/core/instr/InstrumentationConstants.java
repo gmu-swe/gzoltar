@@ -17,6 +17,7 @@
 package com.gzoltar.core.instr;
 
 import javassist.bytecode.AccessFlag;
+import org.objectweb.asm.Opcodes;
 
 /**
  * Constants for byte code instrumentation.
@@ -63,9 +64,11 @@ public final class InstrumentationConstants {
   public static final String INIT_METHOD_DESC_HUMAN = "void ";
 
   public static final int INIT_METHOD_ACC =
-      AccessFlag.PRIVATE | AccessFlag.STATIC | AccessFlag.SYNTHETIC;
+      Opcodes.ACC_PRIVATE | Opcodes.ACC_STATIC | Opcodes.ACC_SYNTHETIC;
 
-  // TODO we may need extra constants for the init method of Java-8 interfaces
+  public static final int ASM_VERSION = Opcodes.ASM6;
+
+	// TODO we may need extra constants for the init method of Java-8 interfaces
 
   private InstrumentationConstants() {
     // NO-OP

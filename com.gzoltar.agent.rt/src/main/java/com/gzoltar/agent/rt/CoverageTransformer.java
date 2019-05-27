@@ -97,7 +97,7 @@ public class CoverageTransformer implements ClassFileTransformer {
         return null;
       }
 
-      return this.instrumenter.instrument(cc);
+      return this.instrumenter.instrument(classfileBuffer);
     } catch (Exception e) {
       e.printStackTrace();
       return null;

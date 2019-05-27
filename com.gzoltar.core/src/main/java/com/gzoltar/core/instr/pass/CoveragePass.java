@@ -150,7 +150,7 @@ public class CoveragePass implements IPass {
       }
     }
     String hash = MD5.calculateHash(originalBytes);
-    this.probeGroup = new ProbeGroup(hash, ctClass);
+//    this.probeGroup = new ProbeGroup(hash, ctClass);
 
     for (CtBehavior ctBehavior : ctClass.getDeclaredBehaviors()) {
       boolean behaviorInstrumented =
@@ -242,113 +242,113 @@ public class CoveragePass implements IPass {
     boolean prevInsnWasJump = false;
     String prevInsnThatMightHaveThrownException = null;
     HashSet<String> uniqueExceptionsHit = new HashSet<>();
-    while (ci.hasNext()) {
-      index = ci.next();
-      curLine = methodInfo.getLineNumber(index);
-
-      if (curLine == -1) {
-        continue;
-      }
-
-      int opcode = ci.byteAt(index) & 0xff;
-      if(opcode == GETSTATIC)
-      {
-        int fieldRef = (ci.byteAt(index+1) << 8) + ci.byteAt(index+2);
-        String name = methodInfo.getConstPool().getFieldrefName(fieldRef);
-        if(name.equals(InstrumentationConstants.FIELD_NAME))
-          throw new RuntimeException("Existing gzoltar instrumentation found in class " + ctClass.getName());
-      }
-
-      boolean isNewBlock = !blocks.isEmpty() && index >= instrSize + blocks.peek();
-      if (isNewBlock) {
-        blocks.poll();
-      }
-
-      // If the previous instruction was a conditional jump, then insert a probe immediately after
-      // it to ensure that we can differentiate between cases where the branch was or was not taken.
-      if (prevInsnWasJump) {
-        Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine, "branchFallThroughToDefault");
-        assert node != null;
-        Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
-        assert probe != null;
-        if (injectBytecode) {
-          Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
-          ci.insert(bc.get());
-          index += bc.length(); //update current index pointer to still go to the right instruction
-          instrSize += bc.length();
-          instrumented = Outcome.ACCEPT;
-        } else {
-          instrumented = Outcome.REJECT;
-        }
-      }
-
-      if (prevInsnThatMightHaveThrownException != null){
-        Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine, "PostFlight" + prevInsnThatMightHaveThrownException); //(index - instrSize));//
-        assert node != null;
-        Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
-        assert probe != null;
-        if (injectBytecode) {
-          Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
-          ci.insert(bc.get());
-          index += bc.length(); //update current index pointer to still go to the right instruction
-          instrSize += bc.length();
-          instrumented = Outcome.ACCEPT;
-        } else {
-          instrumented = Outcome.REJECT;
-        }
-      }
-
-
-      if (prevLine != curLine || isNewBlock) {
-        // a line is always considered for instrumentation if and only if: 1) it's line number has
-        // not been instrumented; 2) or, if it's in a different block
-
-        Node node = NodeFactory.createNode(ctClass, ctBehavior, curLine);
-        assert node != null;
-        Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
-        assert probe != null;
-
-        if (injectBytecode) {
-          Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
-          ci.insert(bc.get());
-          index += bc.length(); //update current index pointer to still go to the right instruction
-          instrSize += bc.length();
-          instrumented = Outcome.ACCEPT;
-        } else {
-          instrumented = Outcome.REJECT;
-        }
-
-        prevLine = curLine;
-      }
-
-      // Is this a conditional jump?
-      prevInsnWasJump = ((IFEQ <= opcode && opcode <= IF_ACMPNE) || opcode == IFNULL || opcode == IFNONNULL);
-
-      if (isMightThrowException(opcode, false))
-      {
-        prevInsnThatMightHaveThrownException = "insn" + (index - instrSize) + "for" + Mnemonic.OPCODE[opcode];
-        //Add a pre-flight probe. We will require that the pre-flight probe was covered in order to score the postflight probe
-        Node node = NodeFactory.createNode(ctClass, ctBehavior, curLine, "PreFlight" +prevInsnThatMightHaveThrownException);
-        assert node != null;
-        if(this.probeGroup.findProbeByNode(node) != null)
-          throw new RuntimeException("Duplicate probe that should be unique: " + node.toString());
-        Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
-        assert probe != null;
-        if (injectBytecode) {
-          Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
-          ci.insert(bc.get());
-          index += bc.length(); //update current index pointer to still go to the right instruction
-          instrSize += bc.length();
-          instrumented = Outcome.ACCEPT;
-        } else {
-          instrumented = Outcome.REJECT;
-        }
-
-      }
-      else{
-        prevInsnThatMightHaveThrownException = null;
-      }
-    }
+//    while (ci.hasNext()) {
+//      index = ci.next();
+//      curLine = methodInfo.getLineNumber(index);
+//
+//      if (curLine == -1) {
+//        continue;
+//      }
+//
+//      int opcode = ci.byteAt(index) & 0xff;
+//      if(opcode == GETSTATIC)
+//      {
+//        int fieldRef = (ci.byteAt(index+1) << 8) + ci.byteAt(index+2);
+//        String name = methodInfo.getConstPool().getFieldrefName(fieldRef);
+//        if(name.equals(InstrumentationConstants.FIELD_NAME))
+//          throw new RuntimeException("Existing gzoltar instrumentation found in class " + ctClass.getName());
+//      }
+//
+//      boolean isNewBlock = !blocks.isEmpty() && index >= instrSize + blocks.peek();
+//      if (isNewBlock) {
+//        blocks.poll();
+//      }
+//
+//      // If the previous instruction was a conditional jump, then insert a probe immediately after
+//      // it to ensure that we can differentiate between cases where the branch was or was not taken.
+//      if (prevInsnWasJump) {
+//        Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine, "branchFallThroughToDefault");
+//        assert node != null;
+//        Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
+//        assert probe != null;
+//        if (injectBytecode) {
+//          Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
+//          ci.insert(bc.get());
+//          index += bc.length(); //update current index pointer to still go to the right instruction
+//          instrSize += bc.length();
+//          instrumented = Outcome.ACCEPT;
+//        } else {
+//          instrumented = Outcome.REJECT;
+//        }
+//      }
+//
+//      if (prevInsnThatMightHaveThrownException != null){
+//        Node node = NodeFactory.createNode(ctClass, ctBehavior, prevLine, "PostFlight" + prevInsnThatMightHaveThrownException); //(index - instrSize));//
+//        assert node != null;
+//        Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
+//        assert probe != null;
+//        if (injectBytecode) {
+//          Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
+//          ci.insert(bc.get());
+//          index += bc.length(); //update current index pointer to still go to the right instruction
+//          instrSize += bc.length();
+//          instrumented = Outcome.ACCEPT;
+//        } else {
+//          instrumented = Outcome.REJECT;
+//        }
+//      }
+//
+//
+//      if (prevLine != curLine || isNewBlock) {
+//        // a line is always considered for instrumentation if and only if: 1) it's line number has
+//        // not been instrumented; 2) or, if it's in a different block
+//
+//        Node node = NodeFactory.createNode(ctClass, ctBehavior, curLine);
+//        assert node != null;
+//        Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
+//        assert probe != null;
+//
+//        if (injectBytecode) {
+//          Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
+//          ci.insert(bc.get());
+//          index += bc.length(); //update current index pointer to still go to the right instruction
+//          instrSize += bc.length();
+//          instrumented = Outcome.ACCEPT;
+//        } else {
+//          instrumented = Outcome.REJECT;
+//        }
+//
+//        prevLine = curLine;
+//      }
+//
+//      // Is this a conditional jump?
+//      prevInsnWasJump = ((IFEQ <= opcode && opcode <= IF_ACMPNE) || opcode == IFNULL || opcode == IFNONNULL);
+//
+//      if (isMightThrowException(opcode, false))
+//      {
+//        prevInsnThatMightHaveThrownException = "insn" + (index - instrSize) + "for" + Mnemonic.OPCODE[opcode];
+//        //Add a pre-flight probe. We will require that the pre-flight probe was covered in order to score the postflight probe
+//        Node node = NodeFactory.createNode(ctClass, ctBehavior, curLine, "PreFlight" +prevInsnThatMightHaveThrownException);
+//        assert node != null;
+//        if(this.probeGroup.findProbeByNode(node) != null)
+//          throw new RuntimeException("Duplicate probe that should be unique: " + node.toString());
+//        Probe probe = this.probeGroup.registerProbe(node, ctBehavior);
+//        assert probe != null;
+//        if (injectBytecode) {
+//          Bytecode bc = this.getInstrumentationCode(ctClass, probe, methodInfo.getConstPool());
+//          ci.insert(bc.get());
+//          index += bc.length(); //update current index pointer to still go to the right instruction
+//          instrSize += bc.length();
+//          instrumented = Outcome.ACCEPT;
+//        } else {
+//          instrumented = Outcome.REJECT;
+//        }
+//
+//      }
+//      else{
+//        prevInsnThatMightHaveThrownException = null;
+//      }
+//    }
 
     return instrumented;
   }

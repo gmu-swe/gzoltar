@@ -268,10 +268,6 @@
           <executions>
             <execution>
               <id>check-license-header</id>
-              <phase>validate</phase>
-              <goals>
-                <goal>run</goal>
-              </goals>
               <configuration>
                 <target>
                   <fileset dir="${project.basedir}" includes="**/*.java,**/*.xml,**/*.js,**/*.html" excludes=".git/**,target/**,.idea/**,.style/**" id="missinglicense.fileset">

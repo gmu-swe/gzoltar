@@ -19,7 +19,10 @@ package com.gzoltar.core.instr.pass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+
+import com.gzoltar.core.instr.Instrumenter;
 import org.gzoltar.examples.AbstractClass;
 import org.gzoltar.examples.AnonymousClass;
 import org.gzoltar.examples.DeprecatedAnnotation;
@@ -59,9 +62,9 @@ public class TestLineInstrumentation {
 
     Collector.instance().addListener(new EmptyEventListener());
 
-    CoveragePass instrumentationPass = new CoveragePass(configs);
+    Instrumenter instr = new Instrumenter(configs);
     for (String classUnderTest : classesUnderTest) {
-      instrumentationPass.transform(pool.get(classUnderTest));
+    	instr.instrument(pool.get(classUnderTest));
     }
 
     ISpectrum spectrum = Collector.instance().getSpectrum();
@@ -72,11 +75,12 @@ public class TestLineInstrumentation {
     }
 
     List<Node> leafs = spectrum.getNodes();
-    assertEquals(lineNumbers.size(), leafs.size());
+    HashSet<Integer> linesFromSpectrum = new HashSet<>();
+    for(Node each : leafs)
+      linesFromSpectrum.add(each.getLineNumber());
 
-    for (int i = 0; i < lineNumbers.size(); i++) {
-      assertTrue(lineNumbers.get(i) == leafs.get(i).getLineNumber());
-    }
+    assertEquals(lineNumbers.size(), leafs.size());
+    assertTrue(linesFromSpectrum.containsAll(lineNumbers));
 
   }
 

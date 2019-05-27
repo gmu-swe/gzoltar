@@ -135,4 +135,65 @@ public final class NodeFactory {
 
     return new Node(instructionProbeName.toString(), lineNumber, instructionIdentifier, NodeType.INSTRUCTION);
   }
+
+  public static Node createNode(String className, String methodName, String methodDesc, int lineNumber, String instructionIdentifier) {
+    String packageName;
+    if (className.indexOf('/') > 0)
+      packageName = className.substring(0, className.lastIndexOf('/'));
+    else
+      packageName = "";
+
+    packageName = packageName.replace('/','.');
+
+    StringBuilder _className = new StringBuilder(packageName);
+    _className.append(NodeType.CLASS.getSymbol());
+    if (className.indexOf('/') > 0)
+      _className.append(className.substring(className.lastIndexOf('/') + 1));
+    else
+      _className.append(className);
+
+    StringBuilder _methodName = _className;
+    _methodName.append(NodeType.METHOD.getSymbol());
+    _methodName.append(methodName);
+    _methodName.append(methodDesc);
+
+    StringBuilder _lineName = _methodName;
+    _lineName.append(NodeType.LINE.getSymbol());
+    _lineName.append(String.valueOf(lineNumber));
+
+    StringBuilder instructionProbeName = _lineName;
+    instructionProbeName.append(NodeType.INSTRUCTION.getSymbol());
+    instructionProbeName.append(instructionIdentifier);
+
+
+    return new Node(instructionProbeName.toString(), lineNumber, instructionIdentifier, NodeType.INSTRUCTION);
+  }
+
+  public static Node createNode(String className, String methodName, String methodDesc, int lineNumber) {
+    String packageName;
+    if (className.indexOf('/') > 0)
+      packageName = className.substring(0, className.lastIndexOf('/'));
+    else
+      packageName = "";
+
+    packageName = packageName.replace('/','.');
+
+    StringBuilder _className = new StringBuilder(packageName);
+    _className.append(NodeType.CLASS.getSymbol());
+    if (className.indexOf('/') > 0)
+      _className.append(className.substring(className.lastIndexOf('/') + 1));
+    else
+      _className.append(className);
+
+    StringBuilder _methodName = _className;
+    _methodName.append(NodeType.METHOD.getSymbol());
+    _methodName.append(methodName);
+    _methodName.append(methodDesc);
+
+    StringBuilder _lineName = _methodName;
+    _lineName.append(NodeType.LINE.getSymbol());
+    _lineName.append(String.valueOf(lineNumber));
+
+    return new Node(_lineName.toString(), lineNumber, NodeType.LINE);
+  }
 }

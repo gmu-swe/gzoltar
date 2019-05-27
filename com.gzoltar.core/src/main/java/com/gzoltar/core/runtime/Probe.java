@@ -27,7 +27,8 @@ public final class Probe {
 
   private final Node node;
 
-  private final CtBehavior ctBehavior;
+  private final String methodName;
+  private final String methodDesc;
 
   /**
    * Creates a new {@link com.gzoltar.core.runtime.Probe} object.
@@ -35,10 +36,11 @@ public final class Probe {
    * @param arrayIndex
    * @param node
    */
-  public Probe(final int arrayIndex, final Node node, final CtBehavior ctBehavior) {
+  public Probe(final int arrayIndex, final Node node, final String methodName, final String methodDesc) {
     this.arrayIndex = arrayIndex;
     this.node = node;
-    this.ctBehavior = ctBehavior;
+    this.methodName = methodName;
+    this.methodDesc = methodDesc;
   }
 
   /**
@@ -55,11 +57,12 @@ public final class Probe {
     return this.node;
   }
 
-  /**
-   * Returns the correspondent {@link javassist.CtBehavior} object of a probe.
-   */
-  public CtBehavior getCtBehavior() {
-    return this.ctBehavior;
+  public String getMethodDesc() {
+    return methodDesc;
+  }
+
+  public String getMethodName() {
+    return methodName;
   }
 
   /**
@@ -69,7 +72,7 @@ public final class Probe {
    *         otherwise.
    */
   public boolean isProbeInClassInitialiser() {
-    return this.ctBehavior.getMethodInfo2().isStaticInitializer();
+    return this.methodName.equals("<clinit>");
   }
 
   /**

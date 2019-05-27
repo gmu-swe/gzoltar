@@ -94,29 +94,31 @@ public class FilteredSpectrum {
 
     for (ProbeGroup probeGroup : source.getProbeGroups()) {
       // does 'probeGroup' match any filter?
-      if (this.classFilter.filter(probeGroup.getCtClass()) == Outcome.REJECT) {
-        continue;
-      }
+
+      //TODO all of these filters are disabled. they should be applied before generating the probegroups
+//      if (this.classFilter.filter(probeGroup.getCtClass()) == Outcome.REJECT) {
+//        continue;
+//      }
 
       ProbeGroup newProbeGroup = new ProbeGroup(probeGroup.getHash(), probeGroup.getCtClass());
 
       Filter granularityMethodFilter = new Filter();
       for (Probe probe : probeGroup.getProbes()) {
         // does 'probe' match any filter?
-        if (this.methodFilter.filter(probe.getCtBehavior()) == Outcome.REJECT) {
-          continue;
-        }
+//        if (this.methodFilter.filter(probe.getCtBehavior()) == Outcome.REJECT) {
+//          continue;
+//        }
 
         // === Skip nodes according to a granularity level ===
 
-        if (granularityMethodFilter.filter(probe.getCtBehavior()) == Outcome.REJECT) {
-          continue;
-        }
+//        if (granularityMethodFilter.filter(probe.getCtBehavior()) == Outcome.REJECT) {
+//          continue;
+//        }
 
-        newProbeGroup.registerProbe(probe.getNode(), probe.getCtBehavior());
+        newProbeGroup.registerProbe(probe.getNode(), probe.getMethodName(), probe.getMethodDesc());
 
         if (this.granularity == GranularityLevel.CLASS) {
-          break;
+          throw new UnsupportedOperationException();
         } else if (this.granularity == GranularityLevel.METHOD) {
           Node node = probe.getNode();
           String methodName =
@@ -124,6 +126,7 @@ public class FilteredSpectrum {
                   node.getName().indexOf(NodeType.LINE.getSymbol()));
 
           granularityMethodFilter.add(new BlackList(new MethodNameMatcher(methodName)));
+          throw new UnsupportedOperationException();
         }
       }
 

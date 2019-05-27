@@ -29,6 +29,10 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import com.gzoltar.core.runtime.Collector;
+import com.gzoltar.core.runtime.ProbeGroup;
+import com.gzoltar.core.util.MD5;
 import org.jacoco.core.internal.ContentTypeDetector;
 import org.jacoco.core.internal.Pack200Streams;
 import org.jacoco.core.internal.instr.SignatureRemover;
@@ -37,26 +41,28 @@ import com.gzoltar.core.instr.pass.IPass;
 import com.gzoltar.core.instr.pass.CoveragePass;
 import javassist.ClassPool;
 import javassist.CtClass;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.util.CheckClassAdapter;
 
 /**
  * Several APIs to instrument Java class definitions for coverage tracing.
  */
 public class Instrumenter {
 
-  private final IPass[] passes;
-
   private final SignatureRemover signatureRemover;
+  private final AgentConfigs agentConfigs;
 
   /**
    * 
    * @param agentConfigs
    */
   public Instrumenter(final AgentConfigs agentConfigs) {
-    this.passes = new IPass[] {
-        //new TestFilterPass(), // do not instrument test classes/cases
-        new CoveragePass(agentConfigs)
-    };
     this.signatureRemover = new SignatureRemover();
+    this.agentConfigs = agentConfigs;
   }
 
   /**
@@ -87,8 +93,43 @@ public class Instrumenter {
    * @throws Exception
    */
   public byte[] instrument(final InputStream sourceStream) throws Exception {
-    CtClass cc = ClassPool.getDefault().makeClassIfNew(sourceStream);
-    return this.instrument(cc);
+    ClassReader cr = new ClassReader(sourceStream);
+    //Check for existing instrumentation
+    ClassNode cn = new ClassNode();
+    cr.accept(cn, ClassReader.SKIP_CODE);
+    ClassWriter cw = new ClassWriter(cr, 0);
+    cr.accept(cw, 0);
+    byte[] originalBytes = cw.toByteArray();
+
+    //Skip all interfaces
+    if((cn.access & Opcodes.ACC_INTERFACE) != 0)
+      return originalBytes;
+
+    cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS);
+    for(FieldNode each : cn.fields)
+    {
+      if(each.name.equals(InstrumentationConstants.FIELD_NAME)) {
+        cr.accept(cw,0);
+        return cw.toByteArray();
+      }
+    }
+
+    String hash = MD5.calculateHash(originalBytes);
+    ProbeGroup probeGroup = new ProbeGroup(hash, cn.name);
+
+//    CheckClassAdapter cca = new CheckClassAdapter(cw, false);
+    CoverageClassVisitor cv = new CoverageClassVisitor(cw, agentConfigs, probeGroup);
+    cr.accept(cv, ClassReader.EXPAND_FRAMES);
+    byte[] ret = cw.toByteArray();
+
+    Collector.instance().regiterProbeGroup(probeGroup);
+
+
+
+//    FileOutputStream fos = new FileOutputStream("debug/"+cn.name.replace('/','.')+".class");
+//    fos.write(ret);
+//    fos.close();
+    return ret;
   }
 
   /**
@@ -98,19 +139,12 @@ public class Instrumenter {
    * @throws Exception
    */
   public byte[] instrument(final CtClass cc) throws Exception {
-    for (IPass p : this.passes) {
-      switch (p.transform(cc)) {
-        case REJECT:
-          cc.detach();
-          return null;
-        case ACCEPT:
-        default:
-          continue;
-      }
-    }
+  	return instrument(cc.toBytecode());
+  }
 
-    byte[] bytecode = cc.toBytecode();
-    return bytecode;
+  public static void main(String[] args) throws Throwable{
+    Instrumenter i = new Instrumenter(new AgentConfigs());
+    i.instrument(new File("z.class").getAbsoluteFile(), new File("inst/z.class").getAbsoluteFile());
   }
 
   /**

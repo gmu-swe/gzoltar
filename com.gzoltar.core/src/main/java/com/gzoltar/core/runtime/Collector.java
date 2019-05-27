@@ -186,7 +186,7 @@ public class Collector {
 
     final String hash = (String) args[0];
     final String probeGroupName = (String) args[1];
-    final Integer numberOfProbes = Integer.valueOf((String) args[2]);
+    final Integer numberOfProbes = (Integer) args[2];
 
     if (!this.hitArrays.containsKey(hash)) {
       this.hitArrays.put(hash,

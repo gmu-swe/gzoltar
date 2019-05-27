@@ -29,7 +29,7 @@ public final class ProbeGroup {
 
   private final String hash;
 
-  private final CtClass ctClass;
+  private final String ctClass;
 
   private final List<Probe> probes;
 
@@ -39,7 +39,7 @@ public final class ProbeGroup {
    * @param hash
    * @param ctClass
    */
-  public ProbeGroup(String hash, CtClass ctClass) {
+  public ProbeGroup(String hash, String ctClass) {
     this(hash, ctClass, new ArrayList<Probe>());
   }
 
@@ -50,7 +50,7 @@ public final class ProbeGroup {
    * @param ctClass
    * @param probes
    */
-  public ProbeGroup(String hash, CtClass ctClass, List<Probe> probes) {
+  public ProbeGroup(String hash, String ctClass, List<Probe> probes) {
     this.hash = hash;
     this.ctClass = ctClass;
     this.probes = probes;
@@ -66,7 +66,7 @@ public final class ProbeGroup {
   /**
    * Returns the correspondent {@link javassist.CtClass} object of a probeGroup.
    */
-  public CtClass getCtClass() {
+  public String getCtClass() {
     return this.ctClass;
   }
 
@@ -74,7 +74,7 @@ public final class ProbeGroup {
    * Returns the name of a probeGroup.
    */
   public String getName() {
-    return this.ctClass.getName();
+    return this.ctClass;
   }
 
   // === Probes ===
@@ -82,10 +82,10 @@ public final class ProbeGroup {
   /**
    * Registers a new {@link com.gzoltar.core.runtime.Probe} object.
    */
-  public Probe registerProbe(final Node node, final CtBehavior ctBehavior) {
+  public Probe registerProbe(final Node node, final String methodName, final String methodDesc) {
     Probe probe = this.findProbeByNode(node);
     if (probe == null) {
-      probe = new Probe(this.probes.size(), node, ctBehavior);
+      probe = new Probe(this.probes.size(), node, methodName, methodDesc);
       this.probes.add(probe);
     }
     return probe;
