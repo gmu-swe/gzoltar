@@ -16,11 +16,12 @@
  */
 package com.gzoltar.core.spectrum;
 
-import java.util.Collection;
-import java.util.List;
 import com.gzoltar.core.model.Node;
 import com.gzoltar.core.model.Transaction;
 import com.gzoltar.core.runtime.ProbeGroup;
+
+import java.util.Collection;
+import java.util.List;
 
 public interface ISpectrum {
 

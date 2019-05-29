@@ -18,8 +18,8 @@ package com.gzoltar.core.instr.actions;
 
 import com.gzoltar.core.instr.Outcome;
 import com.gzoltar.core.instr.matchers.IMatcher;
-import javassist.CtBehavior;
-import javassist.CtClass;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public abstract class AbstractAction implements IAction {
 
@@ -30,12 +30,12 @@ public abstract class AbstractAction implements IAction {
   }
 
   @Override
-  public Outcome getAction(final CtClass c) {
+  public Outcome getAction(final ClassNode c) {
     return this.getAction(this.matcher.matches(c));
   }
 
   @Override
-  public Outcome getAction(final CtBehavior b) {
+  public Outcome getAction(final MethodNode b) {
     return this.getAction(this.matcher.matches(b));
   }
 

@@ -45,11 +45,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.javassist</groupId>
-      <artifactId>javassist</artifactId>
-      <version>${javassist.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.jacoco</groupId>
       <artifactId>org.jacoco.core</artifactId>
       <version>${jacoco.version}</version>

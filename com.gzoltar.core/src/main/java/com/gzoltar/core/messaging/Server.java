@@ -16,15 +16,16 @@
  */
 package com.gzoltar.core.messaging;
 
-import java.io.ObjectInputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 import com.gzoltar.core.events.IEventListener;
 import com.gzoltar.core.messaging.Message.AddProbeGroupMessage;
 import com.gzoltar.core.messaging.Message.ByeMessage;
 import com.gzoltar.core.messaging.Message.EndTransactionMessage;
 import com.gzoltar.core.messaging.Message.HandshakeMessage;
 import com.gzoltar.core.messaging.Service.ServiceFactory;
+
+import java.io.ObjectInputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Server extends ThreadedServer {
 

@@ -16,11 +16,12 @@
  */
 package com.gzoltar.core.events;
 
+import com.gzoltar.core.model.Transaction;
+import com.gzoltar.core.runtime.ProbeGroup;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import com.gzoltar.core.model.Transaction;
-import com.gzoltar.core.runtime.ProbeGroup;
 
 public class MultiEventListener implements IEventListener {
 

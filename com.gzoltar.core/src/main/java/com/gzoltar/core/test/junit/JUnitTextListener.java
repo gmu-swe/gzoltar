@@ -16,11 +16,11 @@
  */
 package com.gzoltar.core.test.junit;
 
+import com.gzoltar.core.listeners.Listener;
+import com.gzoltar.core.test.TestListener;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-import com.gzoltar.core.listeners.Listener;
-import com.gzoltar.core.test.TestListener;
 
 public class JUnitTextListener extends TestListener {
 

@@ -16,13 +16,14 @@
  */
 package com.gzoltar.core.instr.pass;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
+import com.gzoltar.core.AgentConfigs;
+import com.gzoltar.core.events.EmptyEventListener;
+import com.gzoltar.core.instr.InstrumentationLevel;
 import com.gzoltar.core.instr.Instrumenter;
+import com.gzoltar.core.instr.granularity.GranularityLevel;
+import com.gzoltar.core.model.Node;
+import com.gzoltar.core.runtime.Collector;
+import com.gzoltar.core.spectrum.ISpectrum;
 import org.gzoltar.examples.AbstractClass;
 import org.gzoltar.examples.AnonymousClass;
 import org.gzoltar.examples.DeprecatedAnnotation;
@@ -36,19 +37,17 @@ import org.gzoltar.examples.PublicModifiers;
 import org.gzoltar.examples.PublicStaticModifiers;
 import org.junit.Before;
 import org.junit.Test;
-import com.gzoltar.core.AgentConfigs;
-import com.gzoltar.core.events.EmptyEventListener;
-import com.gzoltar.core.instr.InstrumentationLevel;
-import com.gzoltar.core.instr.granularity.GranularityLevel;
-import com.gzoltar.core.model.Node;
-import com.gzoltar.core.runtime.Collector;
-import com.gzoltar.core.spectrum.ISpectrum;
-import javassist.ClassPool;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("deprecation")
 public class TestLineInstrumentation {
 
-  private final static ClassPool pool = ClassPool.getDefault();
 
   @Before
   public void beforeEachUnitTest() {
@@ -64,7 +63,7 @@ public class TestLineInstrumentation {
 
     Instrumenter instr = new Instrumenter(configs);
     for (String classUnderTest : classesUnderTest) {
-    	instr.instrument(pool.get(classUnderTest));
+      instr.instrument(classUnderTest);
     }
 
     ISpectrum spectrum = Collector.instance().getSpectrum();

@@ -16,25 +16,28 @@
  */
 package com.gzoltar.core.instr.matchers;
 
-import com.gzoltar.core.util.ClassUtils;
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.CtField;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public class AnonymousMatcher implements IMatcher {
 
   @Override
-  public boolean matches(final CtClass ctClass) {
-    return ClassUtils.isAnonymousClass(ctClass);
+  public boolean matches(final ClassNode ctClass) {
+    int pos = ctClass.name.lastIndexOf('$');
+    if (pos < 0) {
+      return false;
+    }
+    return Character.isDigit(ctClass.name.charAt(pos + 1));
   }
 
   @Override
-  public boolean matches(final CtBehavior ctBehavior) {
-    return this.matches(ctBehavior.getDeclaringClass());
+  public boolean matches(final MethodNode ctBehavior) {
+    throw new UnsupportedOperationException();
   }
 
   @Override
-  public boolean matches(final CtField ctField) {
-    return this.matches(ctField.getDeclaringClass());
+  public boolean matches(final FieldNode ctField) {
+    throw new UnsupportedOperationException();
   }
 }

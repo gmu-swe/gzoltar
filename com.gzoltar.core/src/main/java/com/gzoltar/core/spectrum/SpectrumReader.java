@@ -16,27 +16,22 @@
  */
 package com.gzoltar.core.spectrum;
 
-import static java.lang.String.format;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import com.gzoltar.core.model.Node;
-import com.gzoltar.core.model.NodeFactory;
-import com.gzoltar.core.runtime.Probe;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jacoco.core.internal.data.CompactDataInput;
 import com.gzoltar.core.AgentConfigs;
 import com.gzoltar.core.instr.Instrumenter;
 import com.gzoltar.core.model.Transaction;
 import com.gzoltar.core.model.TransactionOutcome;
 import com.gzoltar.core.runtime.Collector;
 import com.gzoltar.core.util.SerialisationIdentifiers;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.NotFoundException;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jacoco.core.internal.data.CompactDataInput;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static java.lang.String.format;
 
 public class SpectrumReader {
 
@@ -65,9 +60,9 @@ public class SpectrumReader {
     this.instrumenter = new Instrumenter(agentConfigs);
 
     try {
-      ClassPool.getDefault().appendClassPath(buildLocation);
-    } catch (NotFoundException e) {
-      throw new RuntimeException(e);
+      this.instrumenter.analyzeRecursively(buildLocation);
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 
@@ -139,25 +134,14 @@ public class SpectrumReader {
         for(int i = 0; i < hitArrayLength; i++)
           hitArray[i] = in.readVarInt();
 
-        // instrument probeGroup (in case it has been not been instrumented)
+        // sanity checks
         if (spectrum.getProbeGroupByHash(probeGroupHash) == null) {
-          // probeGroup has not been instrumented
-          try {
-            CtClass ctClass = ClassPool.getDefault().get(probeGroupName);
-            instrumenter.instrument(ctClass);
-          } catch (Exception e) {
-            throw new RuntimeException(e);
-          }
-
-          // sanity checks
-          if (spectrum.getProbeGroupByHash(probeGroupHash) == null) {
-            throw new RuntimeException("ProbeGroup '" + probeGroupHash + "' | '" + probeGroupName
-                + "' has not been added to the spectrum instance!");
-          }
-          if(spectrum.getProbeGroupByHash(probeGroupHash).getNumberOfProbes() != hitArray.length) {
-            throw new RuntimeException("ProbeGroup '" + probeGroupHash + "' | '" + probeGroupName
-                + "' has a different number of probes (" + spectrum.getProbeGroupByHash(probeGroupHash).getNumberOfProbes() + ") than recorded (" + hitArray.length + ")!");
-          }
+          throw new RuntimeException("ProbeGroup '" + probeGroupHash + "' | '" + probeGroupName
+                  + "' has not been added to the spectrum instance!");
+        }
+        if (spectrum.getProbeGroupByHash(probeGroupHash).getNumberOfProbes() != hitArray.length) {
+          throw new RuntimeException("ProbeGroup '" + probeGroupHash + "' | '" + probeGroupName
+                  + "' has a different number of probes (" + spectrum.getProbeGroupByHash(probeGroupHash).getNumberOfProbes() + ") than recorded (" + hitArray.length + ")!");
         }
 
         activity.put(probeGroupHash, new ImmutablePair<String, int[]>(probeGroupName, hitArray));

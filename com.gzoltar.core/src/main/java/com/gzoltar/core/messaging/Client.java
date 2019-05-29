@@ -16,11 +16,6 @@
  */
 package com.gzoltar.core.messaging;
 
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.UUID;
 import com.gzoltar.core.events.IEventListener;
 import com.gzoltar.core.messaging.Message.AddProbeGroupMessage;
 import com.gzoltar.core.messaging.Message.ByeMessage;
@@ -28,6 +23,12 @@ import com.gzoltar.core.messaging.Message.EndTransactionMessage;
 import com.gzoltar.core.messaging.Message.HandshakeMessage;
 import com.gzoltar.core.model.Transaction;
 import com.gzoltar.core.runtime.ProbeGroup;
+
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.UUID;
 
 public class Client implements IEventListener {
 

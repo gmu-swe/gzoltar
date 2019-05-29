@@ -16,9 +16,9 @@
  */
 package com.gzoltar.core.instr.matchers;
 
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.CtField;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public class AndMatcher implements IMatcher {
 
@@ -29,7 +29,7 @@ public class AndMatcher implements IMatcher {
   }
 
   @Override
-  public boolean matches(final CtClass ctClass) {
+  public boolean matches(final ClassNode ctClass) {
     for (IMatcher mat : this.matchers) {
       if (!mat.matches(ctClass)) {
         return false;
@@ -39,7 +39,7 @@ public class AndMatcher implements IMatcher {
   }
 
   @Override
-  public boolean matches(final CtBehavior ctBehavior) {
+  public boolean matches(final MethodNode ctBehavior) {
     for (IMatcher mat : this.matchers) {
       if (!mat.matches(ctBehavior)) {
         return false;
@@ -49,7 +49,7 @@ public class AndMatcher implements IMatcher {
   }
 
   @Override
-  public boolean matches(final CtField ctField) {
+  public boolean matches(final FieldNode ctField) {
     for (IMatcher mat : this.matchers) {
       if (!mat.matches(ctField)) {
         return false;

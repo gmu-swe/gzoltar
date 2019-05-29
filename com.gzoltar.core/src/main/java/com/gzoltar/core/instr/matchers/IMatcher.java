@@ -16,9 +16,9 @@
  */
 package com.gzoltar.core.instr.matchers;
 
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.CtField;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public interface IMatcher {
 
@@ -28,7 +28,7 @@ public interface IMatcher {
    * @param ctClass class
    * @return <code>true</code> if it matches, <code>false</code> otherwise
    */
-  public boolean matches(final CtClass ctClass);
+  public boolean matches(final ClassNode ctClass);
 
   /**
    * Matches a method, a constructor, or a static constructor (class initializer)
@@ -36,7 +36,7 @@ public interface IMatcher {
    * @param ctBehavior a method, a constructor, or a static constructor (class initializer)
    * @return <code>true</code> if it matches, <code>false</code> otherwise
    */
-  public boolean matches(final CtBehavior ctBehavior);
+  public boolean matches(final MethodNode ctBehavior);
 
   /**
    * Matches a field
@@ -44,6 +44,6 @@ public interface IMatcher {
    * @param ctField a field
    * @return <code>true</code> if it matches, <code>false</code> otherwise
    */
-  public boolean matches(final CtField ctField);
+  public boolean matches(final FieldNode ctField);
 
 }

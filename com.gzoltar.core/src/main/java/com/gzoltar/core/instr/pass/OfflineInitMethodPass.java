@@ -16,11 +16,12 @@
  */
 package com.gzoltar.core.instr.pass;
 
-public class OfflineInitMethodPass extends AbstractInitMethodPass {
+public class OfflineInitMethodPass { //extends AbstractInitMethodPass {
 
+  //TODO make this work and test it now
   public OfflineInitMethodPass() {
-    this.collectorCall =
-        "com.gzoltar.internal.agent.rt.Offline.getHitArray(" + ARRAY_OBJECT_NAME + "); ";
+//    this.collectorCall =
+//        "com.gzoltar.internal.agent.rt.Offline.getHitArray(" + ARRAY_OBJECT_NAME + "); ";
   }
 
 }

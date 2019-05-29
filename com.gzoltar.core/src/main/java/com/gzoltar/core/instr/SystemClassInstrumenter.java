@@ -16,6 +16,13 @@
  */
 package com.gzoltar.core.instr;
 
+import com.gzoltar.core.runtime.Collector;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.instrument.ClassFileTransformer;
@@ -23,14 +30,6 @@ import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Field;
 import java.security.ProtectionDomain;
-import com.gzoltar.core.runtime.Collector;
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtConstructor;
-import javassist.CtField;
-import javassist.expr.ExprEditor;
-import javassist.expr.FieldAccess;
 
 /**
  * This class adds a new static field to a bootstrap class that will be used by instrumented
@@ -50,16 +49,23 @@ public final class SystemClassInstrumenter {
   public static void instrumentSystemClass(final Instrumentation inst, final String className,
       final String accessFieldName) throws Exception {
 
-    final ClassPool cp = ClassPool.getDefault();
     final ClassFileTransformer transformer = new ClassFileTransformer() {
       public byte[] transform(final ClassLoader loader, final String name,
           final Class<?> classBeingRedefined, final ProtectionDomain protectionDomain,
           final byte[] source) throws IllegalClassFormatException {
         if (name.equals(className)) {
           try {
-            final CtClass cc = cp.makeClass(new ByteArrayInputStream(source));
-            byte[] bytes = instrument(cc, accessFieldName);
-            return bytes;
+          	final ClassReader cr = new ClassReader(source);
+            ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS);
+            ClassVisitor cv = new ClassVisitor(InstrumentationConstants.ASM_VERSION, cw) {
+              @Override
+              public void visitEnd() {
+              	super.visitField(InstrumentationConstants.SYSTEM_CLASS_FIELD_ACC, accessFieldName, InstrumentationConstants.SYSTEM_CLASS_FIELD_DESC, null, null);
+                super.visitEnd();
+              }
+            };
+            cr.accept(cv, 0);
+            return cw.toByteArray();
           } catch (Exception e) {
             e.printStackTrace();
           }
@@ -84,26 +90,5 @@ public final class SystemClassInstrumenter {
     } catch (final NoSuchFieldException e) {
       throw new RuntimeException("Class '" + className + "' could not be instrumented.", e);
     }
-  }
-
-  private static byte[] instrument(final CtClass ctClass, final String accessFieldName)
-      throws IOException, CannotCompileException {
-
-    CtField f = CtField.make(InstrumentationConstants.SYSTEM_CLASS_FIELD_DESC + accessFieldName
-        + InstrumentationConstants.EOL, ctClass);
-    f.setModifiers(f.getModifiers() | InstrumentationConstants.SYSTEM_CLASS_FIELD_ACC);
-    ctClass.addField(f);
-
-    CtConstructor clinit = ctClass.makeClassInitializer();
-    clinit.instrument(new ExprEditor() {
-      @Override
-      public void edit(FieldAccess f) throws CannotCompileException {
-        if (f.getFieldName().equals(accessFieldName)) {
-          f.replace("{ $_ = $proceed($$); }");
-        }
-      }
-    });
-
-    return ctClass.toBytecode();
   }
 }

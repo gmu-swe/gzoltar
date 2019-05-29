@@ -17,13 +17,13 @@
 package com.gzoltar.core.instr.actions;
 
 import com.gzoltar.core.instr.Outcome;
-import javassist.CtBehavior;
-import javassist.CtClass;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public interface IAction {
 
-  public Outcome getAction(final CtClass c);
+  public Outcome getAction(final ClassNode c);
 
-  public Outcome getAction(final CtBehavior b);
+  public Outcome getAction(final MethodNode b);
 
 }

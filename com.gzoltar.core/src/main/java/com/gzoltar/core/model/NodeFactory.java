@@ -16,40 +16,7 @@
  */
 package com.gzoltar.core.model;
 
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.bytecode.Descriptor;
-
 public final class NodeFactory {
-
-  /**
-   * Create a {@link com.gzoltar.core.model.Node} object.
-   * 
-   * @param ctClass
-   * @param ctBehavior
-   * @param lineNumber
-   * @return An {@link com.gzoltar.core.model.Node} object
-   */
-  public static Node createNode(final CtClass ctClass, final CtBehavior ctBehavior,
-      final int lineNumber) {
-
-    String packageName = ctClass.getPackageName() == null ? "" : ctClass.getPackageName();
-
-    StringBuilder className = new StringBuilder(packageName);
-    className.append(NodeType.CLASS.getSymbol());
-    className.append(ctClass.getSimpleName());
-
-    StringBuilder methodName = className;
-    methodName.append(NodeType.METHOD.getSymbol());
-    methodName.append(ctBehavior.getName());
-    methodName.append(Descriptor.toString(ctBehavior.getSignature()));
-
-    StringBuilder lineName = methodName;
-    lineName.append(NodeType.LINE.getSymbol());
-    lineName.append(String.valueOf(lineNumber));
-
-    return new Node(lineName.toString(), lineNumber, NodeType.LINE);
-  }
 
   /**
    * Parse a {@link com.gzoltar.core.model.Node} object and create its ancestors.
@@ -110,30 +77,6 @@ public final class NodeFactory {
 
     node.setParent(methodNode);
     tree.addNode(node);
-  }
-
-  public static Node createNode(CtClass ctClass, CtBehavior ctBehavior, int lineNumber, String instructionIdentifier) {
-    String packageName = ctClass.getPackageName() == null ? "" : ctClass.getPackageName();
-
-    StringBuilder className = new StringBuilder(packageName);
-    className.append(NodeType.CLASS.getSymbol());
-    className.append(ctClass.getSimpleName());
-
-    StringBuilder methodName = className;
-    methodName.append(NodeType.METHOD.getSymbol());
-    methodName.append(ctBehavior.getName());
-    methodName.append(Descriptor.toString(ctBehavior.getSignature()));
-
-    StringBuilder lineName = methodName;
-    lineName.append(NodeType.LINE.getSymbol());
-    lineName.append(String.valueOf(lineNumber));
-
-    StringBuilder instructionProbeName = lineName;
-    instructionProbeName.append(NodeType.INSTRUCTION.getSymbol());
-    instructionProbeName.append(instructionIdentifier);
-
-
-    return new Node(instructionProbeName.toString(), lineNumber, instructionIdentifier, NodeType.INSTRUCTION);
   }
 
   public static Node createNode(String className, String methodName, String methodDesc, int lineNumber, String instructionIdentifier) {

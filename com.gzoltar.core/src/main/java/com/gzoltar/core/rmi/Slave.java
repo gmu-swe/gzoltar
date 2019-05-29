@@ -16,6 +16,8 @@
  */
 package com.gzoltar.core.rmi;
 
+import com.gzoltar.core.util.SystemProperties;
+
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -24,7 +26,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-import com.gzoltar.core.util.SystemProperties;
 
 public class Slave {
 

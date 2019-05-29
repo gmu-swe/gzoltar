@@ -16,12 +16,13 @@
  */
 package com.gzoltar.core.instr.matchers;
 
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.CtField;
 
 public class PrefixMatcher implements IMatcher {
 
@@ -36,18 +37,18 @@ public class PrefixMatcher implements IMatcher {
   }
 
   @Override
-  public boolean matches(final CtClass ctClass) {
-    return this.matchesPrefix(ctClass.getName());
+  public boolean matches(final ClassNode ctClass) {
+    return this.matchesPrefix(ctClass.name);
   }
 
   @Override
-  public boolean matches(final CtBehavior ctBehavior) {
-    return this.matchesPrefix(ctBehavior.getName());
+  public boolean matches(final MethodNode ctBehavior) {
+    return this.matchesPrefix(ctBehavior.name);
   }
 
   @Override
-  public boolean matches(final CtField ctField) {
-    return this.matchesPrefix(ctField.getName());
+  public boolean matches(final FieldNode ctField) {
+    return this.matchesPrefix(ctField.name);
   }
 
   private boolean matchesPrefix(String name) {

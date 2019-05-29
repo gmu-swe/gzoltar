@@ -16,16 +16,17 @@
  */
 package com.gzoltar.core.test.junit;
 
+import com.gzoltar.core.listeners.Listener;
+import com.gzoltar.core.test.TestMethod;
+import com.gzoltar.core.util.ClassType;
+import org.jacoco.core.runtime.WildcardMatcher;
+import org.junit.runner.Description;
+import org.junit.runner.Request;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import org.jacoco.core.runtime.WildcardMatcher;
-import org.junit.runner.Description;
-import org.junit.runner.Request;
-import com.gzoltar.core.util.ClassType;
-import com.gzoltar.core.listeners.Listener;
-import com.gzoltar.core.test.TestMethod;
 
 public final class FindJUnitTestMethods {
 

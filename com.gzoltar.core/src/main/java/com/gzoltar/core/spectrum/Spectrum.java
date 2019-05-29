@@ -16,17 +16,18 @@
  */
 package com.gzoltar.core.spectrum;
 
+import com.gzoltar.core.model.Node;
+import com.gzoltar.core.model.Transaction;
+import com.gzoltar.core.runtime.Probe;
+import com.gzoltar.core.runtime.ProbeGroup;
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.apache.commons.lang3.tuple.Pair;
-import com.gzoltar.core.model.Node;
-import com.gzoltar.core.model.Transaction;
-import com.gzoltar.core.runtime.Probe;
-import com.gzoltar.core.runtime.ProbeGroup;
 
 public class Spectrum implements ISpectrum {
 

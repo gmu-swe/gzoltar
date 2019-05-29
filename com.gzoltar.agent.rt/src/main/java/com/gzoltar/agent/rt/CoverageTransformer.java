@@ -29,8 +29,8 @@ import com.gzoltar.core.instr.filter.Filter;
 import com.gzoltar.core.instr.matchers.ClassNameMatcher;
 import com.gzoltar.core.instr.matchers.PrefixMatcher;
 import com.gzoltar.core.instr.matchers.SourceLocationMatcher;
-import javassist.ClassPool;
-import javassist.CtClass;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.tree.ClassNode;
 
 public class CoverageTransformer implements ClassFileTransformer {
 
@@ -82,18 +82,19 @@ public class CoverageTransformer implements ClassFileTransformer {
     }
 
     try {
-      ClassPool cp = ClassPool.getDefault();
-      CtClass cc = cp.makeClassIfNew(new ByteArrayInputStream(classfileBuffer));
+      ClassReader cr = new ClassReader(classfileBuffer);
+      ClassNode cn = new ClassNode();
+      cr.accept(cn, ClassReader.SKIP_CODE);
 
       // only instrument classes under a build location, e.g., target/classes/ or build/classes/
       SourceLocationMatcher excludeClassesNotInBuildLocation = new SourceLocationMatcher(
           this.inclNoLocationClasses, this.buildLocation, protectionDomain);
-      if (!excludeClassesNotInBuildLocation.matches(cc)) {
+      if (!excludeClassesNotInBuildLocation.matches(cn)) {
         return null;
       }
 
       // check whether this class should be instrumented
-      if (this.filter.filter(cc) == Outcome.REJECT) {
+      if (this.filter.filter(cn) == Outcome.REJECT) {
         return null;
       }
 

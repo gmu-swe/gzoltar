@@ -16,9 +16,9 @@
  */
 package com.gzoltar.core.instr.matchers;
 
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.CtField;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public class MethodModifierMatcher extends AbstractModifierMatcher {
 
@@ -27,8 +27,8 @@ public class MethodModifierMatcher extends AbstractModifierMatcher {
   }
 
   @Override
-  public boolean matches(final CtClass ctClass) {
-    for (CtBehavior ctBehavior : ctClass.getMethods()) {
+  public boolean matches(final ClassNode ctClass) {
+    for (MethodNode ctBehavior : ctClass.methods) {
       if (this.matches(ctBehavior)) {
         return true;
       }
@@ -37,13 +37,13 @@ public class MethodModifierMatcher extends AbstractModifierMatcher {
   }
 
   @Override
-  public boolean matches(final CtBehavior ctBehavior) {
+  public boolean matches(final MethodNode ctBehavior) {
     return super.matches(ctBehavior);
   }
 
   @Override
-  public boolean matches(final CtField ctField) {
-    return this.matches(ctField.getDeclaringClass());
+  public boolean matches(final FieldNode ctField) {
+  	throw new UnsupportedOperationException();
   }
 
 }

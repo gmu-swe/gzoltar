@@ -16,6 +16,20 @@
  */
 package com.gzoltar.core.test;
 
+import com.gzoltar.core.instr.Outcome;
+import com.gzoltar.core.instr.actions.WhiteList;
+import com.gzoltar.core.instr.filter.Filter;
+import com.gzoltar.core.instr.matchers.JUnitMatcher;
+import com.gzoltar.core.instr.matchers.OrMatcher;
+import com.gzoltar.core.instr.matchers.TestNGMatcher;
+import com.gzoltar.core.test.junit.FindJUnitTestMethods;
+import com.gzoltar.core.test.testng.FindTestNGTestMethods;
+import com.gzoltar.core.util.ClassType;
+import org.apache.commons.io.FileUtils;
+import org.jacoco.core.runtime.WildcardMatcher;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.tree.ClassNode;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,26 +39,12 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import org.apache.commons.io.FileUtils;
-import org.jacoco.core.runtime.WildcardMatcher;
-import com.gzoltar.core.util.ClassType;
-import com.gzoltar.core.instr.Outcome;
-import com.gzoltar.core.instr.actions.WhiteList;
-import com.gzoltar.core.instr.filter.Filter;
-import com.gzoltar.core.instr.matchers.JUnitMatcher;
-import com.gzoltar.core.instr.matchers.OrMatcher;
-import com.gzoltar.core.instr.matchers.TestNGMatcher;
-import com.gzoltar.core.test.junit.FindJUnitTestMethods;
-import com.gzoltar.core.test.testng.FindTestNGTestMethods;
-import javassist.ClassPool;
-import javassist.CtClass;
 
 public abstract class FindTestMethods {
 
   private static final Filter testClassesFilter =
       new Filter(new WhiteList(new OrMatcher(new JUnitMatcher(), new TestNGMatcher())));
 
-  private static final ClassPool classPool = ClassPool.getDefault();
 
   /**
    * 
@@ -82,10 +82,11 @@ public abstract class FindTestMethods {
 
         if (entryName.endsWith(".class")) {
           InputStream in = jarFile.getInputStream(entry);
+          ClassReader cr = new ClassReader(in);
+          ClassNode cn = new ClassNode();
+          cr.accept(cn, ClassReader.SKIP_CODE);
 
-          CtClass ctClass = classPool.makeClassIfNew(in);
-          testMethods.addAll(findTestMethodsInClass(testsMatcher, ctClass));
-          ctClass.detach();
+          testMethods.addAll(findTestMethodsInClass(testsMatcher, cn));
 
           in.close();
         } else if (entryName.endsWith(".jar")) {
@@ -98,9 +99,11 @@ public abstract class FindTestMethods {
     } else if (path.getAbsolutePath().endsWith(".class")) {
       FileInputStream fin = new FileInputStream(path);
 
-      CtClass ctClass = classPool.makeClassIfNew(fin);
-      testMethods.addAll(findTestMethodsInClass(testsMatcher, ctClass));
-      ctClass.detach();
+      ClassReader cr = new ClassReader(fin);
+      ClassNode cn = new ClassNode();
+      cr.accept(cn, ClassReader.SKIP_CODE);
+
+      testMethods.addAll(findTestMethodsInClass(testsMatcher, cn));
 
       fin.close();
     }
@@ -116,7 +119,7 @@ public abstract class FindTestMethods {
    * @throws ClassNotFoundException
    */
   private static List<TestMethod> findTestMethodsInClass(final WildcardMatcher testsMatcher,
-      final CtClass ctClass) throws ClassNotFoundException {
+      final ClassNode ctClass) throws ClassNotFoundException {
     if (testClassesFilter.filter(ctClass) == Outcome.REJECT) {
       return new ArrayList<TestMethod>(0);
     }
@@ -124,15 +127,15 @@ public abstract class FindTestMethods {
     ClassType classType = getClassType(ctClass);
     switch (classType) {
       case JUNIT:
-        return FindJUnitTestMethods.find(testsMatcher, ctClass.getName());
+        return FindJUnitTestMethods.find(testsMatcher, ctClass.name);
       case TESTNG:
-        return FindTestNGTestMethods.find(testsMatcher, ctClass.getName());
+        return FindTestNGTestMethods.find(testsMatcher, ctClass.name);
       default:
         return new ArrayList<TestMethod>(0);
     }
   }
 
-  private static ClassType getClassType(final CtClass ctClass) {
+  private static ClassType getClassType(final ClassNode ctClass) {
     if (new JUnitMatcher().matches(ctClass)) {
       return ClassType.JUNIT;
     }

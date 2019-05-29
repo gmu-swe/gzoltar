@@ -16,17 +16,18 @@
  */
 package com.gzoltar.core.runtime;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import com.gzoltar.core.events.IEventListener;
 import com.gzoltar.core.events.MultiEventListener;
 import com.gzoltar.core.model.Transaction;
 import com.gzoltar.core.model.TransactionOutcome;
 import com.gzoltar.core.spectrum.Spectrum;
 import com.gzoltar.core.util.ArrayUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class Collector {
 

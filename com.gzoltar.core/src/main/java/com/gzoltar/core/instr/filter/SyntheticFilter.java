@@ -19,17 +19,14 @@ package com.gzoltar.core.instr.filter;
 import com.gzoltar.core.instr.Outcome;
 import com.gzoltar.core.instr.actions.BlackList;
 import com.gzoltar.core.instr.matchers.AndMatcher;
-import com.gzoltar.core.instr.matchers.ClassAttributeMatcher;
 import com.gzoltar.core.instr.matchers.ClassModifierMatcher;
-import com.gzoltar.core.instr.matchers.MethodAttributeMatcher;
 import com.gzoltar.core.instr.matchers.MethodModifierMatcher;
 import com.gzoltar.core.instr.matchers.NotMatcher;
 import com.gzoltar.core.instr.matchers.OrMatcher;
 import com.gzoltar.core.instr.matchers.PrefixMatcher;
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.bytecode.AccessFlag;
-import javassist.bytecode.SyntheticAttribute;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
 
 /**
  * Filters synthetic classes or synthetic methods unless they represent bodies of lambda expressions.
@@ -37,21 +34,19 @@ import javassist.bytecode.SyntheticAttribute;
 public final class SyntheticFilter extends Filter {
 
   private static final BlackList SYNTHETIC_CLASS =
-      new BlackList(new OrMatcher(new ClassModifierMatcher(AccessFlag.BRIDGE),
-          new ClassModifierMatcher(AccessFlag.SYNTHETIC),
-          new ClassAttributeMatcher(SyntheticAttribute.tag)));
+      new BlackList(new OrMatcher(new ClassModifierMatcher(Opcodes.ACC_BRIDGE),
+          new ClassModifierMatcher(Opcodes.ACC_SYNTHETIC), new ClassModifierMatcher(Opcodes.ACC_SYNTHETIC)));
 
   private static final BlackList SYNTHETIC_METHOD = new BlackList(new AndMatcher(
-      new OrMatcher(new MethodModifierMatcher(AccessFlag.BRIDGE),
-          new MethodModifierMatcher(AccessFlag.SYNTHETIC),
-          new MethodAttributeMatcher(SyntheticAttribute.tag)),
+      new OrMatcher(new MethodModifierMatcher(Opcodes.ACC_BRIDGE),
+          new MethodModifierMatcher(Opcodes.ACC_SYNTHETIC)),
       new NotMatcher(new PrefixMatcher("lambda$"))));
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public Outcome filter(final CtClass ctClass) {
+  public Outcome filter(final ClassNode ctClass) {
     return super.filter(ctClass, SYNTHETIC_CLASS);
   }
 
@@ -96,7 +91,7 @@ public final class SyntheticFilter extends Filter {
    * compiler also replaces the call to "a.y" with "access$000(a)".
    */
   @Override
-  public Outcome filter(final CtBehavior ctBehavior) {
+  public Outcome filter(final MethodNode ctBehavior) {
     return super.filter(ctBehavior, SYNTHETIC_METHOD);
   }
 

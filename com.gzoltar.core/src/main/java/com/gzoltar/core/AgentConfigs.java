@@ -16,7 +16,10 @@
  */
 package com.gzoltar.core;
 
-import static java.lang.String.format;
+import com.gzoltar.core.instr.InstrumentationLevel;
+import com.gzoltar.core.instr.granularity.GranularityLevel;
+import com.gzoltar.core.util.CommandLineSupport;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -30,9 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
-import com.gzoltar.core.instr.InstrumentationLevel;
-import com.gzoltar.core.instr.granularity.GranularityLevel;
-import com.gzoltar.core.util.CommandLineSupport;
+
+import static java.lang.String.format;
 
 /**
  * Utility to create and parse configurations for the runtime agent. Configurations are represented

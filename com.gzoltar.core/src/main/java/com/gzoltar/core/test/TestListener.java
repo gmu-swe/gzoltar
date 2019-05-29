@@ -16,9 +16,10 @@
  */
 package com.gzoltar.core.test;
 
+import org.junit.runner.notification.RunListener;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import org.junit.runner.notification.RunListener;
 
 public abstract class TestListener extends RunListener {
 

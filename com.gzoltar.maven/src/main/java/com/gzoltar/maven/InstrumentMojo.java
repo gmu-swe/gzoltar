@@ -27,7 +27,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import com.gzoltar.core.AgentConfigs;
 import com.gzoltar.core.instr.InstrumentationLevel;
 import com.gzoltar.core.instr.Instrumenter;
-import javassist.ClassPool;
 
 @Mojo(name = "instrument", defaultPhase = LifecyclePhase.PROCESS_CLASSES,
     requiresDependencyResolution = ResolutionScope.TEST,
@@ -47,45 +46,46 @@ public class InstrumentMojo extends AbstractAgentMojo {
    */
   @Override
   public void executeMojo() throws MojoExecutionException, MojoFailureException {
-    final File projectClassesDir = new File(getProject().getBuild().getOutputDirectory());
-    if (!projectClassesDir.exists()) {
-      getLog()
-          .info("Skipping GZoltar execution due to missing classes directory:" + projectClassesDir);
-      return;
-    }
-
-    // make sure classpath has all test dependencies
-    try {
-      for (String element : getProject().getTestClasspathElements()) {
-        getLog().debug("TestClasspathElement: " + element);
-        ClassPool.getDefault().appendClassPath(element);
-      }
-    } catch (Exception e) {
-      throw new MojoExecutionException(e.getMessage(), e);
-    }
-
-    final File backupDir =
-        new File(getProject().getBuild().getDirectory(), "gzoltar-backup-classes");
-    backupDir.mkdirs();
-
-    // backup all files
-    try {
-      FileUtils.copyDirectory(projectClassesDir, backupDir);
-    } catch (IOException e) {
-      throw new MojoExecutionException(e.getMessage(), e);
-    }
-
-    // configure instrumentation
-    AgentConfigs agentConfigs = this.createAgentConfigurations();
-    agentConfigs.setInstrumentationLevel(InstrumentationLevel.OFFLINE);
-    Instrumenter instrumenter = new Instrumenter(agentConfigs);
-
-    // instrument recursively
-    try {
-      instrumenter.instrumentRecursively(backupDir, projectClassesDir);
-    } catch (Exception e) {
-      throw new MojoExecutionException(e.getMessage(), e);
-    }
+  	throw new UnsupportedOperationException("Not implemented with ASM");
+//    final File projectClassesDir = new File(getProject().getBuild().getOutputDirectory());
+//    if (!projectClassesDir.exists()) {
+//      getLog()
+//          .info("Skipping GZoltar execution due to missing classes directory:" + projectClassesDir);
+//      return;
+//    }
+//
+//    // make sure classpath has all test dependencies
+//    try {
+//      for (String element : getProject().getTestClasspathElements()) {
+//        getLog().debug("TestClasspathElement: " + element);
+////        ClassPool.getDefault().appendClassPath(element);
+//      }
+//    } catch (Exception e) {
+//      throw new MojoExecutionException(e.getMessage(), e);
+//    }
+//
+//    final File backupDir =
+//        new File(getProject().getBuild().getDirectory(), "gzoltar-backup-classes");
+//    backupDir.mkdirs();
+//
+//    // backup all files
+//    try {
+//      FileUtils.copyDirectory(projectClassesDir, backupDir);
+//    } catch (IOException e) {
+//      throw new MojoExecutionException(e.getMessage(), e);
+//    }
+//
+//    // configure instrumentation
+//    AgentConfigs agentConfigs = this.createAgentConfigurations();
+//    agentConfigs.setInstrumentationLevel(InstrumentationLevel.OFFLINE);
+//    Instrumenter instrumenter = new Instrumenter(agentConfigs);
+//
+//    // instrument recursively
+//    try {
+//      instrumenter.instrumentRecursively(backupDir, projectClassesDir);
+//    } catch (Exception e) {
+//      throw new MojoExecutionException(e.getMessage(), e);
+//    }
   }
 
 }

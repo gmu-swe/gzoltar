@@ -17,15 +17,15 @@
 package com.gzoltar.core.instr.matchers;
 
 import com.gzoltar.core.instr.InstrumentationConstants;
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.CtField;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public class DuplicateCollectorReferenceMatcher implements IMatcher {
 
   @Override
-  public boolean matches(final CtClass ctClass) {
-    for (CtBehavior ctBehavior : ctClass.getDeclaredBehaviors()) {
+  public boolean matches(final ClassNode ctClass) {
+    for (MethodNode ctBehavior : ctClass.methods) {
       if (this.matches(ctBehavior)) {
         return true;
       }
@@ -34,13 +34,13 @@ public class DuplicateCollectorReferenceMatcher implements IMatcher {
   }
 
   @Override
-  public boolean matches(final CtBehavior ctBehavior) {
-    return ctBehavior.getName().equals(InstrumentationConstants.INIT_METHOD_NAME);
+  public boolean matches(final MethodNode ctBehavior) {
+    return ctBehavior.name.equals(InstrumentationConstants.INIT_METHOD_NAME);
   }
 
   @Override
-  public boolean matches(final CtField ctField) {
-    return ctField.getName().equals(InstrumentationConstants.FIELD_NAME);
+  public boolean matches(final FieldNode ctField) {
+    return ctField.name.equals(InstrumentationConstants.FIELD_NAME);
   }
 
 }

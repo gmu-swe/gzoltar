@@ -16,31 +16,56 @@
  */
 package com.gzoltar.core.instr.matchers;
 
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.CtField;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.AnnotationNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public abstract class AbstractAnnotationMatcher implements IMatcher {
 
   private final String annotation;
 
   protected AbstractAnnotationMatcher(final String annotation) {
-    this.annotation = annotation;
+  	if(annotation.startsWith("L"))
+      this.annotation = annotation;
+  	else
+  	  this.annotation = Type.getObjectType(annotation.replace('.','/')).getDescriptor();
   }
 
   @Override
-  public boolean matches(final CtClass ctClass) {
-    return ctClass.hasAnnotation(this.annotation);
+  public boolean matches(final ClassNode ctClass) {
+    for(AnnotationNode each : ctClass.visibleAnnotations){
+      if(each.desc.equals(annotation))
+        return true;
+    }
+
+    for(AnnotationNode each : ctClass.invisibleAnnotations){
+      if(each.desc.equals(annotation))
+        return true;
+    }
+    return false;
   }
 
   @Override
-  public boolean matches(final CtBehavior ctBehavior) {
-    return ctBehavior.hasAnnotation(this.annotation);
+  public boolean matches(final MethodNode ctBehavior) {
+    if (ctBehavior.visibleAnnotations != null)
+      for (AnnotationNode each : ctBehavior.visibleAnnotations) {
+        if (each.desc.equals(annotation))
+          return true;
+      }
+
+    if (ctBehavior.invisibleAnnotations != null)
+      for (AnnotationNode each : ctBehavior.invisibleAnnotations) {
+        if (each.desc.equals(annotation))
+          return true;
+      }
+    return false;
   }
 
   @Override
-  public boolean matches(final CtField ctField) {
-    return ctField.hasAnnotation(this.annotation);
+  public boolean matches(final FieldNode ctField) {
+    throw new UnsupportedOperationException();
   }
 
 }

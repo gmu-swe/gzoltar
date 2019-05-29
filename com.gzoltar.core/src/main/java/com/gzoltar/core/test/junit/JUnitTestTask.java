@@ -16,13 +16,14 @@
  */
 package com.gzoltar.core.test.junit;
 
-import java.net.URL;
+import com.gzoltar.core.test.TestMethod;
+import com.gzoltar.core.test.TestTask;
+import com.gzoltar.core.util.IsolatingClassLoader;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.notification.RunListener;
-import com.gzoltar.core.util.IsolatingClassLoader;
-import com.gzoltar.core.test.TestMethod;
-import com.gzoltar.core.test.TestTask;
+
+import java.net.URL;
 
 public class JUnitTestTask extends TestTask {
 

@@ -16,41 +16,60 @@
  */
 package com.gzoltar.core.instr.matchers;
 
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.NotFoundException;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 public class SuperclassMatcher extends AbstractWildcardMatcher {
 
-  public SuperclassMatcher(final String expression) {
+  private final static HashMap<String, ClassNode> classNodeHashMap = new HashMap<>();
+  public SuperclassMatcher(String expression) {
     super(expression);
   }
 
-  @Override
-  public boolean matches(final CtClass ctClass) {
+  static ClassNode getOrFindClassNode(String name){
+    if(classNodeHashMap.containsKey(name))
+      return classNodeHashMap.get(name);
     try {
-      CtClass superCtClass = ctClass.getSuperclass();
-      while (superCtClass != null) {
-        if (super.matches(superCtClass.getName())) {
-          return true;
-        }
-        superCtClass = superCtClass.getSuperclass();
-      }
-      return false;
-    } catch (NotFoundException e) {
-      return false;
+      ClassReader cr = new ClassReader(name);
+      ClassNode cn = new ClassNode();
+      cr.accept(cn, ClassReader.SKIP_CODE);
+      classNodeHashMap.put(name, cn);
+      return cn;
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
     }
+
+  }
+  @Override
+  public boolean matches(final ClassNode ctClass) {
+    String superClass = ctClass.superName;
+    while (superClass != null && !super.matches(superClass.replace('/','.')) && !superClass.equals("java/lang/Object")) {
+      ClassNode cn = classNodeHashMap.get(superClass);
+      if (cn != null) {
+        superClass = cn.superName;
+      } else {
+        superClass = null;
+      }
+    }
+    if (superClass != null && super.matches(superClass.replace('/','.')))
+      return true;
+    return false;
   }
 
   @Override
-  public boolean matches(final CtBehavior ctBehavior) {
-    return this.matches(ctBehavior.getDeclaringClass());
+  public boolean matches(final MethodNode ctBehavior) {
+    throw new UnsupportedOperationException();
   }
 
   @Override
-  public boolean matches(final CtField ctField) {
-    return this.matches(ctField.getDeclaringClass());
+  public boolean matches(final FieldNode ctField) {
+    throw new UnsupportedOperationException();
   }
 
 }

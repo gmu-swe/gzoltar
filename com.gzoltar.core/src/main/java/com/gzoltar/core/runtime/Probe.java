@@ -16,10 +16,9 @@
  */
 package com.gzoltar.core.runtime;
 
+import com.gzoltar.core.model.Node;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import com.gzoltar.core.model.Node;
-import javassist.CtBehavior;
 
 public final class Probe {
 

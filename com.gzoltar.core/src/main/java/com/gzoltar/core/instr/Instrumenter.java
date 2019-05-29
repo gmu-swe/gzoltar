@@ -16,6 +16,19 @@
  */
 package com.gzoltar.core.instr;
 
+import com.gzoltar.core.AgentConfigs;
+import com.gzoltar.core.runtime.Collector;
+import com.gzoltar.core.runtime.ProbeGroup;
+import com.gzoltar.core.util.MD5;
+import org.jacoco.core.internal.ContentTypeDetector;
+import org.jacoco.core.internal.Pack200Streams;
+import org.jacoco.core.internal.instr.SignatureRemover;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -29,24 +42,6 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
-import com.gzoltar.core.runtime.Collector;
-import com.gzoltar.core.runtime.ProbeGroup;
-import com.gzoltar.core.util.MD5;
-import org.jacoco.core.internal.ContentTypeDetector;
-import org.jacoco.core.internal.Pack200Streams;
-import org.jacoco.core.internal.instr.SignatureRemover;
-import com.gzoltar.core.AgentConfigs;
-import com.gzoltar.core.instr.pass.IPass;
-import com.gzoltar.core.instr.pass.CoveragePass;
-import javassist.ClassPool;
-import javassist.CtClass;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.util.CheckClassAdapter;
 
 /**
  * Several APIs to instrument Java class definitions for coverage tracing.
@@ -138,8 +133,8 @@ public class Instrumenter {
    * @return
    * @throws Exception
    */
-  public byte[] instrument(final CtClass cc) throws Exception {
-  	return instrument(cc.toBytecode());
+  public byte[] instrument(final ClassNode cc) throws Exception {
+  	throw new UnsupportedOperationException();
   }
 
   public static void main(String[] args) throws Throwable{
@@ -180,7 +175,16 @@ public class Instrumenter {
     dest.getParentFile().mkdirs();
     final InputStream input = new FileInputStream(source);
     try {
-      final OutputStream output = new FileOutputStream(dest);
+      OutputStream output = null;
+      if(dest != null)
+        output = new FileOutputStream(dest);
+      else
+        output = new OutputStream() {
+          @Override
+          public void write(int b) throws IOException {
+
+          }
+        };
       try {
         return this.instrumentToFile(input, output);
       } finally {
@@ -198,9 +202,11 @@ public class Instrumenter {
     int numInstrumentedClasses = 0;
 
     if (source.isDirectory()) {
-      ClassPool.getDefault().appendClassPath(source.getAbsolutePath());
       for (final File child : source.listFiles()) {
-        numInstrumentedClasses += this.instrumentRecursively(child, new File(dest, child.getName()));
+      	if(dest == null)
+          numInstrumentedClasses += this.instrumentRecursively(child, null);
+      	else
+          numInstrumentedClasses += this.instrumentRecursively(child, new File(dest, child.getName()));
       }
     } else {
       numInstrumentedClasses += this.instrument(source, dest);
@@ -254,6 +260,23 @@ public class Instrumenter {
     int len;
     while ((len = input.read(buffer)) != -1) {
       output.write(buffer, 0, len);
+    }
+  }
+
+  public void analyzeRecursively(String buildLocation) throws Exception {
+  	File sourceFile = new File(buildLocation);
+  	instrumentRecursively(sourceFile, null);
+  }
+
+  public void instrument(String classUnderTest) {
+    try {
+    	InputStream is = ClassLoader.getSystemResourceAsStream(classUnderTest.replace('.', '/')
+                + ".class");
+    	instrument(is);
+    	is.close();
+
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 }

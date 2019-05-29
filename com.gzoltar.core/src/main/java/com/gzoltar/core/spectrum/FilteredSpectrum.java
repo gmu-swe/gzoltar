@@ -16,9 +16,7 @@
  */
 package com.gzoltar.core.spectrum;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import com.gzoltar.core.AgentConfigs;
-import com.gzoltar.core.instr.Outcome;
 import com.gzoltar.core.instr.actions.BlackList;
 import com.gzoltar.core.instr.actions.WhiteList;
 import com.gzoltar.core.instr.filter.Filter;
@@ -33,7 +31,8 @@ import com.gzoltar.core.model.Transaction;
 import com.gzoltar.core.runtime.Probe;
 import com.gzoltar.core.runtime.ProbeGroup;
 import com.gzoltar.core.util.ArrayUtils;
-import javassist.Modifier;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.objectweb.asm.Opcodes;
 
 public class FilteredSpectrum {
 
@@ -63,7 +62,7 @@ public class FilteredSpectrum {
     // === Method level filters ===
 
     if (!configs.getInclPublicMethods()) {
-      this.methodFilter.add(new BlackList(new MethodModifierMatcher(Modifier.PUBLIC)));
+      this.methodFilter.add(new BlackList(new MethodModifierMatcher(Opcodes.ACC_PUBLIC)));
     }
 
     if (!configs.getInclStaticConstructors()) {

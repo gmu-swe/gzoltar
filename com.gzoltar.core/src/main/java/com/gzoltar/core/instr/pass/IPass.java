@@ -17,13 +17,13 @@
 package com.gzoltar.core.instr.pass;
 
 import com.gzoltar.core.instr.Outcome;
-import javassist.CtBehavior;
-import javassist.CtClass;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public interface IPass {
 
-  public Outcome transform(final CtClass ctClass) throws Exception;
+  public Outcome transform(final ClassNode ctClass) throws Exception;
 
-  public Outcome transform(final CtClass ctClass, final CtBehavior ctBehavior) throws Exception;
+  public Outcome transform(final ClassNode ctClass, final MethodNode ctBehavior) throws Exception;
 
 }

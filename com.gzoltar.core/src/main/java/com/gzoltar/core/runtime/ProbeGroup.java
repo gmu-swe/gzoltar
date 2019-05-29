@@ -17,8 +17,6 @@
 package com.gzoltar.core.runtime;
 
 import com.gzoltar.core.model.Node;
-import javassist.CtBehavior;
-import javassist.CtClass;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -64,7 +62,7 @@ public final class ProbeGroup {
   }
 
   /**
-   * Returns the correspondent {@link javassist.CtClass} object of a probeGroup.
+   * Returns the correspondent class name of a probeGroup.
    */
   public String getCtClass() {
     return this.ctClass;

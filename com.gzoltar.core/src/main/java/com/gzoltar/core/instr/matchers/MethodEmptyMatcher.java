@@ -16,24 +16,24 @@
  */
 package com.gzoltar.core.instr.matchers;
 
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.CtField;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public class MethodEmptyMatcher implements IMatcher {
 
   @Override
-  public boolean matches(CtClass ctClass) {
+  public boolean matches(ClassNode ctClass) {
     return false;
   }
 
   @Override
-  public boolean matches(CtBehavior ctBehavior) {
-    return ctBehavior.getMethodInfo().getCodeAttribute() == null;
+  public boolean matches(MethodNode ctBehavior) {
+    return ctBehavior.instructions.size() == 0;
   }
 
   @Override
-  public boolean matches(CtField ctField) {
+  public boolean matches(FieldNode ctField) {
     return false;
   }
 

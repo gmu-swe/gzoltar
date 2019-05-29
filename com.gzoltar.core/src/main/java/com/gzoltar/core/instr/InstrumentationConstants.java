@@ -16,8 +16,8 @@
  */
 package com.gzoltar.core.instr;
 
-import javassist.bytecode.AccessFlag;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 /**
  * Constants for byte code instrumentation.
@@ -37,7 +37,7 @@ public final class InstrumentationConstants {
   public static final String SYSTEM_CLASS_FIELD_DESC = "Object ";
 
   public static final int SYSTEM_CLASS_FIELD_ACC =
-      AccessFlag.PUBLIC | AccessFlag.STATIC | AccessFlag.SYNTHETIC | AccessFlag.TRANSIENT;
+      Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC | Opcodes.ACC_SYNTHETIC | Opcodes.ACC_TRANSIENT;
 
   // === Data Field ===
 
@@ -50,10 +50,10 @@ public final class InstrumentationConstants {
   public static final String FIELD_DESC_HUMAN = "int[] ";
 
   public static final int FIELD_ACC =
-      AccessFlag.PRIVATE | AccessFlag.STATIC | AccessFlag.SYNTHETIC | AccessFlag.TRANSIENT;
+          Opcodes.ACC_PRIVATE  | Opcodes.ACC_STATIC | Opcodes.ACC_SYNTHETIC | Opcodes.ACC_TRANSIENT;
 
   public static final int FIELD_INTF_ACC =
-      AccessFlag.PUBLIC | AccessFlag.STATIC | AccessFlag.FINAL | AccessFlag.SYNTHETIC;
+          Opcodes.ACC_PRIVATE  | Opcodes.ACC_STATIC | Opcodes.ACC_SYNTHETIC | Opcodes.ACC_TRANSIENT;
 
   // === Init method ===
 
@@ -72,5 +72,50 @@ public final class InstrumentationConstants {
 
   private InstrumentationConstants() {
     // NO-OP
+  }
+
+
+  static String toJavassistType(Type t)
+  {
+    switch (t.getSort()) {
+      case Type.ARRAY:
+        StringBuilder ret = new StringBuilder();
+        ret.append(toJavassistType(t.getElementType()));
+        for (int i = 0; i < t.getDimensions(); i++)
+          ret.append("[]");
+        return ret.toString();
+      case Type.OBJECT:
+        return t.getInternalName().replace('/', '.');
+      case Type.BOOLEAN:
+        return "boolean";
+      case Type.BYTE:
+        return "byte";
+      case Type.CHAR:
+        return "char";
+      case Type.DOUBLE:
+        return "double";
+      case Type.FLOAT:
+        return "float";
+      case Type.INT:
+        return "int";
+      case Type.LONG:
+        return "long";
+      case Type.SHORT:
+        return "short";
+      default:
+        throw new UnsupportedOperationException();
+    }
+  }
+
+  public static String toJavassistDescriptor(String methodDesc){
+    StringBuilder ret = new StringBuilder();
+    ret.append('(');
+    for(Type t : Type.getArgumentTypes(methodDesc)){
+      ret.append(toJavassistType(t));
+      ret.append(',');
+    }
+    ret.deleteCharAt(ret.length()-1);
+    ret.append(')');
+    return ret.toString();
   }
 }

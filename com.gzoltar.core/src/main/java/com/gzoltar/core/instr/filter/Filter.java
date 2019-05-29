@@ -16,13 +16,14 @@
  */
 package com.gzoltar.core.instr.filter;
 
+import com.gzoltar.core.instr.Outcome;
+import com.gzoltar.core.instr.actions.IAction;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import com.gzoltar.core.instr.Outcome;
-import com.gzoltar.core.instr.actions.IAction;
-import javassist.CtBehavior;
-import javassist.CtClass;
 
 public class Filter implements IFilter {
 
@@ -37,12 +38,12 @@ public class Filter implements IFilter {
   }
 
   @Override
-  public Outcome filter(final CtClass ctClass) {
+  public Outcome filter(final ClassNode ctClass) {
     return this.filter(ctClass, this.actions);
   }
 
   @Override
-  public Outcome filter(final CtBehavior ctBehavior) {
+  public Outcome filter(final MethodNode ctBehavior) {
     return this.filter(ctBehavior, this.actions);
   }
 
@@ -60,10 +61,10 @@ public class Filter implements IFilter {
   }
 
   protected Outcome filter(final Object object, final IAction action) {
-    if (object instanceof CtClass) {
-      return action.getAction((CtClass) object);
-    } else if (object instanceof CtBehavior) {
-      return action.getAction((CtBehavior) object);
+    if (object instanceof ClassNode) {
+      return action.getAction((ClassNode) object);
+    } else if (object instanceof MethodNode) {
+      return action.getAction((MethodNode) object);
     } else {
       throw new IllegalArgumentException(
           "Object of type " + object.getClass().getName() + " is not allowed");

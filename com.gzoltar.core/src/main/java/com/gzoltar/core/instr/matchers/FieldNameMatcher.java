@@ -16,9 +16,9 @@
  */
 package com.gzoltar.core.instr.matchers;
 
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.CtField;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public class FieldNameMatcher extends AbstractWildcardMatcher {
 
@@ -27,8 +27,8 @@ public class FieldNameMatcher extends AbstractWildcardMatcher {
   }
 
   @Override
-  public boolean matches(final CtClass ctClass) {
-    for (CtField ctField : ctClass.getDeclaredFields()) {
+  public boolean matches(final ClassNode ctClass) {
+    for (FieldNode ctField : ctClass.fields) {
       if (this.matches(ctField)) {
         return true;
       }
@@ -37,13 +37,13 @@ public class FieldNameMatcher extends AbstractWildcardMatcher {
   }
 
   @Override
-  public boolean matches(final CtBehavior ctBehavior) {
-    return this.matches(ctBehavior.getDeclaringClass());
+  public boolean matches(final MethodNode ctBehavior) {
+  	throw new UnsupportedOperationException();
   }
 
   @Override
-  public boolean matches(final CtField ctField) {
-    return super.matches(ctField.getName());
+  public boolean matches(final FieldNode ctField) {
+    return super.matches(ctField.name);
   }
 
 }

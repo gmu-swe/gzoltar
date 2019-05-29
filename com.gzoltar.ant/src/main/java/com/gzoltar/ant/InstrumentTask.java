@@ -28,8 +28,6 @@ import org.apache.tools.ant.types.ResourceCollection;
 import org.apache.tools.ant.types.resources.Union;
 import com.gzoltar.core.instr.InstrumentationLevel;
 import com.gzoltar.core.instr.Instrumenter;
-import javassist.ClassPool;
-import javassist.NotFoundException;
 
 /**
  * Task for offline instrumentation of class files.
@@ -82,11 +80,12 @@ public class InstrumentTask extends AbstractCoverageTask {
   }
 
   private void updateClasspath(final String path) throws BuildException {
-    try {
-      ClassPool.getDefault().appendClassPath(path);
-    } catch (NotFoundException e) {
-      throw new BuildException(e);
-    }
+//    try {
+//      ClassPool.getDefault().appendClassPath(path);
+//    } catch (NotFoundException e) {
+//      throw new BuildException(e);
+//    }
+	  throw new UnsupportedOperationException("Offline instrumentation not supported for ASM");
   }
 
   /**

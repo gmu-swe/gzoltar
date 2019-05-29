@@ -16,10 +16,10 @@
  */
 package com.gzoltar.core.instr.matchers;
 
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.bytecode.Descriptor;
+import com.gzoltar.core.instr.InstrumentationConstants;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public class MethodNameMatcher extends AbstractWildcardMatcher {
 
@@ -28,8 +28,8 @@ public class MethodNameMatcher extends AbstractWildcardMatcher {
   }
 
   @Override
-  public boolean matches(final CtClass ctClass) {
-    for (CtBehavior ctBehavior : ctClass.getMethods()) {
+  public boolean matches(final ClassNode ctClass) {
+    for (MethodNode ctBehavior : ctClass.methods) {
       if (this.matches(ctBehavior)) {
         return true;
       }
@@ -38,13 +38,13 @@ public class MethodNameMatcher extends AbstractWildcardMatcher {
   }
 
   @Override
-  public boolean matches(final CtBehavior ctBehavior) {
-    return super.matches(ctBehavior.getName() + Descriptor.toString(ctBehavior.getSignature()));
+  public boolean matches(final MethodNode ctBehavior) {
+    return super.matches(ctBehavior.name + InstrumentationConstants.toJavassistDescriptor(ctBehavior.desc));
   }
 
   @Override
-  public boolean matches(final CtField ctField) {
-    return this.matches(ctField.getDeclaringClass());
+  public boolean matches(final FieldNode ctField) {
+  	throw new UnsupportedOperationException();
   }
 
 }

@@ -17,19 +17,20 @@
 package com.gzoltar.core.instr.matchers;
 
 import static org.junit.Assert.assertTrue;
+
+import com.gzoltar.core.util.ClassTestUtils;
 import org.gzoltar.examples.PublicModifiers;
 import org.junit.Test;
-import javassist.ClassPool;
-import javassist.CtClass;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.ClassNode;
 
 public class TestSuperclassMatcher {
 
-  private final static ClassPool pool = ClassPool.getDefault();
 
   @Test
   public void testSuperclassMatcher() throws Exception {
     SuperclassMatcher superclassMatcher = new SuperclassMatcher("org.gzoltar.*.Abstract*");
-    CtClass ctClass = pool.get(PublicModifiers.class.getCanonicalName());
+    ClassNode ctClass = ClassTestUtils.getClassNode(Type.getInternalName(PublicModifiers.class));
     assertTrue(superclassMatcher.matches(ctClass));
   }
 

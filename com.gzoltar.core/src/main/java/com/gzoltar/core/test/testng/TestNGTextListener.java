@@ -16,11 +16,11 @@
  */
 package com.gzoltar.core.test.testng;
 
+import com.gzoltar.core.listeners.Listener;
+import com.gzoltar.core.test.TestListener;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-import com.gzoltar.core.listeners.Listener;
-import com.gzoltar.core.test.TestListener;
 
 public class TestNGTextListener extends TestListener implements ITestListener {
 

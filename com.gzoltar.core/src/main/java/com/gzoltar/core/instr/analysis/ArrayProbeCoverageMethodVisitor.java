@@ -26,9 +26,10 @@ import com.gzoltar.core.runtime.Probe;
 import com.gzoltar.core.runtime.ProbeGroup;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 
 import java.util.List;
+
+import static com.gzoltar.core.instr.InstrumentationConstants.toJavassistDescriptor;
 
 /**
  * Instruments a method adding probes at each line. The strategy requires the
@@ -98,48 +99,6 @@ public class ArrayProbeCoverageMethodVisitor extends AbstractCoverageStrategy {
 
   }
 
-  static String toJavassistType(Type t)
-  {
-    switch (t.getSort()) {
-      case Type.ARRAY:
-        StringBuilder ret = new StringBuilder();
-        ret.append(toJavassistType(t.getElementType()));
-        for (int i = 0; i < t.getDimensions(); i++)
-          ret.append("[]");
-        return ret.toString();
-      case Type.OBJECT:
-        return t.getInternalName().replace('/', '.');
-      case Type.BOOLEAN:
-        return "boolean";
-      case Type.BYTE:
-        return "byte";
-      case Type.CHAR:
-        return "char";
-      case Type.DOUBLE:
-        return "double";
-      case Type.FLOAT:
-        return "float";
-      case Type.INT:
-        return "int";
-      case Type.LONG:
-        return "long";
-      case Type.SHORT:
-        return "short";
-      default:
-        throw new UnsupportedOperationException();
-    }
-  }
 
-  public static String toJavassistDescriptor(String methodDesc){
-    StringBuilder ret = new StringBuilder();
-    ret.append('(');
-    for(Type t : Type.getArgumentTypes(methodDesc)){
-      ret.append(toJavassistType(t));
-      ret.append(',');
-    }
-    ret.deleteCharAt(ret.length()-1);
-    ret.append(')');
-    return ret.toString();
-  }
 
 }

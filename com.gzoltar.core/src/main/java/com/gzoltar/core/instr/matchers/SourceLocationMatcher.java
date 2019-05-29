@@ -16,11 +16,12 @@
  */
 package com.gzoltar.core.instr.matchers;
 
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
+
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
-import javassist.CtBehavior;
-import javassist.CtClass;
-import javassist.CtField;
 
 public class SourceLocationMatcher implements IMatcher {
 
@@ -38,7 +39,7 @@ public class SourceLocationMatcher implements IMatcher {
   }
 
   @Override
-  public boolean matches(final CtClass ctClass) {
+  public boolean matches(final ClassNode ctClass) {
     if (!this.inclNoLocationClasses && !this.hasSourceLocation(this.protectionDomain)) {
       return false;
     }
@@ -66,13 +67,13 @@ public class SourceLocationMatcher implements IMatcher {
   }
 
   @Override
-  public boolean matches(final CtBehavior ctBehavior) {
-    return this.matches(ctBehavior.getDeclaringClass());
+  public boolean matches(final MethodNode ctBehavior) {
+    throw new UnsupportedOperationException();
   }
 
   @Override
-  public boolean matches(final CtField ctField) {
-    return this.matches(ctField.getDeclaringClass());
+  public boolean matches(final FieldNode ctField) {
+  	throw new UnsupportedOperationException();
   }
 
 }
