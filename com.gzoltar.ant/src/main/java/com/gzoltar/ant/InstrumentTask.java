@@ -26,8 +26,8 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Resource;
 import org.apache.tools.ant.types.ResourceCollection;
 import org.apache.tools.ant.types.resources.Union;
-import com.gzoltar.core.instr.InstrumentationLevel;
-import com.gzoltar.core.instr.Instrumenter;
+import com.gzoltar.internal.core.instr.InstrumentationLevel;
+import com.gzoltar.internal.core.instr.Instrumenter;
 
 /**
  * Task for offline instrumentation of class files.

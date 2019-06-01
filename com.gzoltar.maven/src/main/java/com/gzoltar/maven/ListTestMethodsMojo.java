@@ -27,9 +27,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.jacoco.core.runtime.WildcardMatcher;
-import com.gzoltar.core.test.FindTestMethods;
-import com.gzoltar.core.test.TestMethod;
+import com.gzoltar.internal.core.test.FindTestMethods;
+import com.gzoltar.internal.core.test.TestMethod;
 import com.gzoltar.maven.utils.ClasspathUtils;
 
 @Mojo(name = "list-test-methods", defaultPhase = LifecyclePhase.PROCESS_TEST_CLASSES,
@@ -75,7 +74,7 @@ public class ListTestMethodsMojo extends AbstractMojo {
 
       File testClassesDir = new File(this.project.getBuild().getTestOutputDirectory());
       for (TestMethod testMethod : FindTestMethods.findTestMethodsInPath(testClassesDir,
-          new WildcardMatcher(this.includes))) {
+          this.includes)) {
         testsWriter.println(testMethod.getClassType().name() + "," + testMethod.getLongName());
       }
 

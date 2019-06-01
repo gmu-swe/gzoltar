@@ -17,16 +17,12 @@
 package com.gzoltar.maven;
 
 import java.io.File;
-import java.io.IOException;
-import org.apache.commons.io.FileUtils;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import com.gzoltar.core.AgentConfigs;
-import com.gzoltar.core.instr.InstrumentationLevel;
-import com.gzoltar.core.instr.Instrumenter;
 
 @Mojo(name = "instrument", defaultPhase = LifecyclePhase.PROCESS_CLASSES,
     requiresDependencyResolution = ResolutionScope.TEST,

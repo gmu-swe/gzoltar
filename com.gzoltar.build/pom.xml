@@ -68,6 +68,16 @@
         <role>Developer</role>
       </roles>
     </developer>
+    <developer>
+      <id>jon</id>
+        <name>Jonathan Bell</name>
+      <email>jon@jonbell.net</email>
+      <roles>
+        <role>
+          Re-factored the entire project to use ASM and fixed the gross maven shade setup. Corrected probe instrumentation.
+        </role>
+      </roles>
+    </developer>
   </developers>
 
   <contributors>

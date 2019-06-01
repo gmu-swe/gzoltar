@@ -18,6 +18,7 @@ package com.gzoltar.core.instr.matchers;
 
 import static org.junit.Assert.assertTrue;
 
+import com.gzoltar.internal.core.instr.matchers.MethodAnnotationMatcher;
 import com.gzoltar.core.util.ClassTestUtils;
 import org.gzoltar.examples.DeprecatedAnnotation;
 import org.junit.Test;

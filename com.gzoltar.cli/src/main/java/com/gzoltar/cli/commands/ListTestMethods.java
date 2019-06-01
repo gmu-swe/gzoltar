@@ -22,12 +22,11 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.jacoco.core.runtime.WildcardMatcher;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 import com.gzoltar.cli.Command;
-import com.gzoltar.core.test.FindTestMethods;
-import com.gzoltar.core.test.TestMethod;
+import com.gzoltar.internal.core.test.FindTestMethods;
+import com.gzoltar.internal.core.test.TestMethod;
 import org.objectweb.asm.tree.ClassNode;
 
 /**
@@ -77,7 +76,7 @@ public class ListTestMethods extends Command {
 
     for (File testClassesDir : this.testClassesDirs) {
       for (TestMethod testMethod : FindTestMethods.findTestMethodsInPath(testClassesDir,
-          new WildcardMatcher(this.includes))) {
+          this.includes)) {
         testsWriter.println(testMethod.getClassType().name() + "," + testMethod.getLongName());
       }
     }

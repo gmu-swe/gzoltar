@@ -20,7 +20,7 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import com.gzoltar.core.util.SystemProperties;
+import com.gzoltar.internal.core.util.SystemProperties;
 
 public final class Launcher {
 

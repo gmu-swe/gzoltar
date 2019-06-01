@@ -17,13 +17,16 @@
 package com.gzoltar.core.util;
 
 import static org.junit.Assert.assertEquals;
+
+import com.gzoltar.internal.core.util.VMUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestVMUtils {
 
   @Test
   public void testEmptyClassName() {
-    assertEquals("", VMUtils.toVMName(""));
+    Assert.assertEquals("", VMUtils.toVMName(""));
   }
 
   @Test

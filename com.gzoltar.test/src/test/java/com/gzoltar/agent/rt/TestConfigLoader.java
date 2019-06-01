@@ -19,10 +19,12 @@ package com.gzoltar.agent.rt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import java.util.Properties;
+
+import com.gzoltar.internal.agent.rt.ConfigLoader;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link com.gzoltar.agent.rt.ConfigLoader}
+ * Unit tests for {@link ConfigLoader}
  */
 public class TestConfigLoader {
 

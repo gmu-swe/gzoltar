@@ -24,8 +24,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.reporting.MavenReportException;
 import com.gzoltar.maven.utils.ClasspathUtils;
-import com.gzoltar.report.fl.FaultLocalizationReportBuilder;
-import com.gzoltar.report.fl.config.ConfigFaultLocalizationFamily;
+import com.gzoltar.internal.report.fl.FaultLocalizationReportBuilder;
+import com.gzoltar.internal.report.fl.config.ConfigFaultLocalizationFamily;
 
 @Mojo(name = "fl-report", defaultPhase = LifecyclePhase.VERIFY, threadSafe = true)
 public final class FaultLocalizationReportMojo extends AbstractReportMojo {

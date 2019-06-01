@@ -111,8 +111,8 @@
                   <shadedPattern>com.gzoltar.internal.sfl</shadedPattern>
                 </relocation>
                 <relocation>
-                  <pattern>javassist</pattern>
-                  <shadedPattern>com.gzoltar.internal.javassist</shadedPattern>
+                  <pattern>org.objectweb.asm</pattern>
+                  <shadedPattern>com.gzoltar.internal.org.objectweb.asm</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>org.jacoco</pattern>

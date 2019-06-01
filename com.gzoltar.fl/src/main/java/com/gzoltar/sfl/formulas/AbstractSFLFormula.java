@@ -16,10 +16,10 @@
  */
 package com.gzoltar.sfl.formulas;
 
-import com.gzoltar.core.model.Transaction;
-import com.gzoltar.core.runtime.Probe;
-import com.gzoltar.core.runtime.ProbeGroup;
-import com.gzoltar.core.spectrum.ISpectrum;
+import com.gzoltar.internal.core.model.Transaction;
+import com.gzoltar.internal.core.runtime.Probe;
+import com.gzoltar.internal.core.runtime.ProbeGroup;
+import com.gzoltar.internal.core.spectrum.ISpectrum;
 
 public abstract class AbstractSFLFormula implements ISFLFormula {
 

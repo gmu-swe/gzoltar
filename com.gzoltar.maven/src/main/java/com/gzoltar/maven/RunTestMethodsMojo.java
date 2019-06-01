@@ -27,7 +27,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
-import com.gzoltar.core.util.SystemProperties;
+import com.gzoltar.internal.core.util.SystemProperties;
 import com.gzoltar.maven.utils.ClasspathUtils;
 import com.gzoltar.maven.utils.Launcher;
 
