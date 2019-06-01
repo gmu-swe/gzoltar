@@ -17,6 +17,12 @@
 package com.gzoltar.internal.core.instr;
 
 import com.gzoltar.internal.core.AgentConfigs;
+import com.gzoltar.internal.core.instr.actions.BlackList;
+import com.gzoltar.internal.core.instr.actions.WhiteList;
+import com.gzoltar.internal.core.instr.filter.Filter;
+import com.gzoltar.internal.core.instr.matchers.ClassNameMatcher;
+import com.gzoltar.internal.core.instr.matchers.PrefixMatcher;
+import com.gzoltar.internal.core.instr.matchers.SourceLocationMatcher;
 import com.gzoltar.internal.core.runtime.Collector;
 import com.gzoltar.internal.core.runtime.ProbeGroup;
 import com.gzoltar.internal.core.util.MD5;
@@ -50,6 +56,7 @@ public class Instrumenter {
 
   private final SignatureRemover signatureRemover;
   private final AgentConfigs agentConfigs;
+  private final Filter filter;
 
   /**
    * 
@@ -58,6 +65,24 @@ public class Instrumenter {
   public Instrumenter(final AgentConfigs agentConfigs) {
     this.signatureRemover = new SignatureRemover();
     this.agentConfigs = agentConfigs;
+
+    // exclude *all* GZoltar's runtime classes from instrumentation
+    BlackList excludeGZoltarClasses = new BlackList(new PrefixMatcher("com.gzoltar.internal."));
+
+    // instrument some classes
+    WhiteList includeClasses =
+            new WhiteList(new ClassNameMatcher(agentConfigs.getIncludes()));
+
+    // do not instrument some classes
+    BlackList excludeClasses =
+            new BlackList(new ClassNameMatcher(agentConfigs.getExcludes()));
+
+    // do not instrument some classloaders
+    BlackList excludeClassLoaders =
+            new BlackList(new ClassNameMatcher(agentConfigs.getExclClassloader()));
+
+    this.filter =
+            new Filter(excludeGZoltarClasses, includeClasses, excludeClasses, excludeClassLoaders);
   }
 
   /**
@@ -88,27 +113,35 @@ public class Instrumenter {
    * @throws Exception
    */
   public byte[] instrument(final InputStream sourceStream) throws Exception {
+
     ClassReader cr = new ClassReader(sourceStream);
-    //Check for existing instrumentation
     ClassNode cn = new ClassNode();
     cr.accept(cn, ClassReader.SKIP_CODE);
+
+
     ClassWriter cw = new ClassWriter(cr, 0);
     cr.accept(cw, 0);
     byte[] originalBytes = cw.toByteArray();
+
+    // check whether this class should be instrumented
+    if (this.filter.filter(cn) == Outcome.REJECT) {
+      return originalBytes;
+    }
 
     //Skip all interfaces
     if((cn.access & Opcodes.ACC_INTERFACE) != 0)
       return originalBytes;
 
-    cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS);
+
+    //Check for existing instrumentation
     for(FieldNode each : cn.fields)
     {
       if(each.name.equals(InstrumentationConstants.FIELD_NAME)) {
-        cr.accept(cw,0);
-        return cw.toByteArray();
+      	return originalBytes;
       }
     }
 
+    cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS);
     String hash = MD5.calculateHash(originalBytes);
     ProbeGroup probeGroup = new ProbeGroup(hash, cn.name);
 

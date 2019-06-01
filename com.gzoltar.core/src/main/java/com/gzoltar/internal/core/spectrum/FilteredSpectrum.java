@@ -17,6 +17,7 @@
 package com.gzoltar.internal.core.spectrum;
 
 import com.gzoltar.internal.core.AgentConfigs;
+import com.gzoltar.internal.core.instr.Outcome;
 import com.gzoltar.internal.core.instr.actions.BlackList;
 import com.gzoltar.internal.core.instr.actions.WhiteList;
 import com.gzoltar.internal.core.instr.filter.Filter;
@@ -33,6 +34,8 @@ import com.gzoltar.internal.core.runtime.ProbeGroup;
 import com.gzoltar.internal.core.util.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public class FilteredSpectrum {
 
@@ -94,25 +97,28 @@ public class FilteredSpectrum {
     for (ProbeGroup probeGroup : source.getProbeGroups()) {
       // does 'probeGroup' match any filter?
 
-      //TODO all of these filters are disabled. they should be applied before generating the probegroups
-//      if (this.classFilter.filter(probeGroup.getCtClass()) == Outcome.REJECT) {
-//        continue;
-//      }
+      ClassNode fakeCN = new ClassNode();
+      fakeCN.name = probeGroup.getCtClass();
+      if (this.classFilter.filter(fakeCN) == Outcome.REJECT) {
+        continue;
+      }
 
       ProbeGroup newProbeGroup = new ProbeGroup(probeGroup.getHash(), probeGroup.getCtClass());
 
       Filter granularityMethodFilter = new Filter();
       for (Probe probe : probeGroup.getProbes()) {
         // does 'probe' match any filter?
-//        if (this.methodFilter.filter(probe.getCtBehavior()) == Outcome.REJECT) {
-//          continue;
-//        }
+        MethodNode fakeMN = new MethodNode();
+        fakeMN.name = probe.getMethodName();
+        if (this.methodFilter.filter(fakeMN) == Outcome.REJECT) {
+          continue;
+        }
 
         // === Skip nodes according to a granularity level ===
 
-//        if (granularityMethodFilter.filter(probe.getCtBehavior()) == Outcome.REJECT) {
-//          continue;
-//        }
+        if (granularityMethodFilter.filter(fakeMN) == Outcome.REJECT) {
+          continue;
+        }
 
         newProbeGroup.registerProbe(probe.getNode(), probe.getMethodName(), probe.getMethodDesc());
 

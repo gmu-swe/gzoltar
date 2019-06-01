@@ -52,8 +52,9 @@ public class PrefixMatcher implements IMatcher {
   }
 
   private boolean matchesPrefix(String name) {
+    String nameWithDots = name.replace('/','.');
     for (String p : this.prefix) {
-      if (name.startsWith(p)) {
+      if (nameWithDots.startsWith(p)) {
         return true;
       }
     }

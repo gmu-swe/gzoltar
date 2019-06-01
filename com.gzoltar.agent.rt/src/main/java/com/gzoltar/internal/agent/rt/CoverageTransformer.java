@@ -39,31 +39,12 @@ public class CoverageTransformer implements ClassFileTransformer {
 
   private final boolean inclNoLocationClasses;
 
-  private final Filter filter;
-
   public CoverageTransformer(final AgentConfigs agentConfigs) throws Exception {
     this.instrumenter = new Instrumenter(agentConfigs);
 
     this.buildLocation = new File(agentConfigs.getBuildLocation()).getCanonicalPath();
     this.inclNoLocationClasses = agentConfigs.getInclNoLocationClasses();
 
-    // exclude *all* GZoltar's runtime classes from instrumentation
-    BlackList excludeGZoltarClasses = new BlackList(new PrefixMatcher("com/gzoltar/internal."));
-
-    // instrument some classes
-    WhiteList includeClasses =
-        new WhiteList(new ClassNameMatcher(agentConfigs.getIncludes()));
-
-    // do not instrument some classes
-    BlackList excludeClasses =
-        new BlackList(new ClassNameMatcher(agentConfigs.getExcludes()));
-
-    // do not instrument some classloaders
-    BlackList excludeClassLoaders =
-        new BlackList(new ClassNameMatcher(agentConfigs.getExclClassloader()));
-
-    this.filter =
-        new Filter(excludeGZoltarClasses, includeClasses, excludeClasses, excludeClassLoaders);
   }
 
   public byte[] transform(final ClassLoader loader, final String className,
@@ -75,28 +56,21 @@ public class CoverageTransformer implements ClassFileTransformer {
       return null;
     }
 
+    // only instrument classes under a build location, e.g., target/classes/ or build/classes/
+    SourceLocationMatcher excludeClassesNotInBuildLocation = new SourceLocationMatcher(
+            this.inclNoLocationClasses, this.buildLocation, protectionDomain);
+    ClassNode fakeCN = new ClassNode();
+    fakeCN.name = className;
+    if (!excludeClassesNotInBuildLocation.matches(fakeCN)) {
+      return null;
+    }
+
     if (classBeingRedefined != null) {
       // avoid re-instrumention
       return null;
     }
 
     try {
-      ClassReader cr = new ClassReader(classfileBuffer);
-      ClassNode cn = new ClassNode();
-      cr.accept(cn, ClassReader.SKIP_CODE);
-
-      // only instrument classes under a build location, e.g., target/classes/ or build/classes/
-      SourceLocationMatcher excludeClassesNotInBuildLocation = new SourceLocationMatcher(
-          this.inclNoLocationClasses, this.buildLocation, protectionDomain);
-      if (!excludeClassesNotInBuildLocation.matches(cn)) {
-        return null;
-      }
-
-      // check whether this class should be instrumented
-      if (this.filter.filter(cn) == Outcome.REJECT) {
-        return null;
-      }
-
       return this.instrumenter.instrument(classfileBuffer);
     } catch (Throwable e) {
       e.printStackTrace();
