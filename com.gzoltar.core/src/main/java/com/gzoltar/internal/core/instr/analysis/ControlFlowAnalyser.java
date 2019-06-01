@@ -87,7 +87,6 @@ public class ControlFlowAnalyser {
 
     final int lastInstruction = mn.instructions.size() - 1;
 
-    boolean debug = mn.name.equals("sort");
 
     int blockStart = 0;
     for (int i = 0; i != mn.instructions.size(); i++) {
