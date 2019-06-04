@@ -21,6 +21,7 @@ import com.gzoltar.internal.core.instr.Instrumenter;
 import com.gzoltar.internal.core.model.Transaction;
 import com.gzoltar.internal.core.model.TransactionOutcome;
 import com.gzoltar.internal.core.runtime.Collector;
+import com.gzoltar.internal.core.runtime.ProbeGroup;
 import com.gzoltar.internal.core.util.SerialisationIdentifiers;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -28,6 +29,7 @@ import org.jacoco.core.internal.data.CompactDataInput;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -36,6 +38,8 @@ import static java.lang.String.format;
 public class SpectrumReader {
 
   private final Spectrum spectrum;
+
+  private final HashSet<ProbeGroup> validProbeGroups = new HashSet<>();
 
   private final CompactDataInput in;
 
@@ -72,19 +76,24 @@ public class SpectrumReader {
 
   public boolean read() throws Exception {
     byte type;
-    do {
-      int i = this.in.read();
-      if (i == -1) {
-        return false; // EOF
-      }
-      type = (byte) i;
-      if (this.firstBlock && type != SerialisationIdentifiers.BLOCK_HEADER) {
-        throw new IOException("Invalid spectrum data file.");
-      }
-      this.firstBlock = false;
-    } while (this.readBlock(type));
-    this.in.close();
-    return true;
+    try {
+      do {
+        int i = this.in.read();
+        if (i == -1) {
+          return false; // EOF
+        }
+        type = (byte) i;
+        if (this.firstBlock && type != SerialisationIdentifiers.BLOCK_HEADER) {
+          throw new IOException("Invalid spectrum data file.");
+        }
+        this.firstBlock = false;
+      } while (this.readBlock(type));
+      this.in.close();
+
+      return true;
+    } finally {
+      spectrum.getProbeGroups().retainAll(validProbeGroups);
+    }
   }
 
   private boolean readBlock(final byte blocktype) throws Exception {
@@ -139,6 +148,7 @@ public class SpectrumReader {
           throw new RuntimeException("ProbeGroup '" + probeGroupHash + "' | '" + probeGroupName
                   + "' has not been added to the spectrum instance!");
         }
+        validProbeGroups.add(spectrum.getProbeGroupByHash(probeGroupHash));
         if (spectrum.getProbeGroupByHash(probeGroupHash).getNumberOfProbes() != hitArray.length) {
           throw new RuntimeException("ProbeGroup '" + probeGroupHash + "' | '" + probeGroupName
                   + "' has a different number of probes (" + spectrum.getProbeGroupByHash(probeGroupHash).getNumberOfProbes() + ") than recorded (" + hitArray.length + ")!");
