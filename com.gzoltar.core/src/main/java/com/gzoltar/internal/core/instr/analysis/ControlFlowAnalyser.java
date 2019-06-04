@@ -72,6 +72,15 @@ public class ControlFlowAnalyser {
 
   private static final int LIKELY_NUMBER_OF_LINES_PER_BLOCK = 7;
 
+  private static boolean shouldSkipBlock(AbstractInsnNode insn){
+    if(insn.getType() == AbstractInsnNode.LINE)
+      return false;
+    while(insn.getNext() != null && (insn.getNext().getType() == AbstractInsnNode.FRAME || insn.getNext().getType() == AbstractInsnNode.LABEL))
+    {
+      insn = insn.getNext();
+    }
+    return insn.getNext() != null && insn.getNext().getType() == AbstractInsnNode.LINE;
+  }
   public static List<Block> analyze(final MethodNode mn) {
     final List<Block> blocks = new ArrayList<>(mn.instructions.size());
 
@@ -98,7 +107,7 @@ public class ControlFlowAnalyser {
 //        blockLines.add(lnn.line);
         lastLine = lnn.line;
       }
-      if (jumpTargets.contains(ins) && (blockStart != i)) {
+      if (jumpTargets.contains(ins) && (blockStart != i) && !shouldSkipBlock(ins)){
         if (blockLines.isEmpty() && blocks.size() > 0 && !blocks
             .get(blocks.size() - 1).getLines().isEmpty()) {
           blockLines.addAll(blocks.get(blocks.size() - 1).getLines());
@@ -106,14 +115,16 @@ public class ControlFlowAnalyser {
         blocks.add(new Block(blockStart, i - 1, blockLines));
         blockStart = i;
         blockLines = smallSet();
-      } else if (endsBlock(ins)) {
+      } else if (endsBlock(ins) && !shouldSkipBlock(ins)) {
         if (blockLines.isEmpty() && blocks.size() > 0 && !blocks
             .get(blocks.size() - 1).getLines().isEmpty()) {
           blockLines.addAll(blocks.get(blocks.size() - 1).getLines());
         }
+        if(!blockLines.isEmpty())
         blocks.add(new Block(blockStart, i, blockLines));
         blockStart = i + 1;
         blockLines = smallSet();
+        blockLines.add(lastLine);
       } else if ((lastLine != Integer.MIN_VALUE)) { // && isInstruction(ins)) {
         blockLines.add(lastLine);
       }
@@ -149,7 +160,8 @@ public class ControlFlowAnalyser {
   }
 
   private static boolean endsBlock(final AbstractInsnNode ins) {
-    return (ins instanceof JumpInsnNode) || isReturn(ins) || ins instanceof LineNumberNode;
+    return (ins instanceof JumpInsnNode) || isReturn(ins)
+     || ins instanceof LineNumberNode;
 //        || isMightThrowException(ins);
   }
 

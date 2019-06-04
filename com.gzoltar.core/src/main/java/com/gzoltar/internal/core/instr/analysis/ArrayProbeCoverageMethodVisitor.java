@@ -61,6 +61,7 @@ public class ArrayProbeCoverageMethodVisitor extends AbstractCoverageStrategy {
 
   @Override
   void prepare() {
+    super.visitMethodInsn(Opcodes.INVOKESTATIC, className, InstrumentationConstants.INIT_METHOD_NAME, "()V", false);
   }
 
 

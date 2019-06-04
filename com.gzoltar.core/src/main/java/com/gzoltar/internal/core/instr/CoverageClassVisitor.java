@@ -23,6 +23,7 @@ import com.gzoltar.internal.core.AgentConfigs;
 import com.gzoltar.internal.core.instr.analysis.CoverageAnalyser;
 import com.gzoltar.internal.core.runtime.ProbeGroup;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.GeneratorAdapter;
@@ -109,6 +110,10 @@ public class CoverageClassVisitor extends ClassVisitor {
 		GeneratorAdapter ga = new GeneratorAdapter(mv, InstrumentationConstants.INIT_METHOD_ACC, InstrumentationConstants.INIT_METHOD_NAME, "()V");
 		ga.visitCode();
 
+		ga.visitFieldInsn(Opcodes.GETSTATIC, className, InstrumentationConstants.FIELD_NAME, InstrumentationConstants.FIELD_DESC_BYTECODE);
+		Label done = new Label();
+		ga.visitJumpInsn(Opcodes.IFNONNULL, done);
+
 		ga.push(3);
 		ga.visitTypeInsn(Opcodes.ANEWARRAY, "java/lang/Object");
 
@@ -148,6 +153,8 @@ public class CoverageClassVisitor extends ClassVisitor {
 		ga.visitTypeInsn(Opcodes.CHECKCAST,"[I");
 		ga.visitFieldInsn(Opcodes.PUTSTATIC, className, InstrumentationConstants.FIELD_NAME, InstrumentationConstants.FIELD_DESC_BYTECODE);
 
+		ga.visitLabel(done);
+		ga.visitFrame(Opcodes.F_NEW, 0, new Object[0], 0, new Object[0]);
 		ga.visitInsn(Opcodes.RETURN);
 		ga.visitMaxs(0, 0);
 		ga.visitEnd();
