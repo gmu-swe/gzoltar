@@ -29,7 +29,9 @@ import com.gzoltar.internal.core.instr.matchers.ClassNameMatcher;
 import com.gzoltar.internal.core.instr.matchers.PrefixMatcher;
 import com.gzoltar.internal.core.instr.matchers.SourceLocationMatcher;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.util.TraceClassVisitor;
 
 public class CoverageTransformer implements ClassFileTransformer {
 
@@ -73,6 +75,7 @@ public class CoverageTransformer implements ClassFileTransformer {
     try {
       return this.instrumenter.instrument(classfileBuffer);
     } catch (Throwable e) {
+      System.err.println("Error while instrumenting "+ className);
       e.printStackTrace();
       return null;
     }

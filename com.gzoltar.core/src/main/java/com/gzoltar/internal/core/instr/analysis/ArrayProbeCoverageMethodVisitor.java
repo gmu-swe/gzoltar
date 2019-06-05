@@ -26,6 +26,7 @@ import com.gzoltar.internal.core.runtime.Probe;
 import com.gzoltar.internal.core.runtime.ProbeGroup;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.commons.AnalyzerAdapter;
 
 import java.util.List;
 
@@ -52,11 +53,23 @@ public class ArrayProbeCoverageMethodVisitor extends AbstractCoverageStrategy {
 
   private int probeHitArrayLocal;
 
+  private String formattedNameForProbe;
+  private String formattedDescForProbe;
   public ArrayProbeCoverageMethodVisitor(List<Block> blocks,
-                                         InstructionCounter counter, String className,
-                                         final MethodVisitor writer, final int access, final String name,
+                                         InstructionCounter counter, String className,final AnalyzerAdapter analyzer,
+                                         final MethodVisitor writer, final boolean addFrames, final int access, final String name,
                                          final String desc, final ProbeGroup probeGroup) {
-    super(blocks, counter, className, writer, access, name, desc, probeGroup);
+    super(blocks, counter, className, analyzer, writer, access, addFrames, name, desc, probeGroup);
+    formattedNameForProbe = name;
+    formattedDescForProbe = InstrumentationConstants.toJavassistDescriptor(methodDesc);
+    if(name.equals("<init>"))
+    {
+      //Make it the name of the class
+      String classNameWithoutPackage = className;
+      if (classNameWithoutPackage.contains("/"))
+        classNameWithoutPackage = classNameWithoutPackage.substring(classNameWithoutPackage.lastIndexOf('/') + 1);
+      formattedNameForProbe = classNameWithoutPackage;
+    }
   }
 
   @Override
@@ -71,21 +84,58 @@ public class ArrayProbeCoverageMethodVisitor extends AbstractCoverageStrategy {
   }
 
   @Override
+  void insertDecisionProbe(String decision) {
+    Node node = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line, decision);
+    Probe probe = this.probeGroup.registerProbe(node, formattedNameForProbe, formattedDescForProbe);
+
+    mv.visitFieldInsn(Opcodes.GETSTATIC, className, InstrumentationConstants.FIELD_NAME, InstrumentationConstants.FIELD_DESC_BYTECODE);
+    mv.visitInsn(Opcodes.DUP);
+    pushConstant(probe.getArrayIndex());
+    mv.visitInsn(Opcodes.DUP_X1);
+    mv.visitInsn(Opcodes.IALOAD);
+    mv.visitInsn(Opcodes.ICONST_1);
+    mv.visitInsn(Opcodes.IADD);
+    mv.visitInsn(Opcodes.IASTORE);
+  }
+
+  @Override
+  void insertPostInsnProbe() {
+    Node node = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line, "PostInsnNum"+this.counter.currentInstructionCount());
+    Probe probe = this.probeGroup.registerProbe(node, formattedNameForProbe, formattedDescForProbe);
+
+    mv.visitFieldInsn(Opcodes.GETSTATIC, className, InstrumentationConstants.FIELD_NAME, InstrumentationConstants.FIELD_DESC_BYTECODE);
+    mv.visitInsn(Opcodes.DUP);
+    pushConstant(probe.getArrayIndex());
+    mv.visitInsn(Opcodes.DUP_X1);
+    mv.visitInsn(Opcodes.IALOAD);
+    mv.visitInsn(Opcodes.ICONST_1);
+    mv.visitInsn(Opcodes.IADD);
+    mv.visitInsn(Opcodes.IASTORE);
+
+
+  }
+
+  @Override
+  void insertPreInsnProbe() {
+    Node node = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line, "PreInsnNum"+this.counter.currentInstructionCount());
+    Probe probe = this.probeGroup.registerProbe(node, formattedNameForProbe, formattedDescForProbe);
+
+    mv.visitFieldInsn(Opcodes.GETSTATIC, className, InstrumentationConstants.FIELD_NAME, InstrumentationConstants.FIELD_DESC_BYTECODE);
+    mv.visitInsn(Opcodes.DUP);
+    pushConstant(probe.getArrayIndex());
+    mv.visitInsn(Opcodes.DUP_X1);
+    mv.visitInsn(Opcodes.IALOAD);
+    mv.visitInsn(Opcodes.ICONST_1);
+    mv.visitInsn(Opcodes.IADD);
+    mv.visitInsn(Opcodes.IASTORE);
+
+  }
+
+  @Override
   void insertNormalProbeForLine() {
 
-  	String formattedName = methodName;
-  	if(methodName.equals("<init>"))
-    {
-      //Make it the name of the class
-      String classNameWithoutPackage = className;
-      if (classNameWithoutPackage.contains("/"))
-        classNameWithoutPackage = classNameWithoutPackage.substring(classNameWithoutPackage.lastIndexOf('/') + 1);
-      formattedName = classNameWithoutPackage;
-    }
-
-  	String formattedDesc = InstrumentationConstants.toJavassistDescriptor(methodDesc);
-    Node node = NodeFactory.createNode(className, formattedName, formattedDesc, line);
-    Probe probe = this.probeGroup.registerProbe(node, formattedName, formattedDesc);
+    Node node = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line);
+    Probe probe = this.probeGroup.registerProbe(node, formattedNameForProbe, formattedDescForProbe);
 
     mv.visitFieldInsn(Opcodes.GETSTATIC, className, InstrumentationConstants.FIELD_NAME, InstrumentationConstants.FIELD_DESC_BYTECODE);
     mv.visitInsn(Opcodes.DUP);

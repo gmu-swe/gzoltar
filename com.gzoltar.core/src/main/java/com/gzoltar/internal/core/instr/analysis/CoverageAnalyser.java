@@ -18,7 +18,10 @@ package com.gzoltar.internal.core.instr.analysis;
 import com.gzoltar.internal.core.instr.CoverageClassVisitor;
 import com.gzoltar.internal.core.instr.InstrumentationConstants;
 import com.gzoltar.internal.core.runtime.ProbeGroup;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.commons.AnalyzerAdapter;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import java.util.List;
@@ -36,16 +39,25 @@ public class CoverageAnalyser extends MethodNode {
   private final MethodVisitor mv;
   private final ProbeGroup probeGroup;
   private final String className;
+  private final boolean addFrames;
 
   public CoverageAnalyser(final CoverageClassVisitor parent, final ProbeGroup probeGroup,
-                          final String className, final MethodVisitor mv, final int access,
+                          final String className, final MethodVisitor mv, final int access, final boolean addFrames,
                           final String name, final String desc, final String signature,
                           final String[] exceptions) {
     super(InstrumentationConstants.ASM_VERSION, access, name, desc, signature, exceptions);
     this.mv = mv;
+    this.addFrames = addFrames;
     this.parent = parent;
     this.probeGroup = probeGroup;
     this.className = className;
+  }
+
+  protected LabelNode getLabelNode(Label l) {
+    if (!(l.info instanceof LabelNode)) {
+      l.info = new LabelNode(l);
+    }
+    return (LabelNode)l.info;
   }
 
   @Override
@@ -65,9 +77,10 @@ public class CoverageAnalyser extends MethodNode {
 
       // for now fall back to the naive implementation - could instead use array
       // passing version
+    AnalyzerAdapter analyzerAdapter = new AnalyzerAdapter(className, this.access, this.name, this.desc, this.mv);
       accept(new InstructionTrackingMethodVisitor(
-          new ArrayProbeCoverageMethodVisitor(blocks, counter,this.className,
-              this.mv, this.access, this.name, this.desc, this.probeGroup),
+          new ArrayProbeCoverageMethodVisitor(blocks, counter,this.className, analyzerAdapter,
+              analyzerAdapter, this.addFrames, this.access, this.name, this.desc, this.probeGroup),
               counter));
 
   }

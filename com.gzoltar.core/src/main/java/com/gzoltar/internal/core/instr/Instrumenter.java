@@ -114,7 +114,7 @@ public class Instrumenter {
    */
   public byte[] instrument(final InputStream sourceStream) throws Exception {
 
-    ClassReader cr = new ClassReader(sourceStream);
+    OffsetPreservingClassReader cr = new OffsetPreservingClassReader(sourceStream);
     ClassNode cn = new ClassNode();
     cr.accept(cn, ClassReader.SKIP_CODE);
 

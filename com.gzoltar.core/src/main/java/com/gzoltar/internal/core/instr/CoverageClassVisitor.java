@@ -40,6 +40,7 @@ public class CoverageClassVisitor extends ClassVisitor {
 	private boolean isEnum;
 	private String className;
 	private boolean isInnerClass = false;
+	private boolean addFrames;
 
 	public CoverageClassVisitor(final ClassVisitor writer, final AgentConfigs agentConfigs, final ProbeGroup probeGroup) {
 		super(Opcodes.ASM5, writer);
@@ -64,6 +65,7 @@ public class CoverageClassVisitor extends ClassVisitor {
 		super.visit(version, access, name, signature, superName, interfaces);
 		this.isEnum = (access & Opcodes.ACC_ENUM) != 0;
 		this.className = name;
+		this.addFrames = (version & 0xFFFF) >= Opcodes.V1_7;
 	}
 
 	@Override
@@ -98,7 +100,7 @@ public class CoverageClassVisitor extends ClassVisitor {
 		}
 
 		return new CoverageAnalyser(this, this.probeGroup, this.className,
-				mv, access, name, desc, signature, exceptions);
+				mv, access, addFrames, name, desc, signature, exceptions);
 	}
 
 	@Override
