@@ -75,12 +75,13 @@ public class CoverageAnalyser extends MethodNode {
     // java 7 verifier - hence fall back to a simple but slow approach.
     final DefaultInstructionCounter counter = new DefaultInstructionCounter();
 
+    boolean skipExceptionProbes = this.instructions.size() > 30000;
       // for now fall back to the naive implementation - could instead use array
       // passing version
     AnalyzerAdapter analyzerAdapter = new AnalyzerAdapter(className, this.access, this.name, this.desc, this.mv);
       accept(new InstructionTrackingMethodVisitor(
           new ArrayProbeCoverageMethodVisitor(blocks, counter,this.className, analyzerAdapter,
-              analyzerAdapter, this.addFrames, this.access, this.name, this.desc, this.probeGroup),
+              analyzerAdapter, this.addFrames, this.access, this.name, this.desc, this.probeGroup, skipExceptionProbes),
               counter));
 
   }

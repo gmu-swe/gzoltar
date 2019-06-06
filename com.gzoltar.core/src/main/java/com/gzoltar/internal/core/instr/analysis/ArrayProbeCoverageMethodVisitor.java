@@ -55,11 +55,14 @@ public class ArrayProbeCoverageMethodVisitor extends AbstractCoverageStrategy {
 
   private String formattedNameForProbe;
   private String formattedDescForProbe;
+
+  private boolean skipExceptionProbes;
   public ArrayProbeCoverageMethodVisitor(List<Block> blocks,
-                                         InstructionCounter counter, String className,final AnalyzerAdapter analyzer,
+                                         InstructionCounter counter, String className, final AnalyzerAdapter analyzer,
                                          final MethodVisitor writer, final boolean addFrames, final int access, final String name,
-                                         final String desc, final ProbeGroup probeGroup) {
+                                         final String desc, final ProbeGroup probeGroup, boolean skipExceptionProbes) {
     super(blocks, counter, className, analyzer, writer, access, addFrames, name, desc, probeGroup);
+    this.skipExceptionProbes = skipExceptionProbes;
     formattedNameForProbe = name;
     formattedDescForProbe = InstrumentationConstants.toJavassistDescriptor(methodDesc);
     if(name.equals("<init>"))
@@ -85,6 +88,8 @@ public class ArrayProbeCoverageMethodVisitor extends AbstractCoverageStrategy {
 
   @Override
   void insertDecisionProbe(String decision) {
+  	if(skipExceptionProbes)
+  	  return;
     Node parent = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line);
     parent = this.probeGroup.findNodeByNode(parent);
 
@@ -103,6 +108,8 @@ public class ArrayProbeCoverageMethodVisitor extends AbstractCoverageStrategy {
 
   @Override
   void insertPostInsnProbe() {
+    if(skipExceptionProbes)
+      return;
     Node parent = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line);
     parent = this.probeGroup.findNodeByNode(parent);
     Node node = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line, "ExceptionalInsn"+this.counter.currentInstructionCount(), parent);
@@ -123,6 +130,8 @@ public class ArrayProbeCoverageMethodVisitor extends AbstractCoverageStrategy {
   @Override
   void insertPreInsnProbe() {
 
+    if(skipExceptionProbes)
+      return;
     Node parent = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line);
     parent = this.probeGroup.findNodeByNode(parent);
 
