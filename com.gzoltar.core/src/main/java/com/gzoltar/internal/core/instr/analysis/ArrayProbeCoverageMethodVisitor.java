@@ -85,7 +85,10 @@ public class ArrayProbeCoverageMethodVisitor extends AbstractCoverageStrategy {
 
   @Override
   void insertDecisionProbe(String decision) {
-    Node node = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line, decision);
+    Node parent = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line);
+    parent = this.probeGroup.findNodeByNode(parent);
+
+    Node node = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line, decision, parent);
     Probe probe = this.probeGroup.registerProbe(node, formattedNameForProbe, formattedDescForProbe);
 
     mv.visitFieldInsn(Opcodes.GETSTATIC, className, InstrumentationConstants.FIELD_NAME, InstrumentationConstants.FIELD_DESC_BYTECODE);
@@ -100,7 +103,9 @@ public class ArrayProbeCoverageMethodVisitor extends AbstractCoverageStrategy {
 
   @Override
   void insertPostInsnProbe() {
-    Node node = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line, "PostInsnNum"+this.counter.currentInstructionCount());
+    Node parent = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line);
+    parent = this.probeGroup.findNodeByNode(parent);
+    Node node = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line, "ExceptionalInsn"+this.counter.currentInstructionCount(), parent);
     Probe probe = this.probeGroup.registerProbe(node, formattedNameForProbe, formattedDescForProbe);
 
     mv.visitFieldInsn(Opcodes.GETSTATIC, className, InstrumentationConstants.FIELD_NAME, InstrumentationConstants.FIELD_DESC_BYTECODE);
@@ -109,7 +114,7 @@ public class ArrayProbeCoverageMethodVisitor extends AbstractCoverageStrategy {
     mv.visitInsn(Opcodes.DUP_X1);
     mv.visitInsn(Opcodes.IALOAD);
     mv.visitInsn(Opcodes.ICONST_1);
-    mv.visitInsn(Opcodes.IADD);
+    mv.visitInsn(Opcodes.ISUB);
     mv.visitInsn(Opcodes.IASTORE);
 
 
@@ -117,7 +122,11 @@ public class ArrayProbeCoverageMethodVisitor extends AbstractCoverageStrategy {
 
   @Override
   void insertPreInsnProbe() {
-    Node node = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line, "PreInsnNum"+this.counter.currentInstructionCount());
+
+    Node parent = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line);
+    parent = this.probeGroup.findNodeByNode(parent);
+
+    Node node = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line, "ExceptionalInsn"+this.counter.currentInstructionCount(), parent);
     Probe probe = this.probeGroup.registerProbe(node, formattedNameForProbe, formattedDescForProbe);
 
     mv.visitFieldInsn(Opcodes.GETSTATIC, className, InstrumentationConstants.FIELD_NAME, InstrumentationConstants.FIELD_DESC_BYTECODE);

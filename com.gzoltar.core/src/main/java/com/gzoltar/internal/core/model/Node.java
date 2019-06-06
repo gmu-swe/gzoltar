@@ -21,6 +21,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -38,6 +39,8 @@ public class Node {
   private Node parent;
 
   private final Map<String, Node> children = new LinkedHashMap<String, Node>();
+
+  private final LinkedList<Node> subNodes = new LinkedList<>();
 
   private Map<String, Double> suspiciousnessValues = null;
 
@@ -66,9 +69,11 @@ public class Node {
     this.setParent(parent);
   }
 
-  public Node(String name, int lineNumber, String instructionIdentifier, NodeType type) {
+  public Node(String name, int lineNumber, String instructionIdentifier, NodeType type, final Node parent) {
     this(name, lineNumber, type);
     this.instructionIdentifier = instructionIdentifier;
+    this.parent = parent;
+    parent.subNodes.add(this);
   }
 
   /**
@@ -359,4 +364,45 @@ public class Node {
     return builder.isEquals();
   }
 
+  /*
+  Compare this node's suspiciousness value to its parent and siblings
+   */
+  public boolean shouldPrintInsteadOfParentOrSiblings(String formula) {
+    double mySusp = getSuspiciousnessValue(formula);
+    double parent = getParent().getSuspiciousnessValue(formula);
+    if (mySusp > parent)
+      return true;
+    if(mySusp <= parent)
+      return false;
+    boolean isMax = true;
+    boolean allIseq = true;
+    for (Node sib : getParent().subNodes) {
+      if (sib == this)
+        continue;
+      if (sib.suspiciousnessValues == null)
+        continue;
+      if (sib.getSuspiciousnessValue(formula) > mySusp)
+        isMax = false;
+      if (sib.getSuspiciousnessValue(formula) != mySusp)
+        allIseq = false;
+    }
+    if (allIseq) {
+      //Need to make sure that only 1 child gets printed and not none or all
+	    return getParent().subNodes.get(0) == this;
+    }
+    return isMax;
+
+
+  }
+
+  public boolean shouldPrintInsteadOfChildren(String formula) {
+  	if(subNodes == null)
+  	  return true;
+  	double mySusp = getSuspiciousnessValue(formula);
+  	for(Node child : subNodes){
+  	  if(child.suspiciousnessValues != null && child.getSuspiciousnessValue(formula) > mySusp)
+  	    return false;
+    }
+  	return true;
+  }
 }

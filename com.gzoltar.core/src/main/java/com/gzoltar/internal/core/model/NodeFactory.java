@@ -79,7 +79,7 @@ public final class NodeFactory {
     tree.addNode(node);
   }
 
-  public static Node createNode(String className, String methodName, String methodDesc, int lineNumber, String instructionIdentifier) {
+  public static Node createNode(String className, String methodName, String methodDesc, int lineNumber, String instructionIdentifier, Node parentNode) {
     String packageName;
     if (className.indexOf('/') > 0)
       packageName = className.substring(0, className.lastIndexOf('/'));
@@ -109,7 +109,7 @@ public final class NodeFactory {
     instructionProbeName.append(instructionIdentifier);
 
 
-    return new Node(instructionProbeName.toString(), lineNumber, instructionIdentifier, NodeType.INSTRUCTION);
+    return new Node(instructionProbeName.toString(), lineNumber, instructionIdentifier, NodeType.INSTRUCTION, parentNode);
   }
 
   public static Node createNode(String className, String methodName, String methodDesc, int lineNumber) {

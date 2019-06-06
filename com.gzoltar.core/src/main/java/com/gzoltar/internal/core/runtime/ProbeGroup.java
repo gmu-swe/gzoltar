@@ -124,6 +124,15 @@ public final class ProbeGroup {
     return null;
   }
 
+  public Node findNodeByNode(Node node){
+    for(Probe probe : this.probes)
+    {
+      if(probe.getNode().equals(node))
+        return probe.getNode();
+    }
+    return null;
+  }
+
   // === Nodes ===
 
   /**
