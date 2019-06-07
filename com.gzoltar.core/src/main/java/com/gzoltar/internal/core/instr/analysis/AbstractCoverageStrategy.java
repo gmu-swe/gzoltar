@@ -27,7 +27,6 @@ import org.objectweb.asm.commons.AnalyzerAdapter;
 import org.objectweb.asm.tree.FrameNode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 abstract class AbstractCoverageStrategy extends AdviceAdapter {
@@ -250,6 +249,15 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 		return ret;
 	}
 
+	private FrameNode getCurrentFrameNodeWithoutStackTop() {
+		Object[] locals = removeLongsDoubleTopVal(analyzerAdapter.locals);
+		ArrayList<Object> stack_list = new ArrayList<>(analyzerAdapter.stack);
+		stack_list.remove(stack_list.size() - 1);
+		Object[] stack = removeLongsDoubleTopVal(stack_list);
+		FrameNode ret = new FrameNode(Opcodes.F_NEW, locals.length, locals, stack.length, stack);
+		return ret;
+	}
+
 	@Override
 	public void visitJumpInsn(final int opcode, final Label label) {
 		insertProbeIfAppropriate();
@@ -310,8 +318,9 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 			for (int i = 0; i < oldLabels.length; i++) {
 				newLabels[i] = new Label();
 			}
+			FrameNode curFrame = getCurrentFrameNodeWithoutStackTop();
+			//Remove the top element off of the stack, simulating the tableswitch
 			super.visitTableSwitchInsn(min, max, dflt, newLabels);
-			FrameNode curFrame = getCurrentFrameNode();
 			for (int i = 0; i < newLabels.length; i++) {
 				super.visitLabel(newLabels[i]);
 				if (addFrames)
@@ -334,8 +343,8 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 			for (int i = 0; i < oldLabels.length; i++) {
 				newLabels[i] = new Label();
 			}
+			FrameNode curFrame = getCurrentFrameNodeWithoutStackTop();
 			super.visitLookupSwitchInsn(dflt, keys, labels);
-			FrameNode curFrame = getCurrentFrameNode();
 			for (int i = 0; i < newLabels.length; i++) {
 				super.visitLabel(newLabels[i]);
 				if (addFrames)
