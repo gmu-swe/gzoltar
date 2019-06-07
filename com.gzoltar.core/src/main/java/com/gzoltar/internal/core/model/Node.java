@@ -363,46 +363,4 @@ public class Node {
 
     return builder.isEquals();
   }
-
-  /*
-  Compare this node's suspiciousness value to its parent and siblings
-   */
-  public boolean shouldPrintInsteadOfParentOrSiblings(String formula) {
-    double mySusp = getSuspiciousnessValue(formula);
-    double parent = getParent().getSuspiciousnessValue(formula);
-    if (mySusp > parent)
-      return true;
-    if(mySusp <= parent)
-      return false;
-    boolean isMax = true;
-    boolean allIseq = true;
-    for (Node sib : getParent().subNodes) {
-      if (sib == this)
-        continue;
-      if (sib.suspiciousnessValues == null)
-        continue;
-      if (sib.getSuspiciousnessValue(formula) > mySusp)
-        isMax = false;
-      if (sib.getSuspiciousnessValue(formula) != mySusp)
-        allIseq = false;
-    }
-    if (allIseq) {
-      //Need to make sure that only 1 child gets printed and not none or all
-	    return getParent().subNodes.get(0) == this;
-    }
-    return isMax;
-
-
-  }
-
-  public boolean shouldPrintInsteadOfChildren(String formula) {
-  	if(subNodes == null)
-  	  return true;
-  	double mySusp = getSuspiciousnessValue(formula);
-  	for(Node child : subNodes){
-  	  if(child.suspiciousnessValues != null && child.getSuspiciousnessValue(formula) > mySusp)
-  	    return false;
-    }
-  	return true;
-  }
 }

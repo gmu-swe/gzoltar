@@ -77,7 +77,6 @@ public class ArrayProbeCoverageMethodVisitor extends AbstractCoverageStrategy {
 
   @Override
   void prepare() {
-    super.visitMethodInsn(Opcodes.INVOKESTATIC, className, InstrumentationConstants.INIT_METHOD_NAME, "()V", false);
   }
 
 
@@ -108,7 +107,7 @@ public class ArrayProbeCoverageMethodVisitor extends AbstractCoverageStrategy {
 
   @Override
   void insertPostInsnProbe() {
-    if(skipExceptionProbes)
+    if(skipExceptionProbes || !INSERT_EXTRA_PROBES)
       return;
     Node parent = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line);
     parent = this.probeGroup.findNodeByNode(parent);
@@ -129,8 +128,7 @@ public class ArrayProbeCoverageMethodVisitor extends AbstractCoverageStrategy {
 
   @Override
   void insertPreInsnProbe() {
-
-    if(skipExceptionProbes)
+    if(skipExceptionProbes || !INSERT_EXTRA_PROBES)
       return;
     Node parent = NodeFactory.createNode(className, formattedNameForProbe, formattedDescForProbe, line);
     parent = this.probeGroup.findNodeByNode(parent);

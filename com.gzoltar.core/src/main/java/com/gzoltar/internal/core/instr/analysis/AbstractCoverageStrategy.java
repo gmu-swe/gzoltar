@@ -27,10 +27,12 @@ import org.objectweb.asm.commons.AnalyzerAdapter;
 import org.objectweb.asm.tree.FrameNode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 abstract class AbstractCoverageStrategy extends AdviceAdapter {
 
+	public static final boolean INSERT_EXTRA_PROBES = System.getenv("EXTRA_PROBES") != null;
 	protected final MethodVisitor methodVisitor;
 	protected final ProbeGroup probeGroup;
 	protected final List<Block> blocks;
@@ -40,6 +42,7 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 	protected final String methodDesc;
 	protected final InstructionCounter counter;
 	protected final AnalyzerAdapter analyzerAdapter;
+	protected boolean isUninitConstructor;
 	/**
 	 * label to mark start of try finally block that is added to each method
 	 */
@@ -66,6 +69,7 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 		this.methodDesc = desc;
 		this.analyzerAdapter = analyzer;
 		this.addFrames = addFrames;
+		this.isUninitConstructor = name.equals("<init>");
 	}
 
 	abstract void prepare();
@@ -123,9 +127,9 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 	@Override
 	public void visitFrame(final int type, final int nLocal,
 	                       final Object[] local, final int nStack, final Object[] stack) {
-		insertProbeIfAppropriate();
 		if(this.addFrames)
 			super.visitFrame(type, nLocal, local, nStack, stack);
+		insertProbeIfAppropriate();
 	}
 
 	@Override
@@ -210,6 +214,8 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 	                            final String name, final String desc, boolean itf) {
 		insertProbeIfAppropriate();
 		super.visitMethodInsn(opcode, owner, name, desc, itf);
+		if(isUninitConstructor && opcode == INVOKESPECIAL && name.equals("<init>"))
+			isUninitConstructor = false;
 	}
 
 	@Override
@@ -243,26 +249,34 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 		FrameNode ret = new FrameNode(Opcodes.F_NEW, locals.length, locals, stack.length, stack);
 		return ret;
 	}
+
 	@Override
 	public void visitJumpInsn(final int opcode, final Label label) {
 		insertProbeIfAppropriate();
-		Label newJumpTarget = new Label();
-		Label endOfJumpHandler = new Label();
-		super.visitJumpInsn(opcode, newJumpTarget);
-		FrameNode currFrame = getCurrentFrameNode();
-		//This is the case of branch not taken
-		insertDecisionProbe("BranchNotTaken");
+		if (INSERT_EXTRA_PROBES && !isUninitConstructor && opcode != Opcodes.GOTO) {
+			Label newJumpTarget = new Label();
+			Label endOfJumpHandler = new Label();
+			super.visitJumpInsn(opcode, newJumpTarget);
+			FrameNode currFrame = getCurrentFrameNode();
+			//This is the case of branch not taken
+			insertDecisionProbe("BranchNotTaken");
 
-		super.visitJumpInsn(GOTO, endOfJumpHandler);
-		super.visitLabel(newJumpTarget);
-		if(addFrames)
-			currFrame.accept(this.mv);
+			super.visitJumpInsn(GOTO, endOfJumpHandler);
+			super.visitLabel(newJumpTarget);
+			if (addFrames)
+				currFrame.accept(this.mv);
 
-		insertDecisionProbe("BranchTakenTo" + ((OffsetPreservingLabel)label).getOriginalPosition());
-		super.visitJumpInsn(GOTO, label);
-		super.visitLabel(endOfJumpHandler);
-		if(addFrames)
-			currFrame.accept(this.mv);
+			insertDecisionProbe("BranchTakenTo" + ((OffsetPreservingLabel) label).getOriginalPosition());
+			super.visitJumpInsn(GOTO, label);
+			super.visitLabel(endOfJumpHandler);
+			if (addFrames) {
+				currFrame.accept(this.mv);
+				super.visitInsn(NOP);
+			}
+		} else
+			{
+			super.visitJumpInsn(opcode, label);
+		}
 
 
 	}
@@ -290,14 +304,48 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 	public void visitTableSwitchInsn(final int min, final int max,
 	                                 final Label dflt, final Label... labels) {
 		insertProbeIfAppropriate();
-		super.visitTableSwitchInsn(min, max, dflt, labels);
+		if(INSERT_EXTRA_PROBES) {
+			Label[] oldLabels = labels;
+			Label[] newLabels = new Label[oldLabels.length];
+			for (int i = 0; i < oldLabels.length; i++) {
+				newLabels[i] = new Label();
+			}
+			super.visitTableSwitchInsn(min, max, dflt, newLabels);
+			FrameNode curFrame = getCurrentFrameNode();
+			for (int i = 0; i < newLabels.length; i++) {
+				super.visitLabel(newLabels[i]);
+				if (addFrames)
+					curFrame.accept(this.mv);
+				insertDecisionProbe("SwitchToOffset" + ((OffsetPreservingLabel) oldLabels[i]).getOriginalPosition());
+				super.visitJumpInsn(Opcodes.GOTO, oldLabels[i]);
+			}
+		} else {
+			super.visitTableSwitchInsn(min, max, dflt, labels);
+		}
 	}
 
 	@Override
 	public void visitLookupSwitchInsn(final Label dflt, final int[] keys,
 	                                  final Label[] labels) {
 		insertProbeIfAppropriate();
-		super.visitLookupSwitchInsn(dflt, keys, labels);
+		if (INSERT_EXTRA_PROBES) {
+			Label[] oldLabels = labels;
+			Label[] newLabels = new Label[oldLabels.length];
+			for (int i = 0; i < oldLabels.length; i++) {
+				newLabels[i] = new Label();
+			}
+			super.visitLookupSwitchInsn(dflt, keys, labels);
+			FrameNode curFrame = getCurrentFrameNode();
+			for (int i = 0; i < newLabels.length; i++) {
+				super.visitLabel(newLabels[i]);
+				if (addFrames)
+					curFrame.accept(this.mv);
+				insertDecisionProbe("SwitchToOffset" + ((OffsetPreservingLabel) oldLabels[i]).getOriginalPosition());
+				super.visitJumpInsn(Opcodes.GOTO, oldLabels[i]);
+			}
+		} else {
+			super.visitLookupSwitchInsn(dflt, keys, labels);
+		}
 	}
 
 	@Override

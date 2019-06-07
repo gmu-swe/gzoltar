@@ -130,7 +130,6 @@ public class FaultLocalizationTxtReport implements IFaultLocalizationReportForma
       });
 
       for (Node node : nodes) {
-      	if((node.getParent() == null  && node.shouldPrintInsteadOfChildren(formula.getName())) ||(node.getParent() != null && node.shouldPrintInsteadOfParentOrSiblings(formula.getName())))
           formulaWriter.println(
             node.getNameWithLineNumber() + ";" + node.getSuspiciousnessValue(formula.getName()));
       }

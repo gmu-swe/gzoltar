@@ -34,6 +34,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.util.CheckClassAdapter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -145,8 +146,8 @@ public class Instrumenter {
     String hash = MD5.calculateHash(originalBytes);
     ProbeGroup probeGroup = new ProbeGroup(hash, cn.name);
 
-//    CheckClassAdapter cca = new CheckClassAdapter(cw, false);
-    CoverageClassVisitor cv = new CoverageClassVisitor(cw, agentConfigs, probeGroup);
+    CheckClassAdapter cca = new CheckClassAdapter(cw, false);
+    CoverageClassVisitor cv = new CoverageClassVisitor(cca, agentConfigs, probeGroup);
     cr.accept(cv, ClassReader.EXPAND_FRAMES);
     byte[] ret = cw.toByteArray();
 

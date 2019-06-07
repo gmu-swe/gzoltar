@@ -15,6 +15,7 @@
  */
 package com.gzoltar.internal.core.instr.analysis;
 
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.InsnList;
@@ -107,6 +108,10 @@ public class ControlFlowAnalyser {
 //        blockLines.add(lnn.line);
         lastLine = lnn.line;
       }
+      if(ins instanceof FrameNode){
+        //Correct the last block to not start until after this frame
+        blockStart = i;
+      }
       if (jumpTargets.contains(ins) && (blockStart != i) && !shouldSkipBlock(ins)){
         if (blockLines.isEmpty() && blocks.size() > 0 && !blocks
             .get(blocks.size() - 1).getLines().isEmpty()) {
@@ -160,7 +165,7 @@ public class ControlFlowAnalyser {
   }
 
   private static boolean endsBlock(final AbstractInsnNode ins) {
-    return (ins instanceof JumpInsnNode) || isReturn(ins)
+    return (ins instanceof JumpInsnNode && ins.getOpcode() != Opcodes.GOTO) || isReturn(ins)
      || ins instanceof LineNumberNode;
 //        || isMightThrowException(ins);
   }
