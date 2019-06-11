@@ -73,7 +73,8 @@ public class Node {
     this(name, lineNumber, type);
     this.instructionIdentifier = instructionIdentifier;
     this.parent = parent;
-    parent.subNodes.add(this);
+    if(parent != null)
+      parent.subNodes.add(this);
   }
 
   /**

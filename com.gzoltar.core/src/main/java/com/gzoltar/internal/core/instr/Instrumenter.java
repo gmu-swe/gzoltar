@@ -146,8 +146,8 @@ public class Instrumenter {
     String hash = MD5.calculateHash(originalBytes);
     ProbeGroup probeGroup = new ProbeGroup(hash, cn.name);
 
-    CheckClassAdapter cca = new CheckClassAdapter(cw, false);
-    CoverageClassVisitor cv = new CoverageClassVisitor(cca, agentConfigs, probeGroup);
+//    CheckClassAdapter cca = new CheckClassAdapter(cw, false);
+    CoverageClassVisitor cv = new CoverageClassVisitor(cw, agentConfigs, probeGroup);
     cr.accept(cv, ClassReader.EXPAND_FRAMES);
     byte[] ret = cw.toByteArray();
 

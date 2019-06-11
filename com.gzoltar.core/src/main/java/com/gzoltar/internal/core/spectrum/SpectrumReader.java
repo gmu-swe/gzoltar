@@ -140,20 +140,21 @@ public class SpectrumReader {
         String probeGroupName = in.readUTF();
         int hitArrayLength = in.readVarInt();
         int[] hitArray = new int[hitArrayLength];
-        for(int i = 0; i < hitArrayLength; i++)
-          hitArray[i] = in.readVarInt();
+        if(hitArrayLength > 0) {
+          for (int i = 0; i < hitArrayLength; i++)
+            hitArray[i] = in.readVarInt();
 
-        // sanity checks
-        if (spectrum.getProbeGroupByHash(probeGroupHash) == null) {
-          throw new RuntimeException("ProbeGroup '" + probeGroupHash + "' | '" + probeGroupName
-                  + "' has not been added to the spectrum instance!");
+          // sanity checks
+          if (spectrum.getProbeGroupByHash(probeGroupHash) == null) {
+            throw new RuntimeException("ProbeGroup '" + probeGroupHash + "' | '" + probeGroupName
+                    + "' has not been added to the spectrum instance!");
+          }
+          validProbeGroups.add(spectrum.getProbeGroupByHash(probeGroupHash));
+          if (spectrum.getProbeGroupByHash(probeGroupHash).getNumberOfProbes() != hitArray.length) {
+            throw new RuntimeException("ProbeGroup '" + probeGroupHash + "' | '" + probeGroupName
+                    + "' has a different number of probes (" + spectrum.getProbeGroupByHash(probeGroupHash).getNumberOfProbes() + ") than recorded (" + hitArray.length + ")!");
+          }
         }
-        validProbeGroups.add(spectrum.getProbeGroupByHash(probeGroupHash));
-        if (spectrum.getProbeGroupByHash(probeGroupHash).getNumberOfProbes() != hitArray.length) {
-          throw new RuntimeException("ProbeGroup '" + probeGroupHash + "' | '" + probeGroupName
-                  + "' has a different number of probes (" + spectrum.getProbeGroupByHash(probeGroupHash).getNumberOfProbes() + ") than recorded (" + hitArray.length + ")!");
-        }
-
         activity.put(probeGroupHash, new ImmutablePair<String, int[]>(probeGroupName, hitArray));
         numberActivities--;
       }

@@ -243,6 +243,8 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 	}
 	private FrameNode getCurrentFrameNode()
 	{
+		if(!addFrames)
+			return null;
 		Object[] locals = removeLongsDoubleTopVal(analyzerAdapter.locals);
 		Object[] stack = removeLongsDoubleTopVal(analyzerAdapter.stack);
 		FrameNode ret = new FrameNode(Opcodes.F_NEW, locals.length, locals, stack.length, stack);
@@ -250,6 +252,8 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 	}
 
 	private FrameNode getCurrentFrameNodeWithoutStackTop() {
+		if(!addFrames)
+			return null;
 		Object[] locals = removeLongsDoubleTopVal(analyzerAdapter.locals);
 		ArrayList<Object> stack_list = new ArrayList<>(analyzerAdapter.stack);
 		stack_list.remove(stack_list.size() - 1);
@@ -271,13 +275,13 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 
 			super.visitJumpInsn(GOTO, endOfJumpHandler);
 			super.visitLabel(newJumpTarget);
-			if (addFrames)
+			if (addFrames && isValidFrame(currFrame))
 				currFrame.accept(this.mv);
 
 			insertDecisionProbe("BranchTakenTo" + ((OffsetPreservingLabel) label).getOriginalPosition());
 			super.visitJumpInsn(GOTO, label);
 			super.visitLabel(endOfJumpHandler);
-			if (addFrames) {
+			if (addFrames && isValidFrame(currFrame)){
 				currFrame.accept(this.mv);
 				super.visitInsn(NOP);
 			}
@@ -287,6 +291,18 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 		}
 
 
+	}
+
+	private boolean isValidFrame(FrameNode currFrame) {
+		if (currFrame == null || currFrame.stack == null || currFrame.local == null)
+			return false;
+		for (Object o : currFrame.stack)
+			if (o == null)
+				return false;
+		for (Object o : currFrame.local)
+			if (o == null)
+				return false;
+		return true;
 	}
 
 	@Override
@@ -323,7 +339,7 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 			super.visitTableSwitchInsn(min, max, dflt, newLabels);
 			for (int i = 0; i < newLabels.length; i++) {
 				super.visitLabel(newLabels[i]);
-				if (addFrames)
+				if (addFrames && isValidFrame(curFrame))
 					curFrame.accept(this.mv);
 				insertDecisionProbe("SwitchToOffset" + ((OffsetPreservingLabel) oldLabels[i]).getOriginalPosition());
 				super.visitJumpInsn(Opcodes.GOTO, oldLabels[i]);
@@ -347,7 +363,7 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 			super.visitLookupSwitchInsn(dflt, keys, labels);
 			for (int i = 0; i < newLabels.length; i++) {
 				super.visitLabel(newLabels[i]);
-				if (addFrames)
+				if (addFrames && isValidFrame(curFrame))
 					curFrame.accept(this.mv);
 				insertDecisionProbe("SwitchToOffset" + ((OffsetPreservingLabel) oldLabels[i]).getOriginalPosition());
 				super.visitJumpInsn(Opcodes.GOTO, oldLabels[i]);
