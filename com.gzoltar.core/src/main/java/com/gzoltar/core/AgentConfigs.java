@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
-import org.jacoco.core.runtime.AgentOptions.OutputMode;
 import com.gzoltar.core.instr.InstrumentationLevel;
 import com.gzoltar.core.instr.granularity.GranularityLevel;
 import com.gzoltar.core.util.CommandLineSupport;
