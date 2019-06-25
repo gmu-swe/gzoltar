@@ -50,7 +50,7 @@ public class SuperclassMatcher extends AbstractWildcardMatcher {
   public boolean matches(final ClassNode ctClass) {
     String superClass = ctClass.superName;
     while (superClass != null && !super.matches(superClass.replace('/','.')) && !superClass.equals("java/lang/Object")) {
-      ClassNode cn = classNodeHashMap.get(superClass);
+      ClassNode cn = getOrFindClassNode(superClass);
       if (cn != null) {
         superClass = cn.superName;
       } else {
