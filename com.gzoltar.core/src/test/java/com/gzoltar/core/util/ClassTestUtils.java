@@ -19,6 +19,7 @@ package com.gzoltar.core.util;
 import java.io.IOException;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 
 public class ClassTestUtils {
@@ -32,9 +33,10 @@ public class ClassTestUtils {
     try {
       ClassReader cr = new ClassReader(className);
       ClassNode cn = new ClassNode();
-      cr.accept(cn, 0);
+      cr.accept(cn, ClassReader.SKIP_CODE);
       return cn;
     } catch (IOException e) {
+      System.err.println("Failed to read: " + className);
       e.printStackTrace();
       return null;
     }
@@ -47,19 +49,34 @@ public class ClassTestUtils {
    * @return
    */
   public static MethodNode getMethodNode(final String className, final String methodName) {
-    try {
-      ClassReader cr = new ClassReader(className);
-      ClassNode cn = new ClassNode();
-      cr.accept(cn, 0);
-      for (MethodNode mn : cn.methods) {
-        if (mn.name.equals(methodName)) {
-          return mn;
-        }
-      }
-      return null;
-    } catch (IOException e) {
-      e.printStackTrace();
+    ClassNode cn = getClassNode(className);
+    if (cn == null) {
       return null;
     }
+    for (MethodNode mn : cn.methods) {
+      if (mn.name.equals(methodName)) {
+        return mn;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * 
+   * @param className
+   * @param fieldName
+   * @return
+   */
+  public static FieldNode getFieldNode(final String className, final String fieldName) {
+    ClassNode cn = getClassNode(className);
+    if (cn == null) {
+      return null;
+    }
+    for (FieldNode fn : cn.fields) {
+      if (fn.name.equals(fieldName)) {
+        return fn;
+      }
+    }
+    return null;
   }
 }
