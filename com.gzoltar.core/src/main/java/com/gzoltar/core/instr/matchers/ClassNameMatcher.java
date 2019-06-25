@@ -28,7 +28,7 @@ public class ClassNameMatcher extends AbstractWildcardMatcher {
 
   @Override
   public boolean matches(final ClassNode ctClass) {
-  	String nameWithDots=ctClass.name.replace('/','.');
+    String nameWithDots = ctClass.name.replace('/', '.');
     return super.matches(nameWithDots);
   }
 
@@ -39,7 +39,7 @@ public class ClassNameMatcher extends AbstractWildcardMatcher {
 
   @Override
   public boolean matches(final FieldNode ctField) {
-  	throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
 
 }
