@@ -23,6 +23,7 @@ import com.gzoltar.core.instr.Outcome;
 import com.gzoltar.core.instr.actions.BlackList;
 import com.gzoltar.core.instr.matchers.AndMatcher;
 import com.gzoltar.core.instr.matchers.ClassModifierMatcher;
+import com.gzoltar.core.instr.matchers.MethodAttributeMatcher;
 import com.gzoltar.core.instr.matchers.MethodModifierMatcher;
 import com.gzoltar.core.instr.matchers.NotMatcher;
 import com.gzoltar.core.instr.matchers.OrMatcher;
@@ -39,7 +40,8 @@ public final class SyntheticFilter extends Filter {
 
   private static final BlackList SYNTHETIC_METHOD = new BlackList(new AndMatcher(
       new OrMatcher(new MethodModifierMatcher(Opcodes.ACC_BRIDGE),
-          new MethodModifierMatcher(Opcodes.ACC_SYNTHETIC)),
+          new MethodModifierMatcher(Opcodes.ACC_SYNTHETIC),
+          new MethodAttributeMatcher("Synthetic")),
       new NotMatcher(new PrefixMatcher("lambda$"))));
 
   /**
