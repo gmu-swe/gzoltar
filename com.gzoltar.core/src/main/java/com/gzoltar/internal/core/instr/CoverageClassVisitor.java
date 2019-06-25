@@ -79,6 +79,19 @@ public class CoverageClassVisitor extends ClassVisitor {
 		MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
 		if ((access & Opcodes.ACC_SYNTHETIC) != 0)
 			return mv; //exclude synthetic methods
+
+		//Call INIT method for *all* methods to avoid issues with static inner classes
+		mv = new MethodVisitor(InstrumentationConstants.ASM_VERSION, mv) {
+			@Override
+			public void visitCode() {
+				super.visitCode();
+				super.visitMethodInsn(Opcodes.INVOKESTATIC, className, InstrumentationConstants.INIT_METHOD_NAME, "()V", false);
+			}
+		};
+
+		if(name.equals("<clinit>"))
+			hasClinit = true;
+
 		/**
 		 * Filters methods 'values' and 'valueOf' of enum classes.
 		 */
@@ -87,17 +100,6 @@ public class CoverageClassVisitor extends ClassVisitor {
 		//also skip constructors of anonymous classes
 		if (isInnerClass && name.equals("<init>"))
 			return mv;
-
-		if (name.equals("<clinit>")) {
-			hasClinit = true;
-			mv = new MethodVisitor(InstrumentationConstants.ASM_VERSION, mv) {
-				@Override
-				public void visitCode() {
-					super.visitCode();
-					super.visitMethodInsn(Opcodes.INVOKESTATIC, className, InstrumentationConstants.INIT_METHOD_NAME, "()V", false);
-				}
-			};
-		}
 
 		return new CoverageAnalyser(this, this.probeGroup, this.className,
 				mv, access, addFrames, name, desc, signature, exceptions);
@@ -111,6 +113,10 @@ public class CoverageClassVisitor extends ClassVisitor {
 		MethodVisitor mv = super.visitMethod(InstrumentationConstants.INIT_METHOD_ACC, InstrumentationConstants.INIT_METHOD_NAME, "()V", null, null);
 		GeneratorAdapter ga = new GeneratorAdapter(mv, InstrumentationConstants.INIT_METHOD_ACC, InstrumentationConstants.INIT_METHOD_NAME, "()V");
 		ga.visitCode();
+
+		Label done = new Label();
+		ga.visitFieldInsn(Opcodes.GETSTATIC, className, InstrumentationConstants.FIELD_NAME, InstrumentationConstants.FIELD_DESC_BYTECODE);
+		ga.visitJumpInsn(Opcodes.IFNONNULL, done);
 
 		ga.push(3);
 		ga.visitTypeInsn(Opcodes.ANEWARRAY, "java/lang/Object");
@@ -151,6 +157,8 @@ public class CoverageClassVisitor extends ClassVisitor {
 		ga.visitTypeInsn(Opcodes.CHECKCAST,"[I");
 		ga.visitFieldInsn(Opcodes.PUTSTATIC, className, InstrumentationConstants.FIELD_NAME, InstrumentationConstants.FIELD_DESC_BYTECODE);
 
+		ga.visitLabel(done);
+		ga.visitFrame(Opcodes.F_NEW, 0, new Object[0], 0, new Object[0]);
 		ga.visitInsn(Opcodes.RETURN);
 		ga.visitMaxs(0, 0);
 		ga.visitEnd();
