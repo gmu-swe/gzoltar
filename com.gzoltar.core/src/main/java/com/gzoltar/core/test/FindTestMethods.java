@@ -44,10 +44,6 @@ public abstract class FindTestMethods {
   private static final Filter testClassesFilter =
       new Filter(new WhiteList(new OrMatcher(new JUnitMatcher(), new TestNGMatcher())));
 
-
-  public static List<TestMethod> findTestMethodsInPath(final File path, final String includes) throws IOException, ClassNotFoundException {
-    return findTestMethodsInPath(path, new WildcardMatcher(includes));
-  }
   /**
    * 
    * @param path
