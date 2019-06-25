@@ -183,18 +183,19 @@ abstract class AbstractCoverageStrategy extends AdviceAdapter {
 
 	@Override
 	public void visitTypeInsn(final int opcode, final String type) {
-		insertProbeIfAppropriate();
 		switch (opcode) {
 			case CHECKCAST: //incompatible cast
 				//trigger class initialization
 //    case NEW: //will break powermock :(
 			case NEWARRAY:
+				insertProbeIfAppropriate();
 				insertPreInsnProbe();
 				super.visitTypeInsn(opcode, type);
 				insertPostInsnProbe();
 				break;
 			default:
 				super.visitTypeInsn(opcode, type);
+				insertProbeIfAppropriate();
 				break;
 		}
 	}

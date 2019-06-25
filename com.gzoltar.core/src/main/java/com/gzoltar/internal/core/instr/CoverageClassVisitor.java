@@ -80,15 +80,6 @@ public class CoverageClassVisitor extends ClassVisitor {
 		if ((access & Opcodes.ACC_SYNTHETIC) != 0)
 			return mv; //exclude synthetic methods
 
-		//Call INIT method for *all* methods to avoid issues with static inner classes
-		mv = new MethodVisitor(InstrumentationConstants.ASM_VERSION, mv) {
-			@Override
-			public void visitCode() {
-				super.visitCode();
-				super.visitMethodInsn(Opcodes.INVOKESTATIC, className, InstrumentationConstants.INIT_METHOD_NAME, "()V", false);
-			}
-		};
-
 		if(name.equals("<clinit>"))
 			hasClinit = true;
 
@@ -101,8 +92,16 @@ public class CoverageClassVisitor extends ClassVisitor {
 		if (isInnerClass && name.equals("<init>"))
 			return mv;
 
-		return new CoverageAnalyser(this, this.probeGroup, this.className,
+		CoverageAnalyser coverageAnalyser = new CoverageAnalyser(this, this.probeGroup, this.className,
 				mv, access, addFrames, name, desc, signature, exceptions);
+		//Call INIT method for *all* methods to avoid issues with static inner classes
+		return new MethodVisitor(InstrumentationConstants.ASM_VERSION, coverageAnalyser) {
+			@Override
+			public void visitCode() {
+				super.visitCode();
+				super.visitMethodInsn(Opcodes.INVOKESTATIC, className, InstrumentationConstants.INIT_METHOD_NAME, "()V", false);
+			}
+		};
 	}
 
 	@Override
