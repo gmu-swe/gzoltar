@@ -17,11 +17,11 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package com.gzoltar.internal.core.instr;
+package com.gzoltar.core.instr;
 
-import com.gzoltar.internal.core.AgentConfigs;
-import com.gzoltar.internal.core.instr.analysis.CoverageAnalyser;
-import com.gzoltar.internal.core.runtime.ProbeGroup;
+import com.gzoltar.core.AgentConfigs;
+import com.gzoltar.core.instr.analysis.CoverageAnalyser;
+import com.gzoltar.core.runtime.ProbeGroup;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
