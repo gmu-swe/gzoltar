@@ -16,7 +16,7 @@
  */
 package com.gzoltar.sfl.formulas;
 
-import com.gzoltar.internal.fl.IFormula;
+import com.gzoltar.fl.IFormula;
 
 public interface ISFLFormula extends IFormula {
 

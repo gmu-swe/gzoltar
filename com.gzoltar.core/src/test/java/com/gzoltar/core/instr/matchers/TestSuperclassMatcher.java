@@ -17,21 +17,17 @@
 package com.gzoltar.core.instr.matchers;
 
 import static org.junit.Assert.assertTrue;
-
-import com.gzoltar.internal.core.instr.matchers.SuperclassMatcher;
-import com.gzoltar.core.util.ClassTestUtils;
 import org.gzoltar.examples.PublicModifiers;
 import org.junit.Test;
-import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
+import com.gzoltar.core.util.ClassTestUtils;
 
 public class TestSuperclassMatcher {
-
 
   @Test
   public void testSuperclassMatcher() throws Exception {
     SuperclassMatcher superclassMatcher = new SuperclassMatcher("org.gzoltar.*.Abstract*");
-    ClassNode ctClass = ClassTestUtils.getClassNode(Type.getInternalName(PublicModifiers.class));
+    ClassNode ctClass = ClassTestUtils.getClassNode(PublicModifiers.class.getCanonicalName());
     assertTrue(superclassMatcher.matches(ctClass));
   }
 

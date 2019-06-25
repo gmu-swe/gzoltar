@@ -18,19 +18,17 @@ package com.gzoltar.core.listeners;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.gzoltar.internal.core.listeners.JUnitListener;
 import org.gzoltar.examples.EnumClass;
 import org.gzoltar.examples.tests.TestEnumClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
-import com.gzoltar.internal.core.AgentConfigs;
-import com.gzoltar.internal.core.events.EmptyEventListener;
-import com.gzoltar.internal.core.instr.InstrumentationLevel;
-import com.gzoltar.internal.core.instr.Instrumenter;
-import com.gzoltar.internal.core.instr.granularity.GranularityLevel;
-import com.gzoltar.internal.core.runtime.Collector;
-import com.gzoltar.internal.core.spectrum.ISpectrum;
+import com.gzoltar.core.AgentConfigs;
+import com.gzoltar.core.events.EmptyEventListener;
+import com.gzoltar.core.instr.InstrumentationLevel;
+import com.gzoltar.core.instr.Instrumenter;
+import com.gzoltar.core.instr.granularity.GranularityLevel;
+import com.gzoltar.core.runtime.Collector;
+import com.gzoltar.core.spectrum.ISpectrum;
 
 public class TestJUnitListener {
 

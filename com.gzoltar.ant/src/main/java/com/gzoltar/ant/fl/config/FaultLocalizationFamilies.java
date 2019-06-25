@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import org.apache.tools.ant.types.resources.Union;
-import com.gzoltar.internal.fl.FaultLocalizationFamily;
+import com.gzoltar.fl.FaultLocalizationFamily;
 
 public class FaultLocalizationFamilies extends Union {
 

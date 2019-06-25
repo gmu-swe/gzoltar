@@ -21,8 +21,8 @@ import java.io.PrintStream;
 import java.util.Locale;
 import org.kohsuke.args4j.Option;
 import com.gzoltar.cli.Command;
-import com.gzoltar.internal.core.AgentConfigs;
-import com.gzoltar.internal.core.instr.InstrumentationLevel;
+import com.gzoltar.core.AgentConfigs;
+import com.gzoltar.core.instr.InstrumentationLevel;
 
 /**
  * Base class for creating a report.

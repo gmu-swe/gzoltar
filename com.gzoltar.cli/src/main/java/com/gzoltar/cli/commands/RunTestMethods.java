@@ -25,12 +25,12 @@ import java.net.URLClassLoader;
 import java.util.Properties;
 import org.kohsuke.args4j.Option;
 import com.gzoltar.cli.Command;
-import com.gzoltar.internal.core.test.TestMethod;
-import com.gzoltar.internal.core.test.TestRunner;
-import com.gzoltar.internal.core.test.TestTask;
-import com.gzoltar.internal.core.test.junit.JUnitTestTask;
-import com.gzoltar.internal.core.test.testng.TestNGTestTask;
-import com.gzoltar.internal.core.util.ClassType;
+import com.gzoltar.core.test.TestMethod;
+import com.gzoltar.core.test.TestRunner;
+import com.gzoltar.core.test.TestTask;
+import com.gzoltar.core.test.junit.JUnitTestTask;
+import com.gzoltar.core.test.testng.TestNGTestTask;
+import com.gzoltar.core.util.ClassType;
 
 /**
  * The <code>runTestMethods</code> command.

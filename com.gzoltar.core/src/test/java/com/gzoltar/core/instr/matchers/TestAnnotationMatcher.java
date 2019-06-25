@@ -17,23 +17,40 @@
 package com.gzoltar.core.instr.matchers;
 
 import static org.junit.Assert.assertTrue;
-
-import com.gzoltar.internal.core.instr.matchers.MethodAnnotationMatcher;
-import com.gzoltar.core.util.ClassTestUtils;
 import org.gzoltar.examples.DeprecatedAnnotation;
 import org.junit.Test;
-import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
+import com.gzoltar.core.util.ClassTestUtils;
 
 @SuppressWarnings("deprecation")
 public class TestAnnotationMatcher {
 
   @Test
+  public void testClassDeprecatedMatcher() throws Exception {
+    ClassAnnotationMatcher classAnnotationMatcher =
+        new ClassAnnotationMatcher(Deprecated.class.getCanonicalName());
+    ClassNode ctClass = ClassTestUtils.getClassNode(DeprecatedAnnotation.class.getCanonicalName());
+    assertTrue(classAnnotationMatcher.matches(ctClass));
+  }
+
+  @Test
   public void testMethodDeprecatedMatcher() throws Exception {
     MethodAnnotationMatcher methodAnnotationMatcher =
         new MethodAnnotationMatcher(Deprecated.class.getCanonicalName());
-    MethodNode ctBehavior = ClassTestUtils.getMethodNode(Type.getInternalName(DeprecatedAnnotation.class), "deprecatedMethod");
+    MethodNode ctBehavior = ClassTestUtils
+        .getMethodNode(DeprecatedAnnotation.class.getCanonicalName(), "deprecatedMethod");
     assertTrue(methodAnnotationMatcher.matches(ctBehavior));
+  }
+
+  @Test
+  public void testFieldDeprecatedMatcher() throws Exception {
+    FieldAnnotationMatcher fieldAnnotationMatcher =
+        new FieldAnnotationMatcher(Deprecated.class.getCanonicalName());
+    FieldNode ctField = ClassTestUtils.getFieldNode(DeprecatedAnnotation.class.getCanonicalName(),
+        "deprecatedField");
+    assertTrue(fieldAnnotationMatcher.matches(ctField));
   }
 
 }

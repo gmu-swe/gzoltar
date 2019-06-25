@@ -153,7 +153,7 @@
     <!-- Dependencies versions -->
     <junit.version>4.12</junit.version>
     <testng.version>6.11</testng.version>
-      <asm.version>7.0</asm.version>
+    <asm.version>7.0</asm.version>
     <jacoco.version>0.8.1</jacoco.version>
     <commons-io.version>2.5</commons-io.version>
     <commons-lang.version>3.7</commons-lang.version>
@@ -278,6 +278,10 @@
           <executions>
             <execution>
               <id>check-license-header</id>
+              <!--phase>validate</phase>
+              <goals>
+                <goal>run</goal>
+              </goals-->
               <configuration>
                 <target>
                   <fileset dir="${project.basedir}" includes="**/*.java,**/*.xml,**/*.js,**/*.html" excludes=".git/**,target/**,.idea/**,.style/**" id="missinglicense.fileset">

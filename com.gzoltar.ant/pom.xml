@@ -86,10 +86,10 @@
               <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
               <minimizeJar>true</minimizeJar>
               <relocations>
-                <relocation>
+                <!--relocation>
                   <pattern>com.gzoltar.core</pattern>
                   <shadedPattern>com.gzoltar.internal.core</shadedPattern>
-                </relocation>
+                </relocation-->
                 <relocation>
                   <pattern>org.objectweb.asm</pattern>
                   <shadedPattern>com.gzoltar.internal.org.objectweb.asm</shadedPattern>
@@ -116,6 +116,14 @@
                   </manifestEntries>
                 </transformer>
               </transformers>
+              <filters>
+                <filter>
+                  <artifact>org.ow2.asm:*</artifact>
+                  <excludes>
+                    <exclude>module-info.class</exclude>
+                  </excludes>
+                </filter>
+              </filters>
             </configuration>
           </execution>
         </executions>

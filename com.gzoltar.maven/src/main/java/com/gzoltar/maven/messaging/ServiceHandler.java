@@ -16,10 +16,10 @@
  */
 package com.gzoltar.maven.messaging;
 
-import com.gzoltar.internal.core.events.IEventListener;
-import com.gzoltar.internal.core.events.MultiEventListener;
-import com.gzoltar.internal.core.messaging.Service;
-import com.gzoltar.internal.core.spectrum.SpectrumListener;
+import com.gzoltar.core.events.IEventListener;
+import com.gzoltar.core.events.MultiEventListener;
+import com.gzoltar.core.messaging.Service;
+import com.gzoltar.core.spectrum.SpectrumListener;
 import com.gzoltar.maven.AbstractGZoltarMojo;
 
 public class ServiceHandler implements Service {

@@ -20,11 +20,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.io.File;
-
-import com.gzoltar.internal.core.AgentConfigs;
-import com.gzoltar.internal.core.AgentOutput;
 import org.junit.Test;
-import com.gzoltar.internal.core.instr.granularity.GranularityLevel;
+import com.gzoltar.core.instr.granularity.GranularityLevel;
 
 public class TestAgentConfigs {
 

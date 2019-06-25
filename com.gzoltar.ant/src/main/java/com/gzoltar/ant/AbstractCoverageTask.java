@@ -21,8 +21,8 @@ import java.io.IOException;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import com.gzoltar.agent.AgentJar;
-import com.gzoltar.internal.core.AgentConfigs;
-import com.gzoltar.internal.core.AgentOutput;
+import com.gzoltar.core.AgentConfigs;
+import com.gzoltar.core.AgentOutput;
 
 /**
  * Base class for all coverage tasks that require agent options

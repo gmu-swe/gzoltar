@@ -23,8 +23,8 @@ import org.apache.tools.ant.BuildException;
 import com.gzoltar.ant.AbstractReportTask;
 import com.gzoltar.ant.fl.config.FaultLocalizationFamilies;
 import com.gzoltar.ant.fl.config.FaultLocalizationFamilies.FaultLocalizationFamilyElement;
-import com.gzoltar.internal.report.fl.FaultLocalizationReportBuilder;
-import com.gzoltar.internal.report.fl.config.ConfigFaultLocalizationFamily;
+import com.gzoltar.report.fl.FaultLocalizationReportBuilder;
+import com.gzoltar.report.fl.config.ConfigFaultLocalizationFamily;
 
 /**
  * Fault localization report
