@@ -16,6 +16,8 @@
  */
 package com.gzoltar.core.instr.matchers;
 
+import java.io.IOException;
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -30,10 +32,17 @@ public class SuperclassMatcher extends AbstractWildcardMatcher {
   public boolean matches(final ClassNode ctClass) {
     String superClass = ctClass.superName;
     while (superClass != null && !superClass.equals("java/lang/Object")) {
-      if (super.matches(superClass.replace('/', '.'))) {
-        return true;
+      try {
+        ClassReader cr = new ClassReader(superClass);
+        ClassNode cn = new ClassNode();
+        cr.accept(cn, ClassReader.SKIP_CODE);
+        if (this.matches(cn.name.replace('/', '.'))) {
+          return true;
+        }
+        superClass = cn.superName;
+      } catch (IOException e) {
+        // NO-OP
       }
-      superClass = ctClass.superName;
     }
     return false;
   }
