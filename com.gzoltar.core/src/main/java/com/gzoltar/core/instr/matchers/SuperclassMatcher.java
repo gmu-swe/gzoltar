@@ -41,7 +41,7 @@ public class SuperclassMatcher extends AbstractWildcardMatcher {
         }
         superClass = cn.superName;
       } catch (IOException e) {
-        // NO-OP
+        break; // give up
       }
     }
     return false;
