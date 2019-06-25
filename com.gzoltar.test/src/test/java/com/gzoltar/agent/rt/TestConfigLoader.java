@@ -20,8 +20,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import java.util.Properties;
 
-import com.gzoltar.internal.agent.rt.ConfigLoader;
 import org.junit.Test;
+
+import com.gzoltar.agent.rt.ConfigLoader;
 
 /**
  * Unit tests for {@link ConfigLoader}

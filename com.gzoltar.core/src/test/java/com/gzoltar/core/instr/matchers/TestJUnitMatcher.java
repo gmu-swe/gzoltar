@@ -19,8 +19,9 @@ package com.gzoltar.core.instr.matchers;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import com.gzoltar.core.instr.matchers.JUnitMatcher;
 import com.gzoltar.core.util.ClassTestUtils;
-import com.gzoltar.internal.core.instr.matchers.JUnitMatcher;
+
 import org.gzoltar.examples.tests.AbstractTestClass;
 import org.gzoltar.examples.tests.ChildTestClassWithTestCases;
 import org.gzoltar.examples.tests.ChildTestClassWithoutTestCases;

@@ -19,13 +19,14 @@ package com.gzoltar.cli.commands;
 import java.util.Arrays;
 import java.util.Locale;
 import org.kohsuke.args4j.Option;
-import com.gzoltar.internal.core.instr.granularity.GranularityLevel;
-import com.gzoltar.internal.fl.FaultLocalizationFamily;
-import com.gzoltar.internal.report.ReportFormatter;
-import com.gzoltar.internal.report.fl.FaultLocalizationReportBuilder;
-import com.gzoltar.internal.report.fl.FaultLocalizationReportFormatterFactory;
-import com.gzoltar.internal.report.fl.config.ConfigFaultLocalizationFamily;
-import com.gzoltar.internal.report.metrics.Metric;
+
+import com.gzoltar.core.instr.granularity.GranularityLevel;
+import com.gzoltar.fl.FaultLocalizationFamily;
+import com.gzoltar.report.ReportFormatter;
+import com.gzoltar.report.fl.FaultLocalizationReportBuilder;
+import com.gzoltar.report.fl.FaultLocalizationReportFormatterFactory;
+import com.gzoltar.report.fl.config.ConfigFaultLocalizationFamily;
+import com.gzoltar.report.metrics.Metric;
 import com.gzoltar.sfl.SFLFormulas;
 
 /**

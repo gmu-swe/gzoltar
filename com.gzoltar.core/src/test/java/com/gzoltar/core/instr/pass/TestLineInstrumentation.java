@@ -16,14 +16,15 @@
  */
 package com.gzoltar.core.instr.pass;
 
-import com.gzoltar.internal.core.AgentConfigs;
-import com.gzoltar.internal.core.events.EmptyEventListener;
-import com.gzoltar.internal.core.instr.InstrumentationLevel;
-import com.gzoltar.internal.core.instr.Instrumenter;
-import com.gzoltar.internal.core.instr.granularity.GranularityLevel;
-import com.gzoltar.internal.core.model.Node;
-import com.gzoltar.internal.core.runtime.Collector;
-import com.gzoltar.internal.core.spectrum.ISpectrum;
+import com.gzoltar.core.AgentConfigs;
+import com.gzoltar.core.events.EmptyEventListener;
+import com.gzoltar.core.instr.InstrumentationLevel;
+import com.gzoltar.core.instr.Instrumenter;
+import com.gzoltar.core.instr.granularity.GranularityLevel;
+import com.gzoltar.core.model.Node;
+import com.gzoltar.core.runtime.Collector;
+import com.gzoltar.core.spectrum.ISpectrum;
+
 import org.gzoltar.examples.AbstractClass;
 import org.gzoltar.examples.AnonymousClass;
 import org.gzoltar.examples.DeprecatedAnnotation;

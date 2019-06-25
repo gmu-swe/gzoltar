@@ -18,9 +18,10 @@ package com.gzoltar.sfl;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.gzoltar.internal.core.spectrum.ISpectrum;
-import com.gzoltar.internal.fl.IFaultLocalization;
-import com.gzoltar.internal.fl.IFormula;
+
+import com.gzoltar.core.spectrum.ISpectrum;
+import com.gzoltar.fl.IFaultLocalization;
+import com.gzoltar.fl.IFormula;
 
 /**
  * Spectrum-based Fault Localization

@@ -18,9 +18,10 @@ package com.gzoltar.core.util;
 
 import static org.junit.Assert.assertEquals;
 
-import com.gzoltar.internal.core.util.VMUtils;
 import org.junit.Assert;
 import org.junit.Test;
+
+import com.gzoltar.core.util.VMUtils;
 
 public class TestVMUtils {
 

@@ -19,8 +19,9 @@ package com.gzoltar.core.instr.matchers;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.gzoltar.internal.core.instr.matchers.ClassNameMatcher;
 import org.junit.Test;
+
+import com.gzoltar.core.instr.matchers.ClassNameMatcher;
 
 public class TestWildcardMatcher {
 

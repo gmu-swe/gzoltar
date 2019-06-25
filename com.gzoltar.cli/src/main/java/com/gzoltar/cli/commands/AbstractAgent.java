@@ -18,8 +18,8 @@ package com.gzoltar.cli.commands;
 
 import java.io.PrintStream;
 import com.gzoltar.cli.Command;
-import com.gzoltar.internal.core.AgentConfigs;
-import com.gzoltar.internal.core.AgentOutput;
+import com.gzoltar.core.AgentConfigs;
+import com.gzoltar.core.AgentOutput;
 
 public abstract class AbstractAgent extends Command {
 

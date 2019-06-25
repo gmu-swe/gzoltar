@@ -90,7 +90,7 @@
               <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
               <minimizeJar>true</minimizeJar>
               <relocations>
-                <relocation>
+                <!--relocation>
                   <pattern>com.gzoltar.agent.rt</pattern>
                   <shadedPattern>com.gzoltar.internal.agent.rt</shadedPattern>
                 </relocation>
@@ -109,7 +109,7 @@
                 <relocation>
                   <pattern>com.gzoltar.sfl</pattern>
                   <shadedPattern>com.gzoltar.internal.sfl</shadedPattern>
-                </relocation>
+                </relocation-->
                 <relocation>
                   <pattern>org.objectweb.asm</pattern>
                   <shadedPattern>com.gzoltar.internal.org.objectweb.asm</shadedPattern>
