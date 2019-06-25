@@ -17,7 +17,6 @@
 package com.gzoltar.agent.rt;
 
 import java.lang.instrument.Instrumentation;
-
 import com.gzoltar.core.AgentConfigs;
 import com.gzoltar.core.instr.InstrumentationConstants;
 import com.gzoltar.core.instr.InstrumentationLevel;

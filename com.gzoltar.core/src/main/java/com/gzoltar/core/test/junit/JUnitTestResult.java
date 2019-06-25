@@ -17,7 +17,6 @@
 package com.gzoltar.core.test.junit;
 
 import org.junit.runner.Result;
-
 import com.gzoltar.core.test.TestResult;
 
 public class JUnitTestResult extends TestResult {

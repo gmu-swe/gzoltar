@@ -33,12 +33,11 @@ public class ClassModifierMatcher extends AbstractModifierMatcher {
 
   @Override
   public boolean matches(final MethodNode ctBehavior) {
-  	throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public boolean matches(final FieldNode ctField) {
-  	throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
-
 }

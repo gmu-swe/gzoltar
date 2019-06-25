@@ -22,9 +22,7 @@ import java.util.regex.Pattern;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitResultFormatter;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest;
-
 import com.gzoltar.core.listeners.Listener;
-
 import junit.framework.AssertionFailedError;
 import junit.framework.Test;
 

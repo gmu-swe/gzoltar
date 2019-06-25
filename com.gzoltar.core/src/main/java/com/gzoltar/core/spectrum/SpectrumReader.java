@@ -16,6 +16,15 @@
  */
 package com.gzoltar.core.spectrum;
 
+import static java.lang.String.format;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jacoco.core.internal.data.CompactDataInput;
 import com.gzoltar.core.AgentConfigs;
 import com.gzoltar.core.instr.Instrumenter;
 import com.gzoltar.core.model.Transaction;
@@ -23,18 +32,6 @@ import com.gzoltar.core.model.TransactionOutcome;
 import com.gzoltar.core.runtime.Collector;
 import com.gzoltar.core.runtime.ProbeGroup;
 import com.gzoltar.core.util.SerialisationIdentifiers;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jacoco.core.internal.data.CompactDataInput;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import static java.lang.String.format;
 
 public class SpectrumReader {
 
@@ -126,9 +123,9 @@ public class SpectrumReader {
   private final class TransactionDeserialize {
 
     /**
-     * Deserialises and create an instance of {@link Transaction}.
+     * Deserialises and create an instance of {@link com.gzoltar.core.model.Transaction}.
      * 
-     * @return a {@link Transaction} object
+     * @return a {@link com.gzoltar.core.model.Transaction} object
      * @throws IOException
      */
     public Transaction deserialize() throws IOException, CloneNotSupportedException {

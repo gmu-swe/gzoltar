@@ -18,7 +18,6 @@ package com.gzoltar.report.fl;
 
 import java.io.File;
 import java.util.List;
-
 import com.gzoltar.fl.IFormula;
 import com.gzoltar.report.AbstractReport;
 import com.gzoltar.report.metrics.IMetric;

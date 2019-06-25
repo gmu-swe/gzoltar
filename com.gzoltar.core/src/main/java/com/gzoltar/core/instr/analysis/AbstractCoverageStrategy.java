@@ -15,10 +15,8 @@
  */
 package com.gzoltar.core.instr.analysis;
 
-import com.gzoltar.core.instr.InstrumentationConstants;
-import com.gzoltar.core.instr.OffsetPreservingLabel;
-import com.gzoltar.core.runtime.ProbeGroup;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
@@ -26,9 +24,9 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.AdviceAdapter;
 import org.objectweb.asm.commons.AnalyzerAdapter;
 import org.objectweb.asm.tree.FrameNode;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.gzoltar.core.instr.InstrumentationConstants;
+import com.gzoltar.core.instr.OffsetPreservingLabel;
+import com.gzoltar.core.runtime.ProbeGroup;
 
 abstract class AbstractCoverageStrategy extends AdviceAdapter {
 

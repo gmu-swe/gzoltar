@@ -19,21 +19,10 @@ package com.gzoltar.agent.rt;
 import java.io.File;
 import java.lang.instrument.ClassFileTransformer;
 import java.security.ProtectionDomain;
-
+import org.objectweb.asm.tree.ClassNode;
 import com.gzoltar.core.AgentConfigs;
 import com.gzoltar.core.instr.Instrumenter;
-import com.gzoltar.core.instr.Outcome;
-import com.gzoltar.core.instr.actions.BlackList;
-import com.gzoltar.core.instr.actions.WhiteList;
-import com.gzoltar.core.instr.filter.Filter;
-import com.gzoltar.core.instr.matchers.ClassNameMatcher;
-import com.gzoltar.core.instr.matchers.PrefixMatcher;
 import com.gzoltar.core.instr.matchers.SourceLocationMatcher;
-
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.util.TraceClassVisitor;
 
 public class CoverageTransformer implements ClassFileTransformer {
 

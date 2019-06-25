@@ -19,16 +19,17 @@ package com.gzoltar.core.instr.matchers;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
-
 import com.gzoltar.core.instr.InstrumentationConstants;
 
 public class DuplicateCollectorReferenceMatcher implements IMatcher {
 
   @Override
   public boolean matches(final ClassNode ctClass) {
-    for (MethodNode ctBehavior : ctClass.methods) {
-      if (this.matches(ctBehavior)) {
-        return true;
+    if (ctClass.methods != null) {
+      for (MethodNode ctBehavior : ctClass.methods) {
+        if (this.matches(ctBehavior)) {
+          return true;
+        }
       }
     }
     return false;

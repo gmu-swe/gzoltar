@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-
 import com.gzoltar.report.AbstractReportFormatter;
 import com.gzoltar.report.ReportFormatter;
 import com.gzoltar.report.fl.formatter.html.HTMLViews;

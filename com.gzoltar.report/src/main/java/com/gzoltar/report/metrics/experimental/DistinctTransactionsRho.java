@@ -19,7 +19,6 @@ package com.gzoltar.report.metrics.experimental;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import com.gzoltar.core.model.Node;
 import com.gzoltar.core.model.Transaction;
 import com.gzoltar.core.spectrum.ISpectrum;

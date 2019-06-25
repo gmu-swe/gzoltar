@@ -16,16 +16,13 @@
  */
 package com.gzoltar.core.test.junit;
 
-import com.gzoltar.core.listeners.JUnitListener;
-import com.gzoltar.core.test.TestMethod;
-import com.gzoltar.core.test.TestTask;
-import com.gzoltar.core.util.IsolatingClassLoader;
-
+import java.net.URL;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.notification.RunListener;
-
-import java.net.URL;
+import com.gzoltar.core.test.TestMethod;
+import com.gzoltar.core.test.TestTask;
+import com.gzoltar.core.util.IsolatingClassLoader;
 
 public class JUnitTestTask extends TestTask {
 
@@ -58,9 +55,9 @@ public class JUnitTestTask extends TestTask {
     if (this.collectCoverage) {
       if (this.offline) {
         runner.addListener((RunListener) Class
-            .forName("com.gzoltar.internal.core.listeners.JUnitListener", false, classLoader).newInstance());
+            .forName("com.gzoltar.core.listeners.JUnitListener", false, classLoader).newInstance());
       } else {
-        runner.addListener(new JUnitListener());
+        runner.addListener(new com.gzoltar.core.listeners.JUnitListener());
       }
     }
     JUnitTestResult result = new JUnitTestResult(runner.run(request));

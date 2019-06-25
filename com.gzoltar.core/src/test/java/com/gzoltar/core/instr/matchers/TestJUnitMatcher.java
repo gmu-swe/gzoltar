@@ -18,10 +18,6 @@ package com.gzoltar.core.instr.matchers;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import com.gzoltar.core.instr.matchers.JUnitMatcher;
-import com.gzoltar.core.util.ClassTestUtils;
-
 import org.gzoltar.examples.tests.AbstractTestClass;
 import org.gzoltar.examples.tests.ChildTestClassWithTestCases;
 import org.gzoltar.examples.tests.ChildTestClassWithoutTestCases;
@@ -30,6 +26,7 @@ import org.gzoltar.examples.tests.JUnitClassWithInnerClass.SomeStaticInnerClass;
 import org.junit.Test;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
+import com.gzoltar.core.util.ClassTestUtils;
 
 public class TestJUnitMatcher {
 

@@ -16,11 +16,10 @@
  */
 package com.gzoltar.core.instr.matchers;
 
+import java.lang.reflect.Modifier;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
-
-import java.lang.reflect.Modifier;
 
 public class JUnitMatcher implements IMatcher {
 

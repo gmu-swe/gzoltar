@@ -18,7 +18,6 @@ package com.gzoltar.report.fl.config;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.gzoltar.fl.FaultLocalizationFamily;
 import com.gzoltar.report.IReportFormatter;
 import com.gzoltar.report.metrics.Metric;

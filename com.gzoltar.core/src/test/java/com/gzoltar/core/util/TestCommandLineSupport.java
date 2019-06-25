@@ -18,17 +18,13 @@ package com.gzoltar.core.util;
 
 import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
-
-import org.junit.Assert;
 import org.junit.Test;
-
-import com.gzoltar.core.util.CommandLineSupport;
 
 public class TestCommandLineSupport {
 
   @Test
   public void testQuote1() {
-    Assert.assertEquals("aBc", CommandLineSupport.quote("aBc"));
+    assertEquals("aBc", CommandLineSupport.quote("aBc"));
   }
 
   @Test

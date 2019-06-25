@@ -16,13 +16,12 @@
  */
 package com.gzoltar.core.instr.matchers;
 
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.MethodNode;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public class PrefixMatcher implements IMatcher {
 
@@ -52,7 +51,7 @@ public class PrefixMatcher implements IMatcher {
   }
 
   private boolean matchesPrefix(String name) {
-    String nameWithDots = name.replace('/','.');
+    String nameWithDots = name.replace('/', '.');
     for (String p : this.prefix) {
       if (nameWithDots.startsWith(p)) {
         return true;

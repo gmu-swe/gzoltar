@@ -17,13 +17,11 @@
 package com.gzoltar.core.instr.matchers;
 
 import static org.junit.Assert.assertTrue;
-
-import com.gzoltar.core.instr.matchers.MethodAnnotationMatcher;
-import com.gzoltar.core.util.ClassTestUtils;
 import org.gzoltar.examples.DeprecatedAnnotation;
 import org.junit.Test;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.MethodNode;
+import com.gzoltar.core.util.ClassTestUtils;
 
 @SuppressWarnings("deprecation")
 public class TestAnnotationMatcher {

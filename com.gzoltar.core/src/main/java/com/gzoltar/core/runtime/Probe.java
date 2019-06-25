@@ -18,7 +18,6 @@ package com.gzoltar.core.runtime;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.gzoltar.core.model.Node;
 
 public final class Probe {
@@ -31,7 +30,7 @@ public final class Probe {
   private final String methodDesc;
 
   /**
-   * Creates a new {@link Probe} object.
+   * Creates a new {@link com.gzoltar.core.runtime.Probe} object.
    * 
    * @param arrayIndex
    * @param node
@@ -51,7 +50,7 @@ public final class Probe {
   }
 
   /**
-   * Returns the correspondent {@link Node} object.
+   * Returns the correspondent {@link com.gzoltar.core.model.Node} object.
    */
   public Node getNode() {
     return this.node;

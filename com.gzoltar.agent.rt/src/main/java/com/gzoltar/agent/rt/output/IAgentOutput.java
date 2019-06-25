@@ -17,7 +17,6 @@
 package com.gzoltar.agent.rt.output;
 
 import java.io.IOException;
-
 import com.gzoltar.core.model.Transaction;
 import com.gzoltar.core.spectrum.ISpectrum;
 
@@ -26,7 +25,7 @@ public interface IAgentOutput {
   /**
    * Write a spectrum instance to a location determined by the agent controller.
    * 
-   * @param spectrum a {@link ISpectrum} object
+   * @param spectrum a {@link com.gzoltar.core.spectrum.ISpectrum} object
    * @throws Exception in case writing fails
    */
   public void writeSpectrum(final ISpectrum spectrum) throws Exception;
@@ -34,7 +33,7 @@ public interface IAgentOutput {
   /**
    * Write a transaction instance to a location determined by the agent controller.
    * 
-   * @param transaction a {@link Transaction} object
+   * @param transaction a {@link com.gzoltar.core.model.Transaction} object
    * @throws IOException in case writing fails
    */
   public void writeTransaction(final Transaction transaction) throws IOException;

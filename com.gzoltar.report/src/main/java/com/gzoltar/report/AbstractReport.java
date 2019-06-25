@@ -19,7 +19,6 @@ package com.gzoltar.report;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
 import com.gzoltar.core.spectrum.ISpectrum;
 import com.gzoltar.report.metrics.IMetric;
 

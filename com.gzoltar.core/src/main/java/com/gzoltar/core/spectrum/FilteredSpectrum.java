@@ -16,6 +16,10 @@
  */
 package com.gzoltar.core.spectrum;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
 import com.gzoltar.core.AgentConfigs;
 import com.gzoltar.core.instr.Outcome;
 import com.gzoltar.core.instr.actions.BlackList;
@@ -32,11 +36,6 @@ import com.gzoltar.core.model.Transaction;
 import com.gzoltar.core.runtime.Probe;
 import com.gzoltar.core.runtime.ProbeGroup;
 import com.gzoltar.core.util.ArrayUtils;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.MethodNode;
 
 public class FilteredSpectrum {
 
@@ -80,7 +79,7 @@ public class FilteredSpectrum {
   }
 
   /**
-   * Returns a filtered {@link ISpectrum} object according to user's
+   * Returns a filtered {@link com.gzoltar.core.spectrum.ISpectrum} object according to user's
    * preferences.
    * 
    * @param source
@@ -97,7 +96,6 @@ public class FilteredSpectrum {
 
     for (ProbeGroup probeGroup : source.getProbeGroups()) {
       // does 'probeGroup' match any filter?
-
       ClassNode fakeCN = new ClassNode();
       fakeCN.name = probeGroup.getCtClass();
       if (this.classFilter.filter(fakeCN) == Outcome.REJECT) {

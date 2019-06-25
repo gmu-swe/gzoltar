@@ -16,27 +16,6 @@
  */
 package com.gzoltar.core.instr;
 
-import com.gzoltar.core.AgentConfigs;
-import com.gzoltar.core.instr.actions.BlackList;
-import com.gzoltar.core.instr.actions.WhiteList;
-import com.gzoltar.core.instr.filter.Filter;
-import com.gzoltar.core.instr.matchers.ClassNameMatcher;
-import com.gzoltar.core.instr.matchers.PrefixMatcher;
-import com.gzoltar.core.instr.matchers.SourceLocationMatcher;
-import com.gzoltar.core.runtime.Collector;
-import com.gzoltar.core.runtime.ProbeGroup;
-import com.gzoltar.core.util.MD5;
-
-import org.jacoco.core.internal.ContentTypeDetector;
-import org.jacoco.core.internal.Pack200Streams;
-import org.jacoco.core.internal.instr.SignatureRemover;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.util.CheckClassAdapter;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -50,6 +29,23 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import org.jacoco.core.internal.ContentTypeDetector;
+import org.jacoco.core.internal.Pack200Streams;
+import org.jacoco.core.internal.instr.SignatureRemover;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import com.gzoltar.core.AgentConfigs;
+import com.gzoltar.core.instr.actions.BlackList;
+import com.gzoltar.core.instr.actions.WhiteList;
+import com.gzoltar.core.instr.filter.Filter;
+import com.gzoltar.core.instr.matchers.ClassNameMatcher;
+import com.gzoltar.core.instr.matchers.PrefixMatcher;
+import com.gzoltar.core.runtime.Collector;
+import com.gzoltar.core.runtime.ProbeGroup;
+import com.gzoltar.core.util.MD5;
 
 /**
  * Several APIs to instrument Java class definitions for coverage tracing.

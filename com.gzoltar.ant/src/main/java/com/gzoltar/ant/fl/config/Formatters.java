@@ -19,7 +19,6 @@ package com.gzoltar.ant.fl.config;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.tools.ant.types.resources.Union;
-
 import com.gzoltar.report.IReportFormatter;
 import com.gzoltar.report.fl.config.ConfigHTMLReportFormatter;
 import com.gzoltar.report.fl.config.ConfigTxtReportFormatter;

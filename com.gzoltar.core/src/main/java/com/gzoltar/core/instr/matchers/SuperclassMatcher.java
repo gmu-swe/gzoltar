@@ -16,49 +16,25 @@
  */
 package com.gzoltar.core.instr.matchers;
 
-import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import java.io.IOException;
-import java.util.HashMap;
-
 public class SuperclassMatcher extends AbstractWildcardMatcher {
 
-  private final static HashMap<String, ClassNode> classNodeHashMap = new HashMap<>();
   public SuperclassMatcher(String expression) {
     super(expression);
   }
 
-  static ClassNode getOrFindClassNode(String name){
-    if(classNodeHashMap.containsKey(name))
-      return classNodeHashMap.get(name);
-    try {
-      ClassReader cr = new ClassReader(name);
-      ClassNode cn = new ClassNode();
-      cr.accept(cn, ClassReader.SKIP_CODE);
-      classNodeHashMap.put(name, cn);
-      return cn;
-    } catch (IOException e) {
-      e.printStackTrace();
-      return null;
-    }
-
-  }
   @Override
   public boolean matches(final ClassNode ctClass) {
     String superClass = ctClass.superName;
-    while (superClass != null && !super.matches(superClass.replace('/','.')) && !superClass.equals("java/lang/Object")) {
-      ClassNode cn = classNodeHashMap.get(superClass);
-      if (cn != null) {
-        superClass = cn.superName;
-      } else {
-        superClass = null;
+    while (superClass != null && !superClass.equals("java/lang/Object")) {
+      if (super.matches(superClass.replace('/', '.'))) {
+        return true;
       }
+      superClass = ctClass.superName;
     }
-    if (superClass != null && super.matches(superClass.replace('/','.')))
-      return true;
     return false;
   }
 

@@ -16,15 +16,18 @@
  */
 package com.gzoltar.core.messaging;
 
-import com.gzoltar.core.events.IEventListener;
-import com.gzoltar.core.model.Transaction;
-import com.gzoltar.core.runtime.ProbeGroup;
-
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.UUID;
+import com.gzoltar.core.events.IEventListener;
+import com.gzoltar.core.messaging.Message.AddProbeGroupMessage;
+import com.gzoltar.core.messaging.Message.ByeMessage;
+import com.gzoltar.core.messaging.Message.EndTransactionMessage;
+import com.gzoltar.core.messaging.Message.HandshakeMessage;
+import com.gzoltar.core.model.Transaction;
+import com.gzoltar.core.runtime.ProbeGroup;
 
 public class Client implements IEventListener {
 
@@ -66,7 +69,7 @@ public class Client implements IEventListener {
 
   private void postBlockingMessage(final Message m) {
     try {
-      postMessage(new Message.ByeMessage()).join(5000);
+      postMessage(new ByeMessage()).join(5000);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -92,12 +95,12 @@ public class Client implements IEventListener {
           if (socket == null) {
             socket = new Socket(host, port);
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-            out.writeObject(new Message.HandshakeMessage(id));
+            out.writeObject(new HandshakeMessage(id));
             out.flush();
           }
 
           if (!seenByeMessage) {
-            seenByeMessage |= message instanceof Message.ByeMessage;
+            seenByeMessage |= message instanceof ByeMessage;
 
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             out.writeObject(message);
@@ -123,17 +126,17 @@ public class Client implements IEventListener {
 
   @Override
   public void regiterProbeGroup(final ProbeGroup probeGroup) {
-    this.postMessage(new Message.AddProbeGroupMessage(probeGroup));
+    this.postMessage(new AddProbeGroupMessage(probeGroup));
   }
 
   @Override
   public void endTransaction(final Transaction transaction) {
-    this.postMessage(new Message.EndTransactionMessage(transaction));
+    this.postMessage(new EndTransactionMessage(transaction));
   }
 
   @Override
   public void endSession() {
-    this.postBlockingMessage(new Message.ByeMessage());
+    this.postBlockingMessage(new ByeMessage());
   }
 
 }

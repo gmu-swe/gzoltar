@@ -19,14 +19,18 @@ package com.gzoltar.core.messaging;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-
 import com.gzoltar.core.events.IEventListener;
+import com.gzoltar.core.messaging.Message.AddProbeGroupMessage;
+import com.gzoltar.core.messaging.Message.ByeMessage;
+import com.gzoltar.core.messaging.Message.EndTransactionMessage;
+import com.gzoltar.core.messaging.Message.HandshakeMessage;
+import com.gzoltar.core.messaging.Service.ServiceFactory;
 
 public class Server extends ThreadedServer {
 
-  private Service.ServiceFactory serviceFactory;
+  private ServiceFactory serviceFactory;
 
-  public Server(final ServerSocket serverSocket, final Service.ServiceFactory serviceFactory) {
+  public Server(final ServerSocket serverSocket, final ServiceFactory serviceFactory) {
     super(serverSocket);
     this.serviceFactory = serviceFactory;
   }
@@ -77,25 +81,25 @@ public class Server extends ThreadedServer {
     public Service handshake() throws Exception {
       Object o = new ObjectInputStream(this.socket.getInputStream()).readObject();
 
-      if (!(o instanceof Message.HandshakeMessage)) {
+      if (!(o instanceof HandshakeMessage)) {
         throw new Exception("First message should be a HandshakeMessage. Received instead: " + o);
       }
 
-      String id = ((Message.HandshakeMessage) o).id;
+      String id = ((HandshakeMessage) o).id;
       return serviceFactory.create(id);
     }
 
     private boolean dispatch(final Object o) {
       IEventListener eventListener = service.getEventListener();
 
-      if (o instanceof Message.ByeMessage) {
+      if (o instanceof ByeMessage) {
         eventListener.endSession();
         return true;
-      } else if (o instanceof Message.EndTransactionMessage) {
-        Message.EndTransactionMessage etm = (Message.EndTransactionMessage) o;
+      } else if (o instanceof EndTransactionMessage) {
+        EndTransactionMessage etm = (EndTransactionMessage) o;
         eventListener.endTransaction(etm.transaction);
-      } else if (o instanceof Message.AddProbeGroupMessage) {
-        Message.AddProbeGroupMessage anm = (Message.AddProbeGroupMessage) o;
+      } else if (o instanceof AddProbeGroupMessage) {
+        AddProbeGroupMessage anm = (AddProbeGroupMessage) o;
         eventListener.regiterProbeGroup(anm.probeGroup);
       }
 

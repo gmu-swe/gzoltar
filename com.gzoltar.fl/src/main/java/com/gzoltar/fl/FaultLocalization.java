@@ -19,7 +19,6 @@ package com.gzoltar.fl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
-
 import com.gzoltar.core.AgentConfigs;
 import com.gzoltar.core.spectrum.FilteredSpectrum;
 import com.gzoltar.core.spectrum.ISpectrum;

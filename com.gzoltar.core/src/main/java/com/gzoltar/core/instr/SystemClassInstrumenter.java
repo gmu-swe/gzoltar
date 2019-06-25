@@ -16,17 +16,15 @@
  */
 package com.gzoltar.core.instr;
 
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
-
-import com.gzoltar.core.runtime.Collector;
-
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Field;
 import java.security.ProtectionDomain;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import com.gzoltar.core.runtime.Collector;
 
 /**
  * This class adds a new static field to a bootstrap class that will be used by instrumented

@@ -19,7 +19,6 @@ package com.gzoltar.report.metrics;
 import java.util.BitSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 import com.gzoltar.core.model.Transaction;
 import com.gzoltar.core.runtime.Probe;
 import com.gzoltar.core.runtime.ProbeGroup;

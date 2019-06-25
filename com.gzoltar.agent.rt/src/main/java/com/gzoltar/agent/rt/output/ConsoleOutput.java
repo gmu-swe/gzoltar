@@ -17,7 +17,6 @@
 package com.gzoltar.agent.rt.output;
 
 import java.io.IOException;
-
 import com.gzoltar.core.model.Transaction;
 import com.gzoltar.core.spectrum.ISpectrum;
 

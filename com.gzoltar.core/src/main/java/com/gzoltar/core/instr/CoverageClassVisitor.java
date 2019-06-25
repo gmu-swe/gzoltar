@@ -19,15 +19,13 @@
 
 package com.gzoltar.core.instr;
 
-import com.gzoltar.core.AgentConfigs;
-import com.gzoltar.core.instr.analysis.CoverageAnalyser;
-import com.gzoltar.core.runtime.ProbeGroup;
-
 import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.GeneratorAdapter;
+import com.gzoltar.core.AgentConfigs;
+import com.gzoltar.core.instr.analysis.CoverageAnalyser;
+import com.gzoltar.core.runtime.ProbeGroup;
 
 /**
  * Instruments a class with probes on each line

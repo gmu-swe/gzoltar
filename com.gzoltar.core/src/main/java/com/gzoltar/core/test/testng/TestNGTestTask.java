@@ -16,17 +16,14 @@
  */
 package com.gzoltar.core.test.testng;
 
-import com.gzoltar.core.listeners.TestNGListener;
-import com.gzoltar.core.test.TestMethod;
-import com.gzoltar.core.test.TestTask;
-import com.gzoltar.core.util.IsolatingClassLoader;
-
-import org.junit.runner.notification.RunListener;
-import org.testng.TestNG;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.runner.notification.RunListener;
+import org.testng.TestNG;
+import com.gzoltar.core.test.TestMethod;
+import com.gzoltar.core.test.TestTask;
+import com.gzoltar.core.util.IsolatingClassLoader;
 
 public class TestNGTestTask extends TestTask {
 
@@ -65,10 +62,10 @@ public class TestNGTestTask extends TestTask {
     if (this.collectCoverage) {
       if (this.offline) {
         runner.addListener((RunListener) Class
-            .forName("com.gzoltar.internal.core.listeners.TestNGListener", false, classLoader)
+            .forName("com.gzoltar.core.listeners.TestNGListener", false, classLoader)
             .newInstance());
       } else {
-        runner.addListener(new TestNGListener());
+        runner.addListener(new com.gzoltar.core.listeners.TestNGListener());
       }
     }
     runner.setThreadCount(1);

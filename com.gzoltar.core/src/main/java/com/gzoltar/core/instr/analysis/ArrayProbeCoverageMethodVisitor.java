@@ -19,17 +19,15 @@
 
 package com.gzoltar.core.instr.analysis;
 
+import java.util.List;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.commons.AnalyzerAdapter;
 import com.gzoltar.core.instr.InstrumentationConstants;
 import com.gzoltar.core.model.Node;
 import com.gzoltar.core.model.NodeFactory;
 import com.gzoltar.core.runtime.Probe;
 import com.gzoltar.core.runtime.ProbeGroup;
-
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.commons.AnalyzerAdapter;
-
-import java.util.List;
 
 /**
  * Instruments a method adding probes at each line. The strategy requires the

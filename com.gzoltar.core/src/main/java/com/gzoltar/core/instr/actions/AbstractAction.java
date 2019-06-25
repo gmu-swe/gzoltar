@@ -16,11 +16,10 @@
  */
 package com.gzoltar.core.instr.actions;
 
-import com.gzoltar.core.instr.Outcome;
-import com.gzoltar.core.instr.matchers.IMatcher;
-
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
+import com.gzoltar.core.instr.Outcome;
+import com.gzoltar.core.instr.matchers.IMatcher;
 
 public abstract class AbstractAction implements IAction {
 

@@ -24,11 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
+import org.objectweb.asm.tree.ClassNode;
 import com.gzoltar.cli.Command;
 import com.gzoltar.core.test.FindTestMethods;
 import com.gzoltar.core.test.TestMethod;
-
-import org.objectweb.asm.tree.ClassNode;
 
 /**
  * The <code>listTestMethods</code> command.

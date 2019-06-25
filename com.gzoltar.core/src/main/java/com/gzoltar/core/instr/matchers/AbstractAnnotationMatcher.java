@@ -27,45 +27,74 @@ public abstract class AbstractAnnotationMatcher implements IMatcher {
   private final String annotation;
 
   protected AbstractAnnotationMatcher(final String annotation) {
-  	if(annotation.startsWith("L"))
+    if (annotation.startsWith("L")) {
       this.annotation = annotation;
-  	else
-  	  this.annotation = Type.getObjectType(annotation.replace('.','/')).getDescriptor();
+    } else {
+      this.annotation = Type.getObjectType(annotation.replace('.', '/')).getDescriptor();
+    }
   }
 
   @Override
   public boolean matches(final ClassNode ctClass) {
-    for(AnnotationNode each : ctClass.visibleAnnotations){
-      if(each.desc.equals(annotation))
-        return true;
+    if (ctClass.visibleAnnotations != null) {
+      for (AnnotationNode each : ctClass.visibleAnnotations) {
+        if (each.desc != null && each.desc.equals(annotation)) {
+          return true;
+        }
+      }
     }
 
-    for(AnnotationNode each : ctClass.invisibleAnnotations){
-      if(each.desc.equals(annotation))
-        return true;
+    if (ctClass.invisibleAnnotations != null) {
+      for (AnnotationNode each : ctClass.invisibleAnnotations) {
+        if (each.desc != null && each.desc.equals(annotation)) {
+          return true;
+        }
+      }
     }
+
     return false;
   }
 
   @Override
   public boolean matches(final MethodNode ctBehavior) {
-    if (ctBehavior.visibleAnnotations != null)
+    if (ctBehavior.visibleAnnotations != null) {
       for (AnnotationNode each : ctBehavior.visibleAnnotations) {
-        if (each.desc.equals(annotation))
+        if (each.desc != null && each.desc.equals(annotation)) {
           return true;
+        }
       }
+    }
 
-    if (ctBehavior.invisibleAnnotations != null)
+    if (ctBehavior.invisibleAnnotations != null) {
       for (AnnotationNode each : ctBehavior.invisibleAnnotations) {
-        if (each.desc.equals(annotation))
+        if (each.desc != null && each.desc.equals(annotation)) {
           return true;
+        }
       }
+    }
+
     return false;
   }
 
   @Override
   public boolean matches(final FieldNode ctField) {
-    throw new UnsupportedOperationException();
+    if (ctField.visibleAnnotations != null) {
+      for (AnnotationNode each : ctField.visibleAnnotations) {
+        if (each.desc != null && each.desc.equals(annotation)) {
+          return true;
+        }
+      }
+    }
+
+    if (ctField.invisibleAnnotations != null) {
+      for (AnnotationNode each : ctField.invisibleAnnotations) {
+        if (each.desc != null && each.desc.equals(annotation)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
 }

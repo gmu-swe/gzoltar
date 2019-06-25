@@ -1,10 +1,9 @@
 package com.gzoltar.core.util;
 
+import java.io.IOException;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
-
-import java.io.IOException;
 
 public class ClassTestUtils {
 	public static ClassNode getClassNode(String className){

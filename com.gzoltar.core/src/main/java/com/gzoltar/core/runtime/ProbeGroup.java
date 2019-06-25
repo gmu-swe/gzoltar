@@ -16,13 +16,11 @@
  */
 package com.gzoltar.core.runtime;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import com.gzoltar.core.model.Node;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import com.gzoltar.core.model.Node;
 
 public final class ProbeGroup {
 
@@ -79,7 +77,7 @@ public final class ProbeGroup {
   // === Probes ===
 
   /**
-   * Registers a new {@link Probe} object.
+   * Registers a new {@link com.gzoltar.core.runtime.Probe} object.
    */
   public Probe registerProbe(final Node node, final String methodName, final String methodDesc) {
     Probe probe = this.findProbeByNode(node);
@@ -91,21 +89,21 @@ public final class ProbeGroup {
   }
 
   /**
-   * Returns all {@link Probe} objects that have been registered.
+   * Returns all {@link com.gzoltar.core.runtime.Probe} objects that have been registered.
    */
   public List<Probe> getProbes() {
     return this.probes;
   }
 
   /**
-   * Returns the number of {@link Probe} objects of a probeGroup.
+   * Returns the number of {@link com.gzoltar.core.runtime.Probe} objects of a probeGroup.
    */
   public int getNumberOfProbes() {
     return this.probes.size();
   }
 
   /**
-   * Returns true if a probeGroup does not contain any {@link Probe}
+   * Returns true if a probeGroup does not contain any {@link com.gzoltar.core.runtime.Probe}
    * object.
    */
   public boolean isEmpty() {
@@ -113,8 +111,8 @@ public final class ProbeGroup {
   }
 
   /**
-   * Return the {@link Probe} object that contains a specific
-   * {@link Node} object, null otherwise.
+   * Return the {@link com.gzoltar.core.runtime.Probe} object that contains a specific
+   * {@link com.gzoltar.core.model.Node} object, null otherwise.
    */
   public Probe findProbeByNode(Node node) {
     for (Probe probe : this.probes) {
@@ -137,7 +135,7 @@ public final class ProbeGroup {
   // === Nodes ===
 
   /**
-   * Returns all {@link Node} object that belong to a probeGroup.
+   * Returns all {@link com.gzoltar.core.model.Node} object that belong to a probeGroup.
    */
   public List<Node> getNodes() {
     List<Node> nodes = new ArrayList<Node>();
@@ -148,7 +146,7 @@ public final class ProbeGroup {
   }
 
 //  /**
-//   * Returns a {@link Node} object with a specific name, or null there is not
+//   * Returns a {@link com.gzoltar.core.model.Node} object with a specific name, or null there is not
 //   * any.
 //   */
 //  public Node getNode(String nodeName) {

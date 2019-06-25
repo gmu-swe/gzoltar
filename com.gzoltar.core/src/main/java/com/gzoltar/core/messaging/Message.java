@@ -16,10 +16,9 @@
  */
 package com.gzoltar.core.messaging;
 
+import java.io.Serializable;
 import com.gzoltar.core.model.Transaction;
 import com.gzoltar.core.runtime.ProbeGroup;
-
-import java.io.Serializable;
 
 public interface Message {
 

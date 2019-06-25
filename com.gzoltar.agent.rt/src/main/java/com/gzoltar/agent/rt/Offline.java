@@ -17,7 +17,6 @@
 package com.gzoltar.agent.rt;
 
 import java.util.Properties;
-
 import com.gzoltar.core.AgentConfigs;
 import com.gzoltar.core.runtime.Collector;
 

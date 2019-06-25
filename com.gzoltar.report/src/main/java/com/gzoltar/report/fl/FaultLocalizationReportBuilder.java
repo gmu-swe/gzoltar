@@ -19,7 +19,6 @@ package com.gzoltar.report.fl;
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
-
 import com.gzoltar.core.AgentConfigs;
 import com.gzoltar.core.spectrum.ISpectrum;
 import com.gzoltar.fl.FaultLocalization;

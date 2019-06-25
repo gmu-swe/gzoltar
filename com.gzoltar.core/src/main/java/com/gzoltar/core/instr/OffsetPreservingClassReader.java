@@ -1,10 +1,9 @@
 package com.gzoltar.core.instr;
 
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.Label;
-
 import java.io.IOException;
 import java.io.InputStream;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Label;
 
 public class OffsetPreservingClassReader extends ClassReader {
 	public OffsetPreservingClassReader(byte[] b) {

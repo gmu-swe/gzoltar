@@ -99,8 +99,8 @@
                     <!--<metric>...</metric>-->
                   </metrics>
                   <formatters>
-                    <format implementation="ConfigTxtReportFormatter" />
-                    <format implementation="ConfigHTMLReportFormatter">
+                    <format implementation="com.gzoltar.report.fl.config.ConfigTxtReportFormatter" />
+                    <format implementation="com.gzoltar.report.fl.config.ConfigHTMLReportFormatter" />
                       <htmlViews>
                         <htmlView>sunburst</htmlView>
                         <htmlView>vertical_partition</htmlView>

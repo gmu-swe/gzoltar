@@ -17,7 +17,6 @@
 package com.gzoltar.core.test.testng;
 
 import org.testng.ITestResult;
-
 import com.gzoltar.core.test.TestResult;
 
 public class TestNGTestResult extends TestResult {

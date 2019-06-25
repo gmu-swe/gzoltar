@@ -18,7 +18,6 @@ package com.gzoltar.core.instr.filter;
 
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
-
 import com.gzoltar.core.instr.Outcome;
 
 public interface IFilter {

@@ -16,11 +16,9 @@
  */
 package com.gzoltar.core.test.testng;
 
-import org.jacoco.core.runtime.WildcardMatcher;
-
-import com.gzoltar.core.test.TestMethod;
-
 import java.util.List;
+import org.jacoco.core.runtime.WildcardMatcher;
+import com.gzoltar.core.test.TestMethod;
 
 public class FindTestNGTestMethods {
 

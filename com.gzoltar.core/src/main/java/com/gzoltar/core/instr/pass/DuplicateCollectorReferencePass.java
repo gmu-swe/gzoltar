@@ -16,11 +16,10 @@
  */
 package com.gzoltar.core.instr.pass;
 
-import com.gzoltar.core.instr.Outcome;
-import com.gzoltar.core.instr.filter.DuplicateCollectorReferenceFilter;
-
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
+import com.gzoltar.core.instr.Outcome;
+import com.gzoltar.core.instr.filter.DuplicateCollectorReferenceFilter;
 
 public class DuplicateCollectorReferencePass implements IPass {
 

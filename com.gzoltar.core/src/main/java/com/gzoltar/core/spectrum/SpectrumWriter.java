@@ -16,16 +16,14 @@
  */
 package com.gzoltar.core.spectrum;
 
-import com.gzoltar.core.model.Transaction;
-import com.gzoltar.core.util.SerialisationIdentifiers;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.jacoco.core.internal.data.CompactDataOutput;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jacoco.core.internal.data.CompactDataOutput;
+import com.gzoltar.core.model.Transaction;
+import com.gzoltar.core.util.SerialisationIdentifiers;
 
 /**
  * Serialization of a spectrum instance into binary streams.
@@ -87,7 +85,7 @@ public class SpectrumWriter {
   private static final class TransactionSerialize {
 
     /**
-     * Serialises an instance of {@link Transaction}.
+     * Serialises an instance of {@link com.gzoltar.core.model.Transaction}.
      * 
      * @param out binary stream to write bytes to
      * @param transaction

@@ -16,21 +16,6 @@
  */
 package com.gzoltar.core.test;
 
-import com.gzoltar.core.instr.Outcome;
-import com.gzoltar.core.instr.actions.WhiteList;
-import com.gzoltar.core.instr.filter.Filter;
-import com.gzoltar.core.instr.matchers.JUnitMatcher;
-import com.gzoltar.core.instr.matchers.OrMatcher;
-import com.gzoltar.core.instr.matchers.TestNGMatcher;
-import com.gzoltar.core.test.junit.FindJUnitTestMethods;
-import com.gzoltar.core.test.testng.FindTestNGTestMethods;
-import com.gzoltar.core.util.ClassType;
-
-import org.apache.commons.io.FileUtils;
-import org.jacoco.core.runtime.WildcardMatcher;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.tree.ClassNode;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -40,6 +25,19 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import org.apache.commons.io.FileUtils;
+import org.jacoco.core.runtime.WildcardMatcher;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.tree.ClassNode;
+import com.gzoltar.core.instr.Outcome;
+import com.gzoltar.core.instr.actions.WhiteList;
+import com.gzoltar.core.instr.filter.Filter;
+import com.gzoltar.core.instr.matchers.JUnitMatcher;
+import com.gzoltar.core.instr.matchers.OrMatcher;
+import com.gzoltar.core.instr.matchers.TestNGMatcher;
+import com.gzoltar.core.test.junit.FindJUnitTestMethods;
+import com.gzoltar.core.test.testng.FindTestNGTestMethods;
+import com.gzoltar.core.util.ClassType;
 
 public abstract class FindTestMethods {
 

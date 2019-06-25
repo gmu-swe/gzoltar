@@ -19,16 +19,13 @@ package com.gzoltar.core.instr.matchers;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
+import com.gzoltar.core.util.ClassUtils;
 
 public class AnonymousMatcher implements IMatcher {
 
   @Override
   public boolean matches(final ClassNode ctClass) {
-    int pos = ctClass.name.lastIndexOf('$');
-    if (pos < 0) {
-      return false;
-    }
-    return Character.isDigit(ctClass.name.charAt(pos + 1));
+    return ClassUtils.isAnonymousClass(ctClass);
   }
 
   @Override

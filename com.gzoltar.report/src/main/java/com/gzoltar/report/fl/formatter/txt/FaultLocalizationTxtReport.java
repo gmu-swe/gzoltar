@@ -22,9 +22,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-
 import com.gzoltar.core.model.Node;
 import com.gzoltar.core.model.Transaction;
 import com.gzoltar.core.model.TransactionOutcome;
@@ -131,7 +129,7 @@ public class FaultLocalizationTxtReport implements IFaultLocalizationReportForma
       });
 
       for (Node node : nodes) {
-          formulaWriter.println(
+        formulaWriter.println(
             node.getNameWithLineNumber() + ";" + node.getSuspiciousnessValue(formula.getName()));
       }
 

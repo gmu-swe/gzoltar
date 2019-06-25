@@ -18,7 +18,6 @@ package com.gzoltar.report.metrics;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import com.gzoltar.core.model.Transaction;
 import com.gzoltar.core.spectrum.ISpectrum;
 

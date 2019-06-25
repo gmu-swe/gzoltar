@@ -15,17 +15,15 @@
  */
 package com.gzoltar.core.instr.analysis;
 
-import com.gzoltar.core.instr.CoverageClassVisitor;
-import com.gzoltar.core.instr.InstrumentationConstants;
-import com.gzoltar.core.runtime.ProbeGroup;
-
+import java.util.List;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.commons.AnalyzerAdapter;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.MethodNode;
-
-import java.util.List;
+import com.gzoltar.core.instr.CoverageClassVisitor;
+import com.gzoltar.core.instr.InstrumentationConstants;
+import com.gzoltar.core.runtime.ProbeGroup;
 
 /**
  * Need to count the number of blocks in the method. Storing method as a tree

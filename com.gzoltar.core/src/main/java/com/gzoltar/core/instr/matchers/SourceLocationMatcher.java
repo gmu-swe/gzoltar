@@ -16,12 +16,11 @@
  */
 package com.gzoltar.core.instr.matchers;
 
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
-
-import java.security.CodeSource;
-import java.security.ProtectionDomain;
 
 public class SourceLocationMatcher implements IMatcher {
 

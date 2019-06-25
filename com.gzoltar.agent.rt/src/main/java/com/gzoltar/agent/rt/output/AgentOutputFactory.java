@@ -22,11 +22,11 @@ import com.gzoltar.core.AgentOutput;
 public final class AgentOutputFactory {
 
   /**
-   * Create an instance of {@link IAgentOutput} based on the agent
+   * Create an instance of {@link com.gzoltar.agent.rt.output.IAgentOutput} based on the agent
    * configuration.
    * 
-   * @param agentConfigs an object of {@link AgentConfigs}
-   * @return an object of {@link IAgentOutput}
+   * @param agentConfigs an object of {@link com.gzoltar.core.AgentConfigs}
+   * @return an object of {@link com.gzoltar.agent.rt.output.IAgentOutput}
    */
   public static IAgentOutput createAgentOutput(final AgentConfigs agentConfigs) {
     final AgentOutput controllerType = agentConfigs.getOutput();

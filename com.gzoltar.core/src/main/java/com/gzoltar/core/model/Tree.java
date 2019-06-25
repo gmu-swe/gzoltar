@@ -16,17 +16,15 @@
  */
 package com.gzoltar.core.model;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import com.gzoltar.core.runtime.ProbeGroup;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import com.gzoltar.core.runtime.ProbeGroup;
 
 public class Tree implements Iterable<Node> {
 

@@ -18,37 +18,37 @@ package com.gzoltar.report.metrics;
 
 public enum Metric {
 
-  /** {@see AmbiguityMetric} */
+  /** {@see com.gzoltar.report.metrics.AmbiguityMetric} */
   AMBIGUITY(new AmbiguityMetric()),
 
-  /** {@see CoverageMetric} */
+  /** {@see com.gzoltar.report.metrics.CoverageMetric} */
   COVERAGE(new CoverageMetric()),
 
-  /** {@see DDUMetric} */
+  /** {@see com.gzoltar.report.metrics.DDUMetric} */
   DDU(new DDUMetric()),
 
-  /** {@see DDUMetric.GlobalDDUMetric} */
+  /** {@see com.gzoltar.report.metrics.DDUMetric.GlobalDDUMetric} */
   GLOBALDDU(new DDUMetric.GlobalDDUMetric()),
 
-  /** {@see EntropyMetric} */
+  /** {@see com.gzoltar.report.metrics.EntropyMetric} */
   ENTROPY(new EntropyMetric()),
 
-  /** {@see RhoMetric} */
+  /** {@see com.gzoltar.report.metrics.RhoMetric} */
   RHO(new RhoMetric()),
 
-  /** {@see RhoMetric.NormalizedRho} */
+  /** {@see com.gzoltar.report.metrics.RhoMetric.NormalizedRho} */
   NORMALIZED_RHO(new RhoMetric.NormalizedRho()),
 
-  /** {@see SimpsonMetric} */
+  /** {@see com.gzoltar.report.metrics.SimpsonMetric} */
   SIMPSON(new SimpsonMetric()),
 
-  /** {@see SimpsonMetric.InvertedSimpsonMetric} */
+  /** {@see com.gzoltar.report.metrics.SimpsonMetric.InvertedSimpsonMetric} */
   INVERTED_SIMPSON(new SimpsonMetric.InvertedSimpsonMetric()),
 
-  /** {@see SimpsonMetric.GlobalSimpsonMetric} */
+  /** {@see com.gzoltar.report.metrics.SimpsonMetric.GlobalSimpsonMetric} */
   GLOBAL_SIMPSON(new SimpsonMetric.GlobalSimpsonMetric()),
 
-  /** {@see SimpsonMetric.GlobalInvertedSimpsonMetric} */
+  /** {@see com.gzoltar.report.metrics.SimpsonMetric.GlobalInvertedSimpsonMetric} */
   GLOBAL_INVERTED_SIMPSON(new SimpsonMetric.GlobalInvertedSimpsonMetric());
 
   private final IMetric metric;

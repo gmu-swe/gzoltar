@@ -16,19 +16,17 @@
  */
 package com.gzoltar.core.spectrum;
 
-import com.gzoltar.core.model.Node;
-import com.gzoltar.core.model.Transaction;
-import com.gzoltar.core.runtime.Probe;
-import com.gzoltar.core.runtime.ProbeGroup;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.apache.commons.lang3.tuple.Pair;
+import com.gzoltar.core.model.Node;
+import com.gzoltar.core.model.Transaction;
+import com.gzoltar.core.runtime.Probe;
+import com.gzoltar.core.runtime.ProbeGroup;
 
 public class Spectrum implements ISpectrum {
 
@@ -38,7 +36,7 @@ public class Spectrum implements ISpectrum {
   private final List<Transaction> transactions;
 
   /**
-   * Constructs a new {@link Spectrum}.
+   * Constructs a new {@link com.gzoltar.core.spectrum.Spectrum}.
    */
   public Spectrum() {
     this.probeGroups = new LinkedHashMap<String, ProbeGroup>();
@@ -73,7 +71,7 @@ public class Spectrum implements ISpectrum {
   }
 
   /**
-   * Returns the {@link ProbeGroup} with a given name, or null if there is
+   * Returns the {@link com.gzoltar.core.runtime.ProbeGroup} with a given name, or null if there is
    * not any.
    */
   public ProbeGroup getProbeGroup(final ProbeGroup probeGroup) {
@@ -81,7 +79,7 @@ public class Spectrum implements ISpectrum {
   }
 
   /**
-   * Returns the {@link ProbeGroup} with a given name, or null if there is
+   * Returns the {@link com.gzoltar.core.runtime.ProbeGroup} with a given name, or null if there is
    * not any.
    */
   public ProbeGroup getProbeGroupByHash(final String hash) {
@@ -89,7 +87,7 @@ public class Spectrum implements ISpectrum {
   } 
 
   /**
-   * Returns all {@link ProbeGroup} that have been registered.
+   * Returns all {@link com.gzoltar.core.runtime.ProbeGroup} that have been registered.
    */
   public Collection<ProbeGroup> getProbeGroups() {
     return this.probeGroups.values();
@@ -98,8 +96,8 @@ public class Spectrum implements ISpectrum {
   // === Nodes ===
 
   /**
-   * Returns all {@link Node} objects registered in each
-   * {@link ProbeGroup}.
+   * Returns all {@link com.gzoltar.core.model.Node} objects registered in each
+   * {@link com.gzoltar.core.runtime.ProbeGroup}.
    */
   public List<Node> getNodes() {
     List<Node> nodes = new ArrayList<Node>();
@@ -110,16 +108,16 @@ public class Spectrum implements ISpectrum {
   }
 
   /**
-   * Returns the number of all {@link Node} objects registered in each
-   * {@link ProbeGroup}.
+   * Returns the number of all {@link com.gzoltar.core.model.Node} objects registered in each
+   * {@link com.gzoltar.core.runtime.ProbeGroup}.
    */
   public int getNumberOfNodes() {
     return this.getNodes().size();
   }
 
   /**
-   * Returns all executed {@link Node} objects of a particular
-   * {@link Transaction} object.
+   * Returns all executed {@link com.gzoltar.core.model.Node} objects of a particular
+   * {@link com.gzoltar.core.model.Transaction} object.
    */
   public List<Node> getHitNodes(Transaction transaction) {
     List<Node> nodes = new ArrayList<Node>();
@@ -143,7 +141,7 @@ public class Spectrum implements ISpectrum {
   // === Transactions ===
 
   /**
-   * Registers a {@link Transaction}.
+   * Registers a {@link com.gzoltar.core.model.Transaction}.
    */
   public void addTransaction(final Transaction transaction) {
     if (transaction.hasActivations()) {
@@ -152,14 +150,14 @@ public class Spectrum implements ISpectrum {
   }
 
   /**
-   * Returns all {@link Transaction} that have been registered.
+   * Returns all {@link com.gzoltar.core.model.Transaction} that have been registered.
    */
   public List<Transaction> getTransactions() {
     return this.transactions;
   }
 
   /**
-   * Returns the number of all {@link Transaction} that have been registered.
+   * Returns the number of all {@link com.gzoltar.core.model.Transaction} that have been registered.
    */
   public int getNumberOfTransactions() {
     return this.transactions.size();

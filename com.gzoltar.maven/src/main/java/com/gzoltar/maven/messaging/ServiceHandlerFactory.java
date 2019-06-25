@@ -18,7 +18,6 @@ package com.gzoltar.maven.messaging;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import com.gzoltar.core.messaging.Service;
 import com.gzoltar.core.messaging.Service.ServiceFactory;
 import com.gzoltar.maven.AbstractGZoltarMojo;

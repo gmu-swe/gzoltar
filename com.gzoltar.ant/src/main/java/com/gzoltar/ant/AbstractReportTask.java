@@ -19,7 +19,6 @@ package com.gzoltar.ant;
 import java.io.File;
 import java.util.Locale;
 import org.apache.tools.ant.BuildException;
-
 import com.gzoltar.core.instr.InstrumentationLevel;
 
 /**

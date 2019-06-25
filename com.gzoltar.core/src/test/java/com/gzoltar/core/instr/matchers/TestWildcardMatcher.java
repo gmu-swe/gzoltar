@@ -18,10 +18,7 @@ package com.gzoltar.core.instr.matchers;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
-
-import com.gzoltar.core.instr.matchers.ClassNameMatcher;
 
 public class TestWildcardMatcher {
 
@@ -77,12 +74,12 @@ public class TestWildcardMatcher {
 
   @Test
   public void testInner() {
-    assertFalse(new ClassNameMatcher("AbstractWildcardMatcher")
+    assertFalse(new ClassNameMatcher("com.gzoltar.core.instr.matchers.AbstractWildcardMatcher")
         .matches("com.gzoltar.OtherClass"));
-    assertTrue(new ClassNameMatcher("AbstractWildcardMatcher")
-        .matches("AbstractWildcardMatcher"));
-    assertTrue(new ClassNameMatcher("AbstractWildcardMatcher$*")
-        .matches("AbstractWildcardMatcher$innerClass"));
+    assertTrue(new ClassNameMatcher("com.gzoltar.core.instr.matchers.AbstractWildcardMatcher")
+        .matches("com.gzoltar.core.instr.matchers.AbstractWildcardMatcher"));
+    assertTrue(new ClassNameMatcher("com.gzoltar.core.instr.matchers.AbstractWildcardMatcher$*")
+        .matches("com.gzoltar.core.instr.matchers.AbstractWildcardMatcher$innerClass"));
   }
 
 }

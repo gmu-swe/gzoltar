@@ -61,7 +61,7 @@ public final class JUnitListener extends Listener {
   }
 
   private String getName(final Description description) {
-    return description.getClassName() + TEST_CLASS_NAME_SEPARATOR
+    return description.getClassName() + Listener.TEST_CLASS_NAME_SEPARATOR
         + description.getMethodName();
   }
 

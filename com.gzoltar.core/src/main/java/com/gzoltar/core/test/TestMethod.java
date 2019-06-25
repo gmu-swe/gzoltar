@@ -16,12 +16,11 @@
  */
 package com.gzoltar.core.test;
 
-import com.gzoltar.core.listeners.Listener;
-import com.gzoltar.core.util.ClassType;
-
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import com.gzoltar.core.listeners.Listener;
+import com.gzoltar.core.util.ClassType;
 
 public class TestMethod implements Comparable<TestMethod> {
 

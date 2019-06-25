@@ -16,15 +16,13 @@
  */
 package com.gzoltar.core.instr.filter;
 
-import com.gzoltar.core.instr.Outcome;
-import com.gzoltar.core.instr.actions.IAction;
-
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.MethodNode;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
+import com.gzoltar.core.instr.Outcome;
+import com.gzoltar.core.instr.actions.IAction;
 
 public class Filter implements IFilter {
 

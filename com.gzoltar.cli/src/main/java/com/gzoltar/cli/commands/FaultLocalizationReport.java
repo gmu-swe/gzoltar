@@ -19,7 +19,6 @@ package com.gzoltar.cli.commands;
 import java.util.Arrays;
 import java.util.Locale;
 import org.kohsuke.args4j.Option;
-
 import com.gzoltar.core.instr.granularity.GranularityLevel;
 import com.gzoltar.fl.FaultLocalizationFamily;
 import com.gzoltar.report.ReportFormatter;
