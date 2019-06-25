@@ -61,7 +61,7 @@ public class MethodModifierMatcher extends AbstractModifierMatcher {
 
   @Override
   public boolean matches(final FieldNode ctField) {
-  	throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
 
 }

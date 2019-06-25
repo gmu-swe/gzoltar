@@ -72,7 +72,7 @@ public class SourceLocationMatcher implements IMatcher {
 
   @Override
   public boolean matches(final FieldNode ctField) {
-  	throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
 
 }
