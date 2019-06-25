@@ -16,41 +16,27 @@
  */
 package com.gzoltar.core.instr.matchers;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.gzoltar.examples.DeprecatedAnnotation;
 import org.junit.Test;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 import com.gzoltar.core.util.ClassTestUtils;
 
 @SuppressWarnings("deprecation")
-public class TestAnnotationMatcher {
+public class TestNotMarcher {
 
   @Test
-  public void testClassDeprecatedMatcher() throws Exception {
-    ClassAnnotationMatcher classAnnotationMatcher =
-        new ClassAnnotationMatcher(Deprecated.class.getCanonicalName());
-    ClassNode ctClass = ClassTestUtils.getClassNode(DeprecatedAnnotation.class.getCanonicalName());
-    assertTrue(classAnnotationMatcher.matches(ctClass));
-  }
-
-  @Test
-  public void testMethodDeprecatedMatcher() throws Exception {
-    MethodAnnotationMatcher methodAnnotationMatcher =
+  public void testAllMethodsExceptDeprecatedOnes() throws Exception {
+    MethodAnnotationMatcher methodsExceptDeprecatedOnes =
         new MethodAnnotationMatcher(Deprecated.class.getCanonicalName());
-    MethodNode ctBehavior = ClassTestUtils
+    NotMatcher notMatcher = new NotMatcher(methodsExceptDeprecatedOnes);
+    MethodNode deprecatedMethod = ClassTestUtils
         .getMethodNode(DeprecatedAnnotation.class.getCanonicalName(), "deprecatedMethod");
-    assertTrue(methodAnnotationMatcher.matches(ctBehavior));
-  }
-
-  @Test
-  public void testFieldDeprecatedMatcher() throws Exception {
-    FieldAnnotationMatcher fieldAnnotationMatcher =
-        new FieldAnnotationMatcher(Deprecated.class.getCanonicalName());
-    FieldNode ctField = ClassTestUtils.getFieldNode(DeprecatedAnnotation.class.getCanonicalName(),
-        "deprecatedField");
-    assertTrue(fieldAnnotationMatcher.matches(ctField));
+    assertFalse(notMatcher.matches(deprecatedMethod));
+    MethodNode notDeprecatedMethod = ClassTestUtils
+        .getMethodNode(DeprecatedAnnotation.class.getCanonicalName(), "notDeprecatedMethod");
+    assertTrue(notMatcher.matches(notDeprecatedMethod));
   }
 
 }

@@ -24,7 +24,6 @@ import com.gzoltar.core.util.ClassTestUtils;
 
 public class TestSuperclassMatcher {
 
-
   @Test
   public void testSuperclassMatcher() throws Exception {
     SuperclassMatcher superclassMatcher = new SuperclassMatcher("org.gzoltar.*.Abstract*");
