@@ -52,6 +52,19 @@ public abstract class FindTestMethods {
    * @throws IOException
    * @throws ClassNotFoundException
    */
+  public static List<TestMethod> findTestMethodsInPath(final File path, final String testsMatcher)
+      throws IOException, ClassNotFoundException {
+    return findTestMethodsInPath(path, new WildcardMatcher(testsMatcher));
+  }
+
+  /**
+   * 
+   * @param path
+   * @param testsMatcher
+   * @return
+   * @throws IOException
+   * @throws ClassNotFoundException
+   */
   public static List<TestMethod> findTestMethodsInPath(final File path,
       final WildcardMatcher testsMatcher) throws IOException, ClassNotFoundException {
     final List<TestMethod> testMethods = new ArrayList<TestMethod>();

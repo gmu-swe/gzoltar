@@ -21,7 +21,6 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import org.jacoco.core.runtime.WildcardMatcher;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 import com.gzoltar.cli.Command;
@@ -74,7 +73,7 @@ public class ListTestMethods extends Command {
 
     for (File testClassesDir : this.testClassesDirs) {
       for (TestMethod testMethod : FindTestMethods.findTestMethodsInPath(testClassesDir,
-          new WildcardMatcher(this.includes))) {
+          this.includes)) {
         testsWriter.println(testMethod.getClassType().name() + "," + testMethod.getLongName());
       }
     }
