@@ -16,6 +16,8 @@
  */
 package com.gzoltar.core.instr.matchers;
 
+import java.io.IOException;
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -33,12 +35,26 @@ public class FieldNameMatcher extends AbstractWildcardMatcher {
         return true;
       }
     }
+
+    // Include non-private fields inherited from the superclasses
+    String parent = ctClass.superName;
+    if (parent != null) {
+      try {
+        ClassReader cr = new ClassReader(parent);
+        ClassNode cn = new ClassNode();
+        cr.accept(cn, ClassReader.SKIP_CODE);
+        return matches(cn);
+      } catch (IOException e) {
+        // NO-OP
+      }
+    }
+
     return false;
   }
 
   @Override
   public boolean matches(final MethodNode ctBehavior) {
-  	throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
