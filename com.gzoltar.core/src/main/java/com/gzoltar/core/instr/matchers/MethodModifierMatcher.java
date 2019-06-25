@@ -38,7 +38,7 @@ public class MethodModifierMatcher extends AbstractModifierMatcher {
       }
     }
 
-    // Look at parent methods
+    // Include non-private methods inherited from the superclasses
     String parent = ctClass.superName;
     if (parent != null) {
       try {
