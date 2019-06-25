@@ -62,7 +62,8 @@ public final class EnumFilter extends Filter {
             new MethodNameMatcher(
                 "values()" + Type.getObjectType(classNameWithSlash).getDescriptor()),
             new MethodNameMatcher(
-                "valueOf(" + Type.getObjectType("java/lang/String").getDescriptor() + ")"))));
+                "valueOf(" + Type.getObjectType("java/lang/String").getDescriptor() + ")"
+                    + Type.getObjectType(classNameWithSlash).getDescriptor()))));
     return enumMethods;
   }
 
