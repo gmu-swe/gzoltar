@@ -179,16 +179,20 @@ public final class ProbeGroup {
     return sb.toString();
   }
 
+  private transient int hashCode = -1;
   /**
    * {@inheritDoc}
    */
   @Override
   public int hashCode() {
+  	if(hashCode != -1)
+  	  return hashCode;
     HashCodeBuilder builder = new HashCodeBuilder();
     builder.append(this.hash);
     builder.append(this.getName());
     builder.append(this.probes);
-    return builder.toHashCode();
+    hashCode = builder.toHashCode();
+    return hashCode;
   }
 
   /**

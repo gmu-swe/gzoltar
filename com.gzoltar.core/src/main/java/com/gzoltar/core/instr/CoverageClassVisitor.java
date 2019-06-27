@@ -95,9 +95,8 @@ public class CoverageClassVisitor extends ClassVisitor {
 
 		CoverageAnalyser coverageAnalyser = new CoverageAnalyser(this, this.probeGroup, this.className,
 				mv, access, addFrames, name, desc, signature, exceptions);
-		JSRInlinerAdapter jsrInlinerAdapter = new JSRInlinerAdapter(coverageAnalyser, access, name, desc, signature, exceptions);
 		//Call INIT method for *all* methods to avoid issues with static inner classes
-		return new MethodVisitor(InstrumentationConstants.ASM_VERSION, jsrInlinerAdapter) {
+		return new MethodVisitor(InstrumentationConstants.ASM_VERSION, coverageAnalyser) {
 			@Override
 			public void visitCode() {
 				super.visitCode();

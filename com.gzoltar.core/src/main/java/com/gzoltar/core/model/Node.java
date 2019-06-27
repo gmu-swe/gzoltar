@@ -323,19 +323,23 @@ public class Node {
     return sb.toString();
   }
 
+  private transient int hashCode = -1;
   /**
    * {@inheritDoc}
    */
   @Override
   public int hashCode() {
-    HashCodeBuilder builder = new HashCodeBuilder();
-    builder.append(this.type);
-    builder.append(this.name);
-    builder.append(this.lineNumber);
-    builder.append(this.depth);
-    builder.append(this.parent);
-    builder.append(this.instructionIdentifier);
-    return builder.toHashCode();
+    if(hashCode == -1) {
+      HashCodeBuilder builder = new HashCodeBuilder();
+      builder.append(this.type);
+      builder.append(this.name);
+      builder.append(this.lineNumber);
+      builder.append(this.depth);
+      builder.append(this.parent);
+      builder.append(this.instructionIdentifier);
+      hashCode = builder.toHashCode();
+    }
+    return hashCode;
   }
 
   /**

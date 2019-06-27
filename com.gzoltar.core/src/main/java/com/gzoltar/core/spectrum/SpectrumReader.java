@@ -137,23 +137,25 @@ public class SpectrumReader {
         String probeGroupHash = in.readUTF();
         String probeGroupName = in.readUTF();
         int hitArrayLength = in.readVarInt();
-        int[] hitArray = new int[hitArrayLength];
         if(hitArrayLength > 0) {
-          for (int i = 0; i < hitArrayLength; i++)
+          int[] hitArray = new int[hitArrayLength];
+          boolean hasNonZero = false;
+          for (int i = 0; i < hitArrayLength; i++) {
             hitArray[i] = in.readVarInt();
-
+          }
+          ProbeGroup inSpectrum = spectrum.getProbeGroupByHash(probeGroupHash);
           // sanity checks
-          if (spectrum.getProbeGroupByHash(probeGroupHash) == null) {
+          if (inSpectrum == null) {
             throw new RuntimeException("ProbeGroup '" + probeGroupHash + "' | '" + probeGroupName
                     + "' has not been added to the spectrum instance!");
           }
-          validProbeGroups.add(spectrum.getProbeGroupByHash(probeGroupHash));
-          if (spectrum.getProbeGroupByHash(probeGroupHash).getNumberOfProbes() != hitArray.length) {
+          validProbeGroups.add(inSpectrum);
+          if (inSpectrum.getNumberOfProbes() != hitArray.length) {
             throw new RuntimeException("ProbeGroup '" + probeGroupHash + "' | '" + probeGroupName
-                    + "' has a different number of probes (" + spectrum.getProbeGroupByHash(probeGroupHash).getNumberOfProbes() + ") than recorded (" + hitArray.length + ")!");
+                    + "' has a different number of probes (" + inSpectrum.getNumberOfProbes() + ") than recorded (" + hitArray.length + ")!");
           }
+          activity.put(probeGroupHash, new ImmutablePair<String, int[]>(probeGroupName, hitArray));
         }
-        activity.put(probeGroupHash, new ImmutablePair<String, int[]>(probeGroupName, hitArray));
         numberActivities--;
       }
 

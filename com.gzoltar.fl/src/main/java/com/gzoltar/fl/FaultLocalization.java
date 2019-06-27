@@ -16,6 +16,7 @@
  */
 package com.gzoltar.fl;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
@@ -53,7 +54,7 @@ public class FaultLocalization {
    */
   public ISpectrum diagnose(final String buildLocation, final AgentConfigs agentConfigs,
       final File dataFile) throws Exception {
-    FileInputStream inStream = new FileInputStream(dataFile);
+    BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(dataFile));
 
     SpectrumReader spectrumReader = new SpectrumReader(buildLocation, agentConfigs, inStream);
     spectrumReader.read();

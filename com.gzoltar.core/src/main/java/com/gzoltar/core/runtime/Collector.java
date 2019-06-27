@@ -144,7 +144,7 @@ public class Collector {
       if (!ArrayUtils.containsNonZeroValue(hitArray)) {
         // although the class has been loaded and instrumented, no line has been covered
         activity.put(hash,
-            new ImmutablePair<String, int[]>(entry.getValue().getLeft(), hitArray));
+            new ImmutablePair<String, int[]>(entry.getValue().getLeft(), null));
         continue;
       }
 

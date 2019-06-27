@@ -104,9 +104,13 @@ public class SpectrumWriter {
           out.writeUTF(entry.getKey()); // hash
           out.writeUTF(entry.getValue().getLeft()); // name
           int[] ar = entry.getValue().getRight();
-          out.writeVarInt(ar.length);
-          for(int i = 0 ; i< ar.length; i++)
-            out.writeVarInt(ar[i]);
+          if (ar == null)
+            out.writeVarInt(0);
+          else {
+            out.writeVarInt(ar.length);
+            for (int i = 0; i < ar.length; i++)
+              out.writeVarInt(ar[i]);
+          }
         }
 
         out.writeUTF(transaction.getTransactionOutcome().name());

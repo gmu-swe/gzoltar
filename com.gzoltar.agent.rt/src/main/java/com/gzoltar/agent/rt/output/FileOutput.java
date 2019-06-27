@@ -16,6 +16,7 @@
  */
 package com.gzoltar.agent.rt.output;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class FileOutput implements IAgentOutput {
    */
   @Override
   public void writeSpectrum(final ISpectrum spectrum) throws Exception {
-    final OutputStream output = this.openFile();
+    final OutputStream output = new BufferedOutputStream(this.openFile());
     try {
       final SpectrumWriter writer = new SpectrumWriter(output);
       writer.writeSpectrum(spectrum);
@@ -62,7 +63,7 @@ public class FileOutput implements IAgentOutput {
    */
   @Override
   public void writeTransaction(final Transaction transaction) throws IOException {
-    final OutputStream output = this.openFile();
+    final OutputStream output = new BufferedOutputStream(this.openFile());
     try {
       final SpectrumWriter writer = new SpectrumWriter(output);
       writer.writeTransaction(transaction);
