@@ -49,7 +49,7 @@ public final class ProbeGroup {
    */
   public ProbeGroup(String hash, String ctClass, List<Probe> probes) {
     this.hash = hash;
-    this.ctClass = ctClass;
+    this.ctClass = ctClass.replace('/','.');
     this.probes = probes;
   }
 
