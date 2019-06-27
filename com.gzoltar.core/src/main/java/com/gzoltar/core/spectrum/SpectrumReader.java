@@ -154,7 +154,7 @@ public class SpectrumReader {
             throw new RuntimeException("ProbeGroup '" + probeGroupHash + "' | '" + probeGroupName
                     + "' has a different number of probes (" + inSpectrum.getNumberOfProbes() + ") than recorded (" + hitArray.length + ")!");
           }
-          activity.put(probeGroupHash, new ImmutablePair<String, int[]>(probeGroupName, hitArray));
+          activity.put(inSpectrum.getHash(), new ImmutablePair<String, int[]>(inSpectrum.getName(), hitArray));
         }
         numberActivities--;
       }
