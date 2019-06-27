@@ -27,6 +27,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.GeneratorAdapter;
+import org.objectweb.asm.commons.JSRInlinerAdapter;
 
 /**
  * Instruments a class with probes on each line
@@ -94,8 +95,9 @@ public class CoverageClassVisitor extends ClassVisitor {
 
 		CoverageAnalyser coverageAnalyser = new CoverageAnalyser(this, this.probeGroup, this.className,
 				mv, access, addFrames, name, desc, signature, exceptions);
+		JSRInlinerAdapter jsrInlinerAdapter = new JSRInlinerAdapter(coverageAnalyser, access, name, desc, signature, exceptions);
 		//Call INIT method for *all* methods to avoid issues with static inner classes
-		return new MethodVisitor(InstrumentationConstants.ASM_VERSION, coverageAnalyser) {
+		return new MethodVisitor(InstrumentationConstants.ASM_VERSION, jsrInlinerAdapter) {
 			@Override
 			public void visitCode() {
 				super.visitCode();
