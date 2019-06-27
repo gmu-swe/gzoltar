@@ -123,7 +123,7 @@ public class ControlFlowAnalyser {
             .get(blocks.size() - 1).getLines().isEmpty()) {
           blockLines.addAll(blocks.get(blocks.size() - 1).getLines());
         }
-        if (!blockLines.isEmpty() && blockStart != i)
+        if (!blockLines.isEmpty() && (blockStart != i || isReturn(ins)))
           blocks.add(new Block(blockStart, i, blockLines));
         blockStart = i + 1;
         blockLines = smallSet();
