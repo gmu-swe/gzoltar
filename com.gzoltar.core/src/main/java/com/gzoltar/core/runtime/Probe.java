@@ -88,15 +88,19 @@ public final class Probe {
     return sb.toString();
   }
 
+  private transient int hashCode = -1;
   /**
    * {@inheritDoc}
    */
   @Override
   public int hashCode() {
-    HashCodeBuilder builder = new HashCodeBuilder();
-    builder.append(this.arrayIndex);
-    builder.append(this.node);
-    return builder.toHashCode();
+    if(hashCode == -1) {
+      HashCodeBuilder builder = new HashCodeBuilder();
+      builder.append(this.arrayIndex);
+      builder.append(this.node);
+      hashCode = builder.toHashCode();
+    }
+    return hashCode;
   }
 
   /**

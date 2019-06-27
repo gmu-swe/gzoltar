@@ -37,6 +37,8 @@ import com.gzoltar.core.runtime.Probe;
 import com.gzoltar.core.runtime.ProbeGroup;
 import com.gzoltar.core.util.ArrayUtils;
 
+import java.util.HashMap;
+
 public class FilteredSpectrum {
 
   private final GranularityLevel granularity;
@@ -165,8 +167,13 @@ public class FilteredSpectrum {
           throw new RuntimeException("Wrong # of probes in " + transaction.getName() + " Expected " + probeGroup.getNumberOfProbes() + " but found " + newProbeGroup.getNumberOfProbes());
         }
 
+        HashMap<Probe, Probe> newProbeGroupProbes = new HashMap<>();
+        for(Probe p : newProbeGroup.getProbes())
+        {
+          newProbeGroupProbes.put(p, p);
+        }
         for (Probe probe : probeGroup.getProbes()) {
-          Probe newProbe = newProbeGroup.findProbeByNode(probe.getNode());
+          Probe newProbe = newProbeGroupProbes.get(probe);
           if (newProbe == null) {
             // probe has been removed, therefore it could also be ignore here
             continue;
