@@ -108,6 +108,7 @@ public class CoverageAnalyser extends MethodNode {
       else if(insn.getOpcode() == Opcodes.NEW){
         //Add a new label before the NEW
         LabelNode newLbl = new LabelNode(new Label());
+        this.instructions.insertBefore(insn, new LabelNode(new Label())); //where the probe will go, if there is supposed to be one here
         this.instructions.insertBefore(insn, newLbl);
         if(lastLabel != null)
           labelToLabel.put(lastLabel, newLbl);
