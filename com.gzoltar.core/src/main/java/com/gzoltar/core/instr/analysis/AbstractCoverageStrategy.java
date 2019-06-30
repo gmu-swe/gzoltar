@@ -30,7 +30,7 @@ import com.gzoltar.core.runtime.ProbeGroup;
 
 abstract class AbstractCoverageStrategy extends AdviceAdapter {
 
-	public static final boolean INSERT_EXTRA_PROBES = System.getenv("EXTRA_PROBES") != null;
+	public static final boolean INSERT_EXTRA_PROBES = Boolean.parseBoolean(System.getenv("EXTRA_PROBES"));
 	protected final MethodVisitor methodVisitor;
 	protected final ProbeGroup probeGroup;
 	protected final List<Block> blocks;
